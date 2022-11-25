@@ -60,7 +60,7 @@ reh_ncp <- list()
 rep <- 1 # replication times (number of datasets you wanna get)
 
 for (i in 1: rep){
-  reh_ncp[[i]] <- generate(formula = formula, param = param.ncp, M = 3000, covar = covar)
+  reh_ncp[[i]] <- generate(formula = formula, param = param.ncp, M = 2000, covar = covar)
   print(i)
 }
 ```
@@ -201,7 +201,7 @@ reh_ncp <- reh_ncp[[1]]
 1. Step 1: compute the optimal lengths of the windows
 ```{r}
 # obtain data-driven window widths
-ddwin_ncp <- ddwindows(edgelist = reh_ncp, tie_effects = formula, mintime = 400, 
+ddwin_ncp <- ddwindows(edgelist = reh_ncp, tie_effects = formula, mintime = 500, 
 		covar = covar)
 ```
 
@@ -251,6 +251,62 @@ abline(v=PELT_ddmw_ine_ncp_param@cpts[], col="black")
 
 ```
 
+*Fit the Fixed MW REM on the REH with No CP*
+
+1. Step 1: Decide the length of the window, and fit it into REM
+```{r}
+# maximum time point of the REH
+tau <- max(reh_ncp$time)
+
+# specify the length of the window
+windows <- REHdynamics::createwindows(200, tau)
+
+# fit to the REM model
+model_fixwin_ncp <- REHdynamics::MWrem(windows, edgelist = reh_ncp, 
+                                       stats = stat.ncp,
+                                       actors = covar$id, directed = TRUE, 
+                                       method = "MLE", model = "tie", ncores = 2)
+```
+
+2. Step 2: Extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+fixmw_ine_ncp_param <- 1
+for (i in 1:length(model_fixwin_ncp)) {
+  fixmw_ine_ncp_param[i] <- model_fixwin_ncp[[i]][["coefficients"]][["inertia"]]
+}
+plot(fixmw_ine_ncp_param, type = "lm") # plot the movement of parameter
+```
+
+*Test CPs of the Fixed MW parameters*
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_ine_ncp_param <- onlineCPD(fixmw_ine_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_ncp_param)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_ine_ncp_param <- cpt.var(fixmw_ine_ncp_param, method="PELT")
+summary(PELT_fixmw_ine_ncp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_ncp_param, type="l", col = "red")
+abline(v=PELT_fixmw_ine_ncp_param@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+
+```
+
+4. Wild BS
+```{r}
+
+```
+
 **REH with 1 CPs: Method 1 (doesn't look like a good way to generate REH)**
 ```{r}
 set.seed(9252568)
@@ -264,12 +320,12 @@ set.seed(9252568)
 param.1cp_m1 <- list(
   "baseline" = -8.8,
   
-  "z_send" = function(t) {
+  "inertia" = function(t) {
     # set the location of CP
     if(t <= 724) {
-      0.07
+      0.05
     } else  {
-      0.2}
+      0.15}
   }
 )
 
@@ -301,30 +357,186 @@ ine_1cp.agg.mean_m1 <- rowMeans(ine_1cp_m1)
 plot(ine_1cp.agg.mean_m1, type = "lm")
 ```
 
+*Test CPs of the aggregated statistics (mean and max)*
 
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_ine_1cp.agg.mean_m1 <- onlineCPD(ine_1cp.agg.mean_m1, getR = T, optionalOutputs = T, truncRlim = 10^-6)
+BOCD_ine_1cp.agg.mean_m1[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_1cp.agg.mean_m1)
 
+BOCD_ine_1cp.agg.max_m1 <- onlineCPD(ine_1cp.agg.max_m1, getR = T, optionalOutputs = T, truncRlim = 10^-6)
+BOCD_ine_1cp.agg.max_m1[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_1cp.agg.max_m1)
+```
 
+2. PELT: Exact CPs Detection Method
+```{r}
 
+```
 
+3. BS: approximate CPs Detection Method
+```{r}
 
+```
 
+4. Wild BS
+```{r}
 
+```
 
+*Test CPs of the aggregated statistics (top 5% of maximum statistics by timepoints)*
 
+```{r}
+# compute the mean of top 5% of maximum statistics by timepoints
+top_ine_1cp_m1 <- max_mean_time(ine_1cp_m1, percent = 0.05)$means_max.values_each_timepoint
+plot(top_ine_1cp_m1) # plot it out
+```
 
+1. BOCD: Exact CPs Detection Method
+```{r}
+# test the CPs
+BOCD_ine_1cp.agg.top_m1 <- onlineCPD(top_ine_1cp_m1, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ine_1cp.agg.top_m1[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_1cp.agg.top_m1)
+```
 
+2. PELT: Exact CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_ine_1cp.agg.top_m1 <- cpt.var(top_ine_1cp_m1, method="PELT")
+summary(PELT_ine_1cp.agg.top_m1)
 
+# plot the location of detected CPs
+plot(top_ine_1cp_m1, type="l", col = "red")
+abline(v=PELT_ine_1cp.agg.top_m1@cpts[], col="black")
+```
 
+3. BS: approximate CPs Detection Method
+```{r}
 
+```
 
+4. Wild BS
+```{r}
 
+```
 
+*Fit the Data-Driven MW REM on the REH with 1 CP*
 
+```{r}
+# extract the synthetic data with 1 CP (data frmae)
+reh_1cp_m1 <- reh_1cp_m1[[1]]
+```
 
+1. Step 1: compute the optimal lengths of the windows
+```{r}
+# obtain data-driven window widths
+ddwin_1cp_m1 <- ddwindows(edgelist = reh_1cp_m1, tie_effects = formula, mintime = 1000, 
+		covar = covar)
+```
 
+2. Step 2: fit the REM by windows
+```{r}
+#  fits a moving window relational event model
+model_ddwin_1cp_m1 <- MWrem(windows = ddwin_1cp_m1$windows, edgelist = reh_1cp_m1, 
+		stats = stat.1cp_m1, actors = covar$id, directed = TRUE)
+```
 
+3. Step 3: extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+ddmw_ine_1cp_param_m1 <- 1
+for (i in 1:length(model_ddwin_1cp_m1)) {
+  ddmw_ine_1cp_param_m1[i] <- model_ddwin_1cp_m1[[i]][["coefficients"]][["inertia"]]
+}
+plot(ddmw_ine_1cp_param_m1, type = "lm") # plot the movement of parameter
+```
 
+*Test CPs of the DDMW parameters*
 
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_ddmw_ine_1cp_param_m1 <- onlineCPD(ddmw_ine_1cp_param_m1, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ddmw_ine_1cp_param_m1[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ddmw_ine_1cp_param_m1)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_ddmw_ine_1cp_param_m1 <- cpt.var(ddmw_ine_1cp_param_m1, method="PELT")
+summary(PELT_ddmw_ine_1cp_param_m1)
+
+# plot the location of CPs
+plot(ddmw_ine_1cp_param_m1, type="l", col = "red")
+abline(v=PELT_ddmw_ine_1cp_param_m1@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+
+```
+
+4. Wild BS
+```{r}
+
+```
+
+*Fit the Fixed MW REM on the REH with One CP*
+
+1. Step 1: Decide the length of the window, and fit it into REM
+```{r}
+# maximum time point of the REH
+tau <- max(reh_1cp_m1$time)
+
+# specify the length of the window
+windows <- REHdynamics::createwindows(200, tau)
+
+# fit to the REM model
+model_fixwin_1cp_m1 <- REHdynamics::MWrem(windows, edgelist = reh_ncp, 
+                                       stats = stat.1cp_m1,
+                                       actors = covar$id, directed = TRUE, 
+                                       method = "MLE", model = "tie", ncores = 2)
+```
+
+2. Step 2: Extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+fixmw_ine_1cp_param_m1 <- 1
+for (i in 1:length(model_fixwin_1cp_m1)) {
+  fixmw_ine_1cp_param_m1[i] <- model_fixwin_1cp_m1[[i]][["coefficients"]][["inertia"]]
+}
+plot(fixmw_ine_1cp_param_m1, type = "lm") # plot the movement of parameter
+```
+
+*Test CPs of the Fixed MW parameters*
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_ine_1cp_param_m1 <- onlineCPD(fixmw_ine_1cp_param_m1, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_1cp_param_m1[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_1cp_param_m1)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_ine_1cp_param_m1 <- cpt.var(fixmw_ine_1cp_param_m1, method="PELT")
+summary(PELT_fixmw_ine_1cp_param_m1)
+
+# plot the location of CPs
+plot(fixmw_ine_1cp_param_m1, type="l", col = "red")
+abline(v=PELT_fixmw_ine_1cp_param_m1@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+
+```
+
+4. Wild BS
+```{r}
+
+```
 
 
 
