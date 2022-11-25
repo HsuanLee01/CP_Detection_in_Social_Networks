@@ -1,0 +1,354 @@
+---
+title: "Synthetic Data"
+author: "Hsuan Lee"
+output: pdf_document
+---
+```{r}
+setwd(paste("C:/Users/Hsuan Lee/Desktop/Methodology and Statistics/",
+"Changepoints Inference in Relational Event Data of a Social Network/",
+"Changepoint-Inference-in-REH-of-a-Social-Network", sep = ""))
+```
+
+# Simulate the REH
+```{r}
+# Install the needed packages
+
+#install.packages("devtools")
+
+#library(devtools)
+
+#devtools::install_version("mvtnorm", version = "1.1-3", repos = "http://cran.us.r-project.org")
+
+#devtools::install_github("TilburgNetworkGroup/remify@1a165e99a0ad784ead08974da86fb2a319f537dc")
+
+#devtools::install_github("TilburgNetworkGroup/remstats@c6ef7c41c6b43891f760d2db7ad390e8035b83dc")
+
+#devtools::install_github("TilburgNetworkGroup/remstimate@5ba940645929c4d9d84a4cf16fab68f8971a1a19")
+```
+
+```{r}
+#devtools::install_github("mlmeijerink/REHdynamics")
+```
+
+```{r}
+library(REHdynamics) # generate the REH with CPs
+library(remstats) # the formula for REH
+library(remify)
+library(relevent) # fit REH to REM
+```
+
+**REH with no CPs**
+```{r}
+set.seed(9252568)
+```
+
+```{r}
+# REH with only inertia statistics
+formula <- ~ 1 + remstats::inertia(scaling = "std")
+
+# set up the covariates
+covar <- data.frame(id = 1:30, time = 0, z = rnorm(n = 30))
+
+# set up the value of parameters
+param.ncp <- list(
+  "baseline" = -8.8,
+  "inertia" = 0.1)
+
+# create REH with 1 CP
+reh_ncp <- list()
+
+rep <- 1 # replication times (number of datasets you wanna get)
+
+for (i in 1: rep){
+  reh_ncp[[i]] <- generate(formula = formula, param = param.ncp, M = 3000, covar = covar)
+  print(i)
+}
+```
+
+*Plot the Statistics out*
+```{r}
+library(matrixStats) # for rowMaxs
+```
+
+```{r}
+# compute the statistics
+out.ncp <- remstats(tie_effects = formula, edgelist = reh_ncp) # also will be used for fitting REM
+stat.ncp <- out.ncp[["statistics"]] # extract the statistics from the list
+
+# extract the statistics of inertia
+ine_ncp <- stat.ncp[,,2]
+
+# aggregate the statistics of each time point
+ine_ncp.agg.max <- rowMaxs(ine_ncp)
+plot(ine_ncp.agg.max, type = "lm")
+
+ine_ncp.agg.mean <- rowMeans(ine_ncp)
+plot(ine_ncp.agg.mean, type = "lm")
+```
+
+*Test CPs of the aggregated statistics (mean and max)*
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+library(ocp) # package for BOCD
+```
+
+```{r}
+BOCD_ine_ncp.agg.mean <- onlineCPD(ine_ncp.agg.mean, getR = T, optionalOutputs = T, truncRlim = 10^-6)
+BOCD_ine_ncp.agg.mean[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_ncp.agg.mean)
+
+BOCD_ine_ncp.agg.max <- onlineCPD(ine_ncp.agg.max, getR = T, optionalOutputs = T, truncRlim = 10^-6)
+BOCD_ine_ncp.agg.max[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_ncp.agg.max)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+library(changepoint) # package for PELT
+```
+
+```{r}
+
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+library(changepoint) # package for BS
+```
+
+```{r}
+
+```
+
+4. Wild BS
+```{r}
+library(wbs) # package for WBS
+```
+
+```{r}
+
+```
+
+*Create function that aggregates the top 5% of maximum statistics by timepoints*
+```{r}
+max_mean_time <- 
+  function(statistics,
+           # percentage of maximum values contained in the aggregation each timepoint
+           percent = 0.05){
+  # transpose the matrix to let time point as column
+  statistics.transpose <- data.frame(t(statistics))
+  
+  maxs_mean_time <- 0
+  # arrange the order of statistics in each time point
+  for (time in 1:nrow(statistics)) {
+    # extract the statistics by timepoint
+    timepoint <- statistics.transpose[,time]
+    # arrange the order of statistics of each timepoint
+    stat_order <- data.frame(sort(timepoint, decreasing = T))
+    # extract and mean the top 5% maximum statistics of each time point
+    maxs_mean_time[time] <- mean(stat_order[1:(percent*nrow(statistics)),1])
+  }
+  results <- list(means_max.values_each_timepoint = maxs_mean_time)
+  return(results)
+}
+```
+
+*Test CPs of the aggregated statistics (top 5% of maximum statistics by timepoints)*
+
+```{r}
+# compute the mean of top 5% of maximum statistics by timepoints
+top_ine_ncp <- max_mean_time(ine_ncp, percent = 0.05)$means_max.values_each_timepoint
+plot(top_ine_ncp) # plot it out
+```
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+# test the CPs
+BOCD_ine_ncp.agg.top <- onlineCPD(top_ine_ncp, getR = T, optionalOutputs = T, truncRlim = 10^-6)
+BOCD_ine_ncp.agg.top[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_ncp.agg.top)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_ine_ncp.agg.top <- cpt.var(top_ine_ncp, method="PELT")
+summary(PELT_ine_ncp.agg.top)
+
+# plot the location of detected CPs
+plot(top_ine_ncp, type="l", col = "red")
+abline(v=PELT_ine_ncp.agg.top@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+
+```
+
+4. Wild BS
+```{r}
+
+```
+
+*Fit the Data-Driven MW REM on the REH with no CP*
+
+```{r}
+# extract the synthetic data with 1 CP (data frmae)
+reh_ncp <- reh_ncp[[1]]
+```
+
+1. Step 1: compute the optimal lengths of the windows
+```{r}
+# obtain data-driven window widths
+ddwin_ncp <- ddwindows(edgelist = reh_ncp, tie_effects = formula, mintime = 400, 
+		covar = covar)
+```
+
+2. Step 2: fit the REM by windows
+```{r}
+#  fits a moving window relational event model
+model_ddwin_ncp <- MWrem(windows = ddwin_ncp$windows, edgelist = reh_ncp, 
+		stats = stat.ncp, actors = covar$id, directed = TRUE)
+```
+
+3. Step 3: extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+ddmw_ine_ncp_param <- 1
+for (i in 1:length(model_ddwin_ncp)) {
+  ddmw_ine_ncp_param[i] <- model_ddwin_ncp[[i]][["coefficients"]][["inertia"]]
+}
+plot(ddmw_ine_ncp_param, type = "lm") # plot the movement of parameter
+```
+
+*Test CPs of the DDMW parameters*
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_ddmw_ine_ncp_param <- onlineCPD(ddmw_ine_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ddmw_ine_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ddmw_ine_ncp_param)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_ddmw_ine_ncp_param <- cpt.var(ddmw_ine_ncp_param, method="PELT")
+summary(PELT_ddmw_ine_ncp_param)
+
+# plot the location of CPs
+plot(ddmw_ine_ncp_param, type="l", col = "red")
+abline(v=PELT_ddmw_ine_ncp_param@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+
+```
+
+4. Wild BS
+```{r}
+
+```
+
+**REH with 1 CPs: Method 1 (doesn't look like a good way to generate REH)**
+```{r}
+set.seed(9252568)
+# REH with only inertia statistics
+#formula <- ~ 1 + remstats::inertia(scaling = "std")
+
+# set up the covariates
+#covar <- data.frame(id = 1:15, time = 0, z = rnorm(n = 15))
+
+# set up the value of parameters
+param.1cp_m1 <- list(
+  "baseline" = -8.8,
+  
+  "z_send" = function(t) {
+    # set the location of CP
+    if(t <= 724) {
+      0.07
+    } else  {
+      0.2}
+  }
+)
+
+# create REH with 1 CP
+reh_1cp_m1 <- list()
+
+rep <- 1 # replication times (number of datasets you wanna get)
+
+for (i in 1: rep){
+  reh_1cp_m1[[i]] <- generate(formula = formula, param = param.1cp_m1, M = 2000, covar = covar)
+  print(i)
+}
+```
+
+*Plot the Statistics out*
+```{r}
+# compute the statistics
+out.1cp_m1 <- remstats(tie_effects = formula, edgelist = reh_1cp_m1) # also will be used for fitting REM
+stat.1cp_m1 <- out.1cp_m1[["statistics"]] # extract the statistics from the list
+
+# extract the statistics of inertia
+ine_1cp_m1 <- stat.1cp_m1[,,2]
+
+# aggregate the statistics of each time point
+ine_1cp.agg.max_m1 <- rowMaxs(ine_1cp_m1)
+plot(ine_1cp.agg.max_m1, type = "lm")
+
+ine_1cp.agg.mean_m1 <- rowMeans(ine_1cp_m1)
+plot(ine_1cp.agg.mean_m1, type = "lm")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
