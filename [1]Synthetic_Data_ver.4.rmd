@@ -275,7 +275,7 @@ fixmw_ine_ncp_param <- 1
 for (i in 1:length(model_fixwin_ncp)) {
   fixmw_ine_ncp_param[i] <- model_fixwin_ncp[[i]][["coefficients"]][["inertia"]]
 }
-plot(fixmw_ine_ncp_param, type = "lm") # plot the movement of parameter
+plot(fixmw_ine_ncp_param, type = "point") # plot the movement of parameter
 ```
 
 *Test CPs of the Fixed MW parameters*
@@ -293,7 +293,7 @@ PELT_fixmw_ine_ncp_param <- cpt.var(fixmw_ine_ncp_param, method="PELT")
 summary(PELT_fixmw_ine_ncp_param)
 
 # plot the location of CPs
-plot(fixmw_ine_ncp_param, type="l", col = "red")
+plot(fixmw_ine_ncp_param, type="point", col = "red")
 abline(v=PELT_fixmw_ine_ncp_param@cpts[], col="black")
 ```
 
@@ -308,6 +308,7 @@ abline(v=PELT_fixmw_ine_ncp_param@cpts[], col="black")
 ```
 
 **REH with 1 CPs: Method 1 (doesn't look like a good way to generate REH)**
+
 ```{r}
 set.seed(9252568)
 # REH with only inertia statistics
@@ -322,10 +323,10 @@ param.1cp_m1 <- list(
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t <= 724) {
-      0.05
+    if(t < 724) {
+      0.15
     } else  {
-      0.15}
+      0.0002}
   }
 )
 
@@ -506,7 +507,7 @@ fixmw_ine_1cp_param_m1 <- 1
 for (i in 1:length(model_fixwin_1cp_m1)) {
   fixmw_ine_1cp_param_m1[i] <- model_fixwin_1cp_m1[[i]][["coefficients"]][["inertia"]]
 }
-plot(fixmw_ine_1cp_param_m1, type = "lm") # plot the movement of parameter
+plot(fixmw_ine_1cp_param_m1, type = "point") # plot the movement of parameter
 ```
 
 *Test CPs of the Fixed MW parameters*
