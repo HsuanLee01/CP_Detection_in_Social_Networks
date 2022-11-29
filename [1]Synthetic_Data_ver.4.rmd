@@ -698,15 +698,15 @@ param.scp <- list(
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t < 16750) {
+    if(t < 16750) { #2574
       0.18
       } else 
       
-      if(t < 38200) {
+      if(t < 38200) { #5365
         0.07
         } else 
         
-        if(t < 53900) {
+        if(t < 53900) { #7519
           0.13
           } else {0.08}
   }
