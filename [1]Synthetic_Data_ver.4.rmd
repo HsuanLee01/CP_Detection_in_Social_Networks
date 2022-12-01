@@ -87,27 +87,6 @@ ine_ncp.agg.mean <- rowMeans(ine_ncp)
 plot(ine_ncp.agg.mean, type = "lm")
 ```
 
-
-
-
-
-```{r}
-data.frame(ine_ncp.agg.max) %>%
-  ggplot(aes(x = 1:nrow(data.frame(ine_ncp.agg.max)), y = ine_ncp.agg.max)) +
-  geom_line(size = 1) +
-  labs(y = "Maximum Statistic of Each Event", x = "Event") +
-  theme_bw() +
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        strip.background = element_blank(),
-        panel.border = element_rect(colour = "black", fill = NA))
-```
-
-
-
-
-
-
 *Test CPs of the aggregated statistics (mean and max)*
 
 1. BOCD: Exact CPs Detection Method
@@ -1016,10 +995,3 @@ WBS_fixmw_ine_scp_param <- wbs(fixmw_ine_scp_param)
 changepoints(WBS_fixmw_ine_scp_param)
 plot(WBS_fixmw_ine_scp_param)
 ```
-
-
-1. We can probably use confusion matrix to compare which method has the best performance
-
-2. Increase the statistics, e.g., gender, sender effects...,etc.
-
-3. only used happened events statistics for detecting
