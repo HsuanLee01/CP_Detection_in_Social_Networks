@@ -45,7 +45,10 @@ set.seed(9252568)
 
 ```{r}
 # REH with only inertia statistics
-formula <- ~ 1 + remstats::inertia(scaling = "std")
+# ??remstat -> to select the statistics
+formula <- ~ 1 + remstats::send("z", covar) + # Exogenous statistics
+  remstats::inertia(scaling = "std") + # Endogenous statistics
+  remstats::reciprocity(scaling = "std") # Endogenous statistics
 
 # set up the covariates
 covar <- data.frame(id = 1:30, time = 0, z = rnorm(n = 30))
@@ -53,7 +56,10 @@ covar <- data.frame(id = 1:30, time = 0, z = rnorm(n = 30))
 # set up the value of parameters
 param.ncp <- list(
   "baseline" = -8.8,
-  "inertia" = 0.15)
+  "z_send"= 0.2, 
+  "z_difference" = -0.2,
+  "inertia" = 0.15,
+  "reciprocity" = 0.2)
 
 # create REH with 1 CP
 reh_ncp <- list()
@@ -391,6 +397,8 @@ set.seed(9252568)
 # set up the value of parameters
 param.1cp <- list(
   "baseline" = -8.8,
+  "z_send"= 0.2, 
+  "z_difference" = -0.2,
   
   "inertia" = function(t) {
     # set the location of CP
@@ -398,7 +406,9 @@ param.1cp <- list(
       0.18
     } else  {
       0.08}
-  }
+  },
+  
+  "reciprocity" = 0.2
 )
 
 # create REH with 1 CP
@@ -419,7 +429,7 @@ out.1cp <- remstats(tie_effects = formula, edgelist = reh_1cp) # also will be us
 stat.1cp <- out.1cp[["statistics"]] # extract the statistics from the list
 
 # extract the statistics of inertia
-ine_1cp <- stat.1cp[,,2]
+ine_1cp <- stat.1cp[,,4]
 
 # aggregate the statistics of each time point
 ine_1cp.agg.max <- rowMaxs(ine_1cp)
@@ -627,7 +637,7 @@ plot(WBS_ddmw_ine_1cp_param)
 tau <- max(reh_1cp$time)
 
 # specify the length of the window
-windows <- REHdynamics::createwindows(2000, tau)
+windows <- REHdynamics::createwindows(300, tau)
 
 # fit to the REM model
 model_fixwin_1cp <- REHdynamics::MWrem(windows, edgelist = reh_1cp, 
