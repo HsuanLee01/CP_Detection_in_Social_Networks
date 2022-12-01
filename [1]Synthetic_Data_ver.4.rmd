@@ -39,14 +39,13 @@ library(relevent) # fit REH to REM
 ```
 
 **REH with no CPs**
-```{r}
-set.seed(9252568)
-```
 
 ```{r}
+set.seed(9252568)
 # REH with only inertia statistics
 # ??remstat -> to select the statistics
 formula <- ~ 1 + remstats::send("z", covar) + # Exogenous statistics
+  remstats::difference("z", covar) +
   remstats::inertia(scaling = "std") + # Endogenous statistics
   remstats::reciprocity(scaling = "std") # Endogenous statistics
 
@@ -56,10 +55,10 @@ covar <- data.frame(id = 1:30, time = 0, z = rnorm(n = 30))
 # set up the value of parameters
 param.ncp <- list(
   "baseline" = -8.8,
-  "z_send"= 0.2, 
-  "z_difference" = -0.2,
-  "inertia" = 0.15,
-  "reciprocity" = 0.2)
+  "z_send"= 0.1, 
+  "z_difference" = -0.1,
+  "inertia" = 0.18,
+  "reciprocity" = 0.12)
 
 # create REH with 1 CP
 reh_ncp <- list()
@@ -328,7 +327,7 @@ plot(WBS_ddmw_ine_ncp_param)
 tau <- max(reh_ncp$time)
 
 # specify the length of the window
-windows <- REHdynamics::createwindows(2000, tau)
+windows <- REHdynamics::createwindows(1400, tau)
 
 # fit to the REM model
 model_fixwin_ncp <- REHdynamics::MWrem(windows, edgelist = reh_ncp, 
@@ -397,8 +396,8 @@ set.seed(9252568)
 # set up the value of parameters
 param.1cp <- list(
   "baseline" = -8.8,
-  "z_send"= 0.2, 
-  "z_difference" = -0.2,
+  "z_send"= 0.1, 
+  "z_difference" = -0.1,
   
   "inertia" = function(t) {
     # set the location of CP
@@ -408,7 +407,7 @@ param.1cp <- list(
       0.08}
   },
   
-  "reciprocity" = 0.2
+  "reciprocity" = 0.12
 )
 
 # create REH with 1 CP
@@ -637,7 +636,7 @@ plot(WBS_ddmw_ine_1cp_param)
 tau <- max(reh_1cp$time)
 
 # specify the length of the window
-windows <- REHdynamics::createwindows(300, tau)
+windows <- REHdynamics::createwindows(1400, tau)
 
 # fit to the REM model
 model_fixwin_1cp <- REHdynamics::MWrem(windows, edgelist = reh_1cp, 
@@ -706,6 +705,8 @@ set.seed(9252568)
 # set up the value of parameters
 param.scp <- list(
   "baseline" = -8.8,
+  "z_send"= 0.1, 
+  "z_difference" = -0.1,
   
   "inertia" = function(t) {
     # set the location of CP
@@ -720,7 +721,9 @@ param.scp <- list(
         if(t < 53900) { #7519
           0.13
           } else {0.08}
-  }
+  },
+  
+  "reciprocity" = 0.12
 )
 
 # create REH with 1 CP
@@ -741,7 +744,7 @@ out.scp <- remstats(tie_effects = formula, edgelist = reh_scp) # also will be us
 stat.scp <- out.scp[["statistics"]] # extract the statistics from the list
 
 # extract the statistics of inertia
-ine_scp <- stat.scp[,,2]
+ine_scp <- stat.scp[,,4]
 
 # aggregate the statistics of each time point
 ine_scp.agg.max <- rowMaxs(ine_scp)
@@ -950,7 +953,7 @@ plot(WBS_ddmw_ine_scp_param)
 tau <- max(reh_scp$time)
 
 # specify the length of the window
-windows <- REHdynamics::createwindows(2000, tau)
+windows <- REHdynamics::createwindows(1400, tau)
 
 # fit to the REM model
 model_fixwin_scp <- REHdynamics::MWrem(windows, edgelist = reh_scp, 
