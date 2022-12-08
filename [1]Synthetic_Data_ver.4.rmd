@@ -994,7 +994,7 @@ abline(v=PELT_fixmw_ine_scp_param@cpts[], col="black")
 3. BS: approximate CPs Detection Method
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_scp_param <- cpt.meanvar(fixmw_ine_scp_param, method = "BinSeg")
+BS_fixmw_ine_scp_param <- cpt.var(fixmw_ine_scp_param, method = "BinSeg")
 cpts(BS_fixmw_ine_scp_param)
 
 # plot the location of CPs
@@ -1008,3 +1008,15 @@ WBS_fixmw_ine_scp_param <- wbs(fixmw_ine_scp_param)
 changepoints(WBS_fixmw_ine_scp_param)
 plot(WBS_fixmw_ine_scp_param)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
