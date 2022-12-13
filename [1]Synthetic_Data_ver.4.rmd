@@ -4,7 +4,7 @@ author: "Hsuan Lee"
 output: pdf_document
 ---
 ```{r}
-setwd(paste("C:/Users/Hsuan Lee/Desktop/Methodology and Statistics/",
+setwd(paste("C:/Users/HsuanLee/Desktop/Methodology and Statistics/",
 "Changepoints Inference in Relational Event Data of a Social Network/",
 "Changepoint-Inference-in-REH-of-a-Social-Network", sep = ""))
 ```
@@ -45,9 +45,9 @@ set.seed(9252568)
 # REH with only inertia statistics
 # ??remstat -> to select the statistics
 formula <- ~ 1 + remstats::send("z", covar) + # Exogenous statistics
-  remstats::difference("z", covar) +
+  remstats::difference("z", covar) + # Exogenous statistics
   remstats::inertia(scaling = "std") + # Endogenous statistics
-  remstats::reciprocity(scaling = "std") # Endogenous statistics
+  remstats::osp(scaling='std') # Endogenous statistics
 
 # set up the covariates
 covar <- data.frame(id = 1:30, time = 0, z = rnorm(n = 30))
@@ -58,7 +58,7 @@ param.ncp <- list(
   "z_send"= 0.1, 
   "z_difference" = -0.1,
   "inertia" = 0.18,
-  "reciprocity" = 0.12)
+  "out_shared_partner" = 0.12)
 
 # create REH with 1 CP
 reh_ncp <- list()
@@ -396,18 +396,18 @@ set.seed(9252568)
 # set up the value of parameters
 param.1cp <- list(
   "baseline" = -8.8,
-  "z_send"= 0.1, 
+  "z_send"= 0.12, 
   "z_difference" = -0.1,
   
   "inertia" = function(t) {
     # set the location of CP
     if(t < 38200) { #5955
-      0.18
+      0.13
     } else  {
       0.08}
   },
   
-  "reciprocity" = 0.12
+  "out_shared_partner" = 0.12
 )
 
 # create REH with 1 CP
@@ -426,7 +426,9 @@ for (i in 1: rep){
 # compute the statistics
 out.1cp <- remstats(tie_effects = formula, edgelist = reh_1cp) # also will be used for fitting REM
 stat.1cp <- out.1cp[["statistics"]] # extract the statistics from the list
+```
 
+```{r}
 # extract the statistics of inertia
 ine_1cp <- stat.1cp[,,4]
 
@@ -565,6 +567,9 @@ plot(WBS_ine_1cp.agg.top)
 ```{r}
 # extract the synthetic data with 1 CP (data frmae)
 reh_1cp <- reh_1cp[[1]]
+
+# Save the created REH
+saveRDS(object = reh_1cp, file = "REH_1CP.RDS")
 ```
 
 1. Step 1: compute the optimal lengths of the windows
@@ -636,16 +641,34 @@ plot(WBS_ddmw_ine_1cp_param)
 tau <- max(reh_1cp$time)
 
 # specify the length of the window
-windows <- REHdynamics::createwindows(1400, tau)
+windows_1cp <- REHdynamics::createwindows(1500, tau)
 
 # fit to the REM model
-model_fixwin_1cp <- REHdynamics::MWrem(windows, edgelist = reh_1cp, 
+model_fixwin_1cp <- REHdynamics::MWrem(windows_1cp, edgelist = reh_1cp, 
                                        stats = stat.1cp,
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
 ```
 
 2. Step 2: Extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+fixmw_send_1cp_param <- 1
+for (i in 1:length(model_fixwin_1cp)) {
+  fixmw_send_1cp_param[i] <- model_fixwin_1cp[[i]][["coefficients"]][["send.z"]]
+}
+plot(fixmw_send_1cp_param, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_diff_1cp_param <- 1
+for (i in 1:length(model_fixwin_1cp)) {
+  fixmw_diff_1cp_param[i] <- model_fixwin_1cp[[i]][["coefficients"]][["difference.z"]]
+}
+plot(fixmw_diff_1cp_param, type = "lm") # plot the movement of parameter
+```
+
 ```{r}
 # extract the parameters
 fixmw_ine_1cp_param <- 1
@@ -655,18 +678,63 @@ for (i in 1:length(model_fixwin_1cp)) {
 plot(fixmw_ine_1cp_param, type = "lm") # plot the movement of parameter
 ```
 
+```{r}
+# extract the parameters
+fixmw_osp_1cp_param <- 1
+for (i in 1:length(model_fixwin_1cp)) {
+  fixmw_osp_1cp_param[i] <- model_fixwin_1cp[[i]][["coefficients"]][["osp"]]
+}
+plot(fixmw_osp_1cp_param, type = "lm") # plot the movement of parameter
+```
+
 *Test CPs of the Fixed MW parameters*
 
 1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_1cp_param <- onlineCPD(fixmw_send_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_1cp_param)
+```
+
+```{r}
+BOCD_fixmw_diff_1cp_param <- onlineCPD(fixmw_diff_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_1cp_param)
+```
+
 ```{r}
 BOCD_fixmw_ine_1cp_param <- onlineCPD(fixmw_ine_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
 BOCD_fixmw_ine_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
 plot(BOCD_fixmw_ine_1cp_param)
 ```
 
+```{r}
+BOCD_fixmw_osp_1cp_param <- onlineCPD(fixmw_osp_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_osp_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_osp_1cp_param)
+```
+
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_ine_1cp_param <- cpt.var(fixmw_ine_1cp_param, method="PELT")
+PELT_fixmw_send_1cp_param <- cpt.meanvar(fixmw_send_1cp_param, method="PELT")
+summary(PELT_fixmw_send_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_send_1cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_1cp_param <- cpt.meanvar(fixmw_diff_1cp_param, method="PELT")
+summary(PELT_fixmw_diff_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_diff_1cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_1cp_param <- cpt.meanvar(fixmw_ine_1cp_param, method="PELT")
 summary(PELT_fixmw_ine_1cp_param)
 
 # plot the location of CPs
@@ -674,7 +742,36 @@ plot(fixmw_ine_1cp_param, type="l", col = "red")
 abline(v=PELT_fixmw_ine_1cp_param@cpts[], col="black")
 ```
 
+```{r}
+PELT_fixmw_osp_1cp_param <- cpt.meanvar(fixmw_osp_1cp_param, method="PELT")
+summary(PELT_fixmw_osp_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_osp_1cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_osp_1cp_param@cpts[], col="black")
+```
+
 3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_1cp_param <- cpt.meanvar(fixmw_send_1cp_param, method = "BinSeg")
+cpts(BS_fixmw_send_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param)
+abline(v=BS_fixmw_send_1cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_1cp_param <- cpt.meanvar(fixmw_diff_1cp_param, method = "BinSeg")
+cpts(BS_fixmw_diff_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param)
+abline(v=BS_fixmw_diff_1cp_param@cpts[], col="red")
+```
+
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
 BS_fixmw_ine_1cp_param <- cpt.meanvar(fixmw_ine_1cp_param, method = "BinSeg")
@@ -683,6 +780,16 @@ cpts(BS_fixmw_ine_1cp_param)
 # plot the location of CPs
 plot(fixmw_ine_1cp_param)
 abline(v=BS_fixmw_ine_1cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_osp_1cp_param <- cpt.meanvar(fixmw_osp_1cp_param, method = "BinSeg")
+cpts(BS_fixmw_osp_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_osp_1cp_param)
+abline(v=BS_fixmw_osp_1cp_param@cpts[], col="red")
 ```
 
 4. Wild BS
@@ -709,9 +816,9 @@ param.1cp_same.all <- list(
   "z_send"= function(t) {
     # set the location of CP
     if(t < 38200) { #8366
-      0.13
+      0.15
     } else  {
-      0.05}
+      0.07}
   },
   
   "z_difference" = function(t) {
@@ -719,23 +826,23 @@ param.1cp_same.all <- list(
     if(t < 38200) { #8366
       -0.05
     } else  {
-      -0.13}
+      -0.15}
   },
   
   "inertia" = function(t) {
     # set the location of CP
     if(t < 38200) { #8366
-      0.15
+      0.14
     } else  {
       0.08}
   },
   
-  "reciprocity" = function(t) {
+  "out_shared_partner" = function(t) {
     # set the location of CP
     if(t < 38200) { #8366
-      0.12
+      0.13
     } else  {
-      0.05}
+      0.07}
   }
 )
 
@@ -755,7 +862,9 @@ for (i in 1: rep){
 # compute the statistics
 out.1cp_same.all <- remstats(tie_effects = formula, edgelist = reh_1cp_same.all) # also will be used for fitting REM
 stat.1cp_same.all <- out.1cp_same.all[["statistics"]] # extract the statistics from the list
+```
 
+```{r}
 # extract the statistics of send
 send_1cp_same.all <- stat.1cp_same.all[,,2]
 
@@ -1436,10 +1545,10 @@ plot(WBS_ddmw_reci_1cp_param_same.all)
 tau <- max(reh_1cp_same.all$time)
 
 # specify the length of the window
-windows <- REHdynamics::createwindows(1000, tau)
+windows_1cp_same.all <- REHdynamics::createwindows(1200, tau)
 
 # fit to the REM model
-model_fixwin_1cp_same.all <- REHdynamics::MWrem(windows, edgelist = reh_1cp_same.all, 
+model_fixwin_1cp_same.all <- REHdynamics::MWrem(windows_1cp_same.all, edgelist = reh_1cp_same.all, 
                                        stats = stat.1cp_same.all,
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
@@ -1475,11 +1584,11 @@ plot(fixmw_ine_1cp_param_same.all, type = "lm") # plot the movement of parameter
 
 ```{r}
 # extract the parameters
-fixmw_reci_1cp_param_same.all <- 1
+fixmw_osp_1cp_param_same.all <- 1
 for (i in 1:length(model_fixwin_1cp_same.all)) {
-  fixmw_reci_1cp_param_same.all[i] <- model_fixwin_1cp_same.all[[i]][["coefficients"]][["reciprocity"]]
+  fixmw_osp_1cp_param_same.all[i] <- model_fixwin_1cp_same.all[[i]][["coefficients"]][["osp"]]
 }
-plot(fixmw_reci_1cp_param_same.all, type = "lm") # plot the movement of parameter
+plot(fixmw_osp_1cp_param_same.all, type = "lm") # plot the movement of parameter
 ```
 
 *Test CPs of the Fixed MW parameters*
@@ -1507,15 +1616,15 @@ plot(BOCD_fixmw_ine_1cp_param_same.all)
 ```
 
 ```{r}
-BOCD_fixmw_reci_1cp_param_same.all <- onlineCPD(fixmw_reci_1cp_param_same.all, 
+BOCD_fixmw_osp_1cp_param_same.all <- onlineCPD(fixmw_osp_1cp_param_same.all, 
                                                getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_reci_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_reci_1cp_param_same.all)
+BOCD_fixmw_osp_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_osp_1cp_param_same.all)
 ```
 
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_1cp_param_same.all <- cpt.var(fixmw_send_1cp_param_same.all, method="PELT")
+PELT_fixmw_send_1cp_param_same.all <- cpt.meanvar(fixmw_send_1cp_param_same.all, method="PELT")
 summary(PELT_fixmw_send_1cp_param_same.all)
 
 # plot the location of CPs
@@ -1524,7 +1633,7 @@ abline(v=PELT_fixmw_send_1cp_param_same.all@cpts[], col="black")
 ```
 
 ```{r}
-PELT_fixmw_diff_1cp_param_same.all <- cpt.var(fixmw_diff_1cp_param_same.all, method="PELT")
+PELT_fixmw_diff_1cp_param_same.all <- cpt.meanvar(fixmw_diff_1cp_param_same.all, method="PELT")
 summary(PELT_fixmw_diff_1cp_param_same.all)
 
 # plot the location of CPs
@@ -1533,7 +1642,7 @@ abline(v=PELT_fixmw_diff_1cp_param_same.all@cpts[], col="black")
 ```
 
 ```{r}
-PELT_fixmw_ine_1cp_param_same.all <- cpt.var(fixmw_ine_1cp_param_same.all, method="PELT")
+PELT_fixmw_ine_1cp_param_same.all <- cpt.meanvar(fixmw_ine_1cp_param_same.all, method="PELT")
 summary(PELT_fixmw_ine_1cp_param_same.all)
 
 # plot the location of CPs
@@ -1542,12 +1651,12 @@ abline(v=PELT_fixmw_ine_1cp_param_same.all@cpts[], col="black")
 ```
 
 ```{r}
-PELT_fixmw_reci_1cp_param_same.all <- cpt.var(fixmw_reci_1cp_param_same.all, method="PELT")
-summary(PELT_fixmw_reci_1cp_param_same.all)
+PELT_fixmw_osp_1cp_param_same.all <- cpt.var(fixmw_osp_1cp_param_same.all, method="PELT")
+summary(PELT_fixmw_osp_1cp_param_same.all)
 
 # plot the location of CPs
-plot(fixmw_reci_1cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_reci_1cp_param_same.all@cpts[], col="black")
+plot(fixmw_osp_1cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_osp_1cp_param_same.all@cpts[], col="black")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -1675,7 +1784,7 @@ param.1cp_diff.all <- list(
       0.08}
   },
   
-  "reciprocity" = function(t) {
+  "out_shared_partner" = function(t) {
     # set the location of CP
     if(t < 38200) { # 6585
       0.12
@@ -1700,7 +1809,9 @@ for (i in 1: rep){
 # compute the statistics
 out.1cp_diff.all <- remstats(tie_effects = formula, edgelist = reh_1cp_diff.all) # also will be used for fitting REM
 stat.1cp_diff.all <- out.1cp_diff.all[["statistics"]] # extract the statistics from the list
+```
 
+```{r}
 # extract the statistics of send
 send_1cp_diff.all <- stat.1cp_diff.all[,,2]
 
@@ -2420,11 +2531,11 @@ plot(fixmw_ine_1cp_param_diff.all, type = "lm") # plot the movement of parameter
 
 ```{r}
 # extract the parameters
-fixmw_reci_1cp_param_diff.all <- 1
+fixmw_osp_1cp_param_diff.all <- 1
 for (i in 1:length(model_fixwin_1cp_diff.all)) {
-  fixmw_reci_1cp_param_diff.all[i] <- model_fixwin_1cp_diff.all[[i]][["coefficients"]][["reciprocity"]]
+  fixmw_osp_1cp_param_diff.all[i] <- model_fixwin_1cp_diff.all[[i]][["coefficients"]][["osp"]]
 }
-plot(fixmw_reci_1cp_param_diff.all, type = "lm") # plot the movement of parameter
+plot(fixmw_osp_1cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
 
 *Test CPs of the Fixed MW parameters*
@@ -2452,10 +2563,10 @@ plot(BOCD_fixmw_ine_1cp_param_diff.all)
 ```
 
 ```{r}
-BOCD_fixmw_reci_1cp_param_diff.all <- onlineCPD(fixmw_reci_1cp_param_diff.all, 
+BOCD_fixmw_osp_1cp_param_diff.all <- onlineCPD(fixmw_osp_1cp_param_diff.all, 
                                                getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_reci_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_reci_1cp_param_diff.all)
+BOCD_fixmw_osp_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_osp_1cp_param_diff.all)
 ```
 
 2. PELT: Exact CPs Detection Method
@@ -2487,12 +2598,12 @@ abline(v=PELT_fixmw_ine_1cp_param_diff.all@cpts[], col="black")
 ```
 
 ```{r}
-PELT_fixmw_reci_1cp_param_diff.all <- cpt.var(fixmw_reci_1cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_reci_1cp_param_diff.all)
+PELT_fixmw_osp_1cp_param_diff.all <- cpt.var(fixmw_osp_1cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_osp_1cp_param_diff.all)
 
 # plot the location of CPs
-plot(fixmw_reci_1cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_reci_1cp_param_diff.all@cpts[], col="black")
+plot(fixmw_osp_1cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_osp_1cp_param_diff.all@cpts[], col="black")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -2528,12 +2639,12 @@ abline(v=BS_fixmw_ine_1cp_param_diff.all@cpts[], col="red")
 
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_reci_1cp_param_diff.all <- cpt.meanvar(fixmw_reci_1cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_reci_1cp_param_diff.all)
+BS_fixmw_osp_1cp_param_diff.all <- cpt.meanvar(fixmw_osp_1cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_osp_1cp_param_diff.all)
 
 # plot the location of CPs
-plot(fixmw_reci_1cp_param_diff.all)
-abline(v=BS_fixmw_reci_1cp_param_diff.all@cpts[], col="red")
+plot(fixmw_osp_1cp_param_diff.all)
+abline(v=BS_fixmw_osp_1cp_param_diff.all@cpts[], col="red")
 ```
 
 4. Wild BS
@@ -2556,9 +2667,9 @@ plot(WBS_fixmw_ine_1cp_param_diff.all)
 ```
 
 ```{r}
-WBS_fixmw_reci_1cp_param_diff.all <- wbs(fixmw_reci_1cp_param_diff.all)
-changepoints(WBS_fixmw_reci_1cp_param_diff.all)
-plot(WBS_fixmw_reci_1cp_param_diff.all)
+WBS_fixmw_osp_1cp_param_diff.all <- wbs(fixmw_osp_1cp_param_diff.all)
+changepoints(WBS_fixmw_osp_1cp_param_diff.all)
+plot(WBS_fixmw_osp_1cp_param_diff.all)
 ```
 
 
@@ -2589,7 +2700,7 @@ plot(WBS_fixmw_reci_1cp_param_diff.all)
 
 
 
-**REH with many CPs**
+**REH with 2 CPs for inertia, none for the rest**
 
 ```{r}
 set.seed(9252568)
@@ -2600,7 +2711,7 @@ set.seed(9252568)
 #covar <- data.frame(id = 1:15, time = 0, z = rnorm(n = 15))
 
 # set up the value of parameters
-param.scp <- list(
+param.2cp <- list(
   "baseline" = -8.8,
   "z_send"= 0.1, 
   "z_difference" = -0.1,
@@ -2620,16 +2731,16 @@ param.scp <- list(
           } else {0.08}
   },
   
-  "reciprocity" = 0.12
+  "out_shared_partner" = 0.12
 )
 
 # create REH with 1 CP
-reh_scp <- list()
+reh_2cp <- list()
 
 rep <- 1 # replication times (number of datasets you wanna get)
 
 for (i in 1: rep){
-  reh_scp[[i]] <- generate(formula = formula, param = param.scp, M = 10000, covar = covar)
+  reh_2cp[[i]] <- generate(formula = formula, param = param.2cp, M = 10000, covar = covar)
   print(i)
 }
 ```
@@ -2637,31 +2748,31 @@ for (i in 1: rep){
 *Plot the Statistics out*
 ```{r}
 # compute the statistics
-out.scp <- remstats(tie_effects = formula, edgelist = reh_scp) # also will be used for fitting REM
-stat.scp <- out.scp[["statistics"]] # extract the statistics from the list
+out.2cp <- remstats(tie_effects = formula, edgelist = reh_2cp) # also will be used for fitting REM
+stat.2cp <- out.2cp[["statistics"]] # extract the statistics from the list
 
 # extract the statistics of inertia
-ine_scp <- stat.scp[,,4]
+ine_2cp <- stat.2cp[,,4]
 
 # aggregate the statistics of each time point
-ine_scp.agg.max <- rowMaxs(ine_scp)
-plot(ine_scp.agg.max, type = "lm")
+ine_2cp.agg.max <- rowMaxs(ine_2cp)
+plot(ine_2cp.agg.max, type = "lm")
 
-ine_scp.agg.mean <- rowMeans(ine_scp)
-plot(ine_scp.agg.mean, type = "lm")
+ine_2cp.agg.mean <- rowMeans(ine_2cp)
+plot(ine_2cp.agg.mean, type = "lm")
 ```
 
 *Test CPs of the aggregated statistics (mean and max)*
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
-BOCD_ine_scp.agg.mean <- onlineCPD(ine_scp.agg.mean, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_ine_scp.agg.mean[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_ine_scp.agg.mean)
+BOCD_ine_2cp.agg.mean <- onlineCPD(ine_2cp.agg.mean, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ine_2cp.agg.mean[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_2cp.agg.mean)
 
-BOCD_ine_scp.agg.max <- onlineCPD(ine_scp.agg.max, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_ine_scp.agg.max[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_ine_scp.agg.max)
+BOCD_ine_2cp.agg.max <- onlineCPD(ine_2cp.agg.max, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ine_2cp.agg.max[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_2cp.agg.max)
 ```
 
 2. PELT: Exact CPs Detection Method
@@ -2669,23 +2780,23 @@ plot(BOCD_ine_scp.agg.max)
 - Mean
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-PELT_ine_scp.agg.mean <- cpt.var(ine_scp.agg.mean, method="PELT")
-summary(PELT_ine_scp.agg.mean)
+PELT_ine_2cp.agg.mean <- cpt.var(ine_2cp.agg.mean, method="PELT")
+summary(PELT_ine_2cp.agg.mean)
 
 # plot the location of detected CPs
-plot(ine_scp.agg.mean, type="point", col = "black")
-abline(v=PELT_ine_scp.agg.mean@cpts[], col="red")
+plot(ine_2cp.agg.mean, type="point", col = "black")
+abline(v=PELT_ine_2cp.agg.mean@cpts[], col="red")
 ```
 
 - Max
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-PELT_ine_scp.agg.max <- cpt.var(ine_scp.agg.max, method="PELT")
-summary(PELT_ine_scp.agg.max)
+PELT_ine_2cp.agg.max <- cpt.var(ine_2cp.agg.max, method="PELT")
+summary(PELT_ine_2cp.agg.max)
 
 # plot the location of detected CPs
-plot(ine_scp.agg.max, type="point", col = "black")
-abline(v=PELT_ine_scp.agg.max@cpts[], col="red")
+plot(ine_2cp.agg.max, type="point", col = "black")
+abline(v=PELT_ine_2cp.agg.max@cpts[], col="red")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -2693,152 +2804,152 @@ abline(v=PELT_ine_scp.agg.max@cpts[], col="red")
 - Mean
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_ine_scp.agg.mean <- cpt.meanvar(ine_scp.agg.mean, method = "BinSeg")
-cpts(BS_ine_scp.agg.mean)
+BS_ine_2cp.agg.mean <- cpt.meanvar(ine_2cp.agg.mean, method = "BinSeg")
+cpts(BS_ine_2cp.agg.mean)
 
 # plot the location of CPs
-plot(ine_scp.agg.mean)
-abline(v=BS_ine_scp.agg.mean@cpts[], col="red")
+plot(ine_2cp.agg.mean)
+abline(v=BS_ine_2cp.agg.mean@cpts[], col="red")
 ```
 
 - Max
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_ine_scp.agg.max <- cpt.meanvar(ine_scp.agg.max, method = "BinSeg")
-cpts(BS_ine_scp.agg.max)
+BS_ine_2cp.agg.max <- cpt.meanvar(ine_2cp.agg.max, method = "BinSeg")
+cpts(BS_ine_2cp.agg.max)
 
 # plot the location of CPs
-plot(ine_scp.agg.max)
-abline(v=BS_ine_scp.agg.max@cpts[], col="red")
+plot(ine_2cp.agg.max)
+abline(v=BS_ine_2cp.agg.max@cpts[], col="red")
 ```
 
 4. Wild BS
 
 - Mean
 ```{r}
-WBS_ine_scp.agg.mean <- wbs(ine_scp.agg.mean)
-changepoints(WBS_ine_scp.agg.mean)
-plot(WBS_ine_scp.agg.mean)
+WBS_ine_2cp.agg.mean <- wbs(ine_2cp.agg.mean)
+changepoints(WBS_ine_2cp.agg.mean)
+plot(WBS_ine_2cp.agg.mean)
 ```
 
 - Max
 ```{r}
-WBS_ine_scp.agg.max <- wbs(ine_scp.agg.max)
-changepoints(WBS_ine_scp.agg.max)
-plot(WBS_ine_scp.agg.max)
+WBS_ine_2cp.agg.max <- wbs(ine_2cp.agg.max)
+changepoints(WBS_ine_2cp.agg.max)
+plot(WBS_ine_2cp.agg.max)
 ```
 
 *Test CPs of the aggregated statistics (top 5% of maximum statistics by timepoints)*
 
 ```{r}
 # compute the mean of top 5% of maximum statistics by timepoints
-top_ine_scp <- max_mean_time(ine_scp, percent = 0.05)$means_max.values_each_timepoint
-plot(top_ine_scp) # plot it out
+top_ine_2cp <- max_mean_time(ine_2cp, percent = 0.05)$means_max.values_each_timepoint
+plot(top_ine_2cp) # plot it out
 ```
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
 # test the CPs
-BOCD_ine_scp.agg.top <- onlineCPD(top_ine_scp, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_ine_scp.agg.top[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_ine_scp.agg.top)
+BOCD_ine_2cp.agg.top <- onlineCPD(top_ine_2cp, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ine_2cp.agg.top[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_2cp.agg.top)
 ```
 
 2. PELT: Exact CPs Detection Method
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-PELT_ine_scp.agg.top <- cpt.var(top_ine_scp, method="PELT")
-summary(PELT_ine_scp.agg.top)
+PELT_ine_2cp.agg.top <- cpt.var(top_ine_2cp, method="PELT")
+summary(PELT_ine_2cp.agg.top)
 
 # plot the location of detected CPs
-plot(top_ine_scp, type="l", col = "black")
-abline(v=PELT_ine_scp.agg.top@cpts[], col="red")
+plot(top_ine_2cp, type="l", col = "black")
+abline(v=PELT_ine_2cp.agg.top@cpts[], col="red")
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_ine_scp.agg.top <- cpt.meanvar(top_ine_scp, method = "BinSeg")
-cpts(BS_ine_scp.agg.top)
+BS_ine_2cp.agg.top <- cpt.meanvar(top_ine_2cp, method = "BinSeg")
+cpts(BS_ine_2cp.agg.top)
 
 # plot the location of CPs
-plot(top_ine_scp)
-abline(v=BS_ine_scp.agg.top@cpts[], col="red")
+plot(top_ine_2cp)
+abline(v=BS_ine_2cp.agg.top@cpts[], col="red")
 ```
 
 4. Wild BS
 ```{r}
-WBS_ine_scp.agg.top <- wbs(top_ine_scp)
-changepoints(WBS_ine_scp.agg.top)
-plot(WBS_ine_scp.agg.top)
+WBS_ine_2cp.agg.top <- wbs(top_ine_2cp)
+changepoints(WBS_ine_2cp.agg.top)
+plot(WBS_ine_2cp.agg.top)
 ```
 
 *Fit the Data-Driven MW REM on the REH with 1 CP*
 
 ```{r}
 # extract the synthetic data with 1 CP (data frmae)
-reh_scp <- reh_scp[[1]]
+reh_2cp <- reh_2cp[[1]]
 ```
 
 1. Step 1: compute the optimal lengths of the windows
 ```{r}
 # obtain data-driven window widths
-ddwin_scp <- ddwindows(edgelist = reh_scp, tie_effects = formula, mintime = 2000, 
+ddwin_2cp <- ddwindows(edgelist = reh_2cp, tie_effects = formula, mintime = 2000, 
 		covar = covar)
 ```
 
 2. Step 2: fit the REM by windows
 ```{r}
 #  fits a moving window relational event model
-model_ddwin_scp <- MWrem(windows = ddwin_scp$windows, edgelist = reh_scp, 
-		stats = stat.scp, actors = covar$id, directed = TRUE)
+model_ddwin_2cp <- MWrem(windows = ddwin_2cp$windows, edgelist = reh_2cp, 
+		stats = stat.2cp, actors = covar$id, directed = TRUE)
 ```
 
 3. Step 3: extract the parameters by windows and plot them out
 ```{r}
 # extract the parameters
-ddmw_ine_scp_param <- 1
-for (i in 1:length(model_ddwin_scp)) {
-  ddmw_ine_scp_param[i] <- model_ddwin_scp[[i]][["coefficients"]][["inertia"]]
+ddmw_ine_2cp_param <- 1
+for (i in 1:length(model_ddwin_2cp)) {
+  ddmw_ine_2cp_param[i] <- model_ddwin_2cp[[i]][["coefficients"]][["inertia"]]
 }
-plot(ddmw_ine_scp_param, type = "lm") # plot the movement of parameter
+plot(ddmw_ine_2cp_param, type = "lm") # plot the movement of parameter
 ```
 
 *Test CPs of the DDMW parameters*
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
-BOCD_ddmw_ine_scp_param <- onlineCPD(ddmw_ine_scp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_ddmw_ine_scp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_ddmw_ine_scp_param)
+BOCD_ddmw_ine_2cp_param <- onlineCPD(ddmw_ine_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ddmw_ine_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ddmw_ine_2cp_param)
 ```
 
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_ddmw_ine_scp_param <- cpt.var(ddmw_ine_scp_param, method="PELT")
-summary(PELT_ddmw_ine_scp_param)
+PELT_ddmw_ine_2cp_param <- cpt.var(ddmw_ine_2cp_param, method="PELT")
+summary(PELT_ddmw_ine_2cp_param)
 
 # plot the location of CPs
-plot(ddmw_ine_scp_param, type="l", col = "red")
-abline(v=PELT_ddmw_ine_scp_param@cpts[], col="black")
+plot(ddmw_ine_2cp_param, type="l", col = "red")
+abline(v=PELT_ddmw_ine_2cp_param@cpts[], col="black")
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_ddmw_ine_scp_param <- cpt.meanvar(ddmw_ine_scp_param, method = "BinSeg")
-cpts(BS_ddmw_ine_scp_param)
+BS_ddmw_ine_2cp_param <- cpt.meanvar(ddmw_ine_2cp_param, method = "BinSeg")
+cpts(BS_ddmw_ine_2cp_param)
 
 # plot the location of CPs
-plot(ddmw_ine_scp_param)
-abline(v=BS_ddmw_ine_scp_param@cpts[], col="black")
+plot(ddmw_ine_2cp_param)
+abline(v=BS_ddmw_ine_2cp_param@cpts[], col="black")
 ```
 
 4. Wild BS
 ```{r}
-WBS_ddmw_ine_scp_param <- wbs(ddmw_ine_scp_param)
-changepoints(WBS_ddmw_ine_scp_param)
-plot(WBS_ddmw_ine_scp_param)
+WBS_ddmw_ine_2cp_param <- wbs(ddmw_ine_2cp_param)
+changepoints(WBS_ddmw_ine_2cp_param)
+plot(WBS_ddmw_ine_2cp_param)
 ```
 
 
@@ -2847,14 +2958,14 @@ plot(WBS_ddmw_ine_scp_param)
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
 # maximum time point of the REH
-tau <- max(reh_scp$time)
+tau <- max(reh_2cp$time)
 
 # specify the length of the window
 windows <- REHdynamics::createwindows(1400, tau)
 
 # fit to the REM model
-model_fixwin_scp <- REHdynamics::MWrem(windows, edgelist = reh_scp, 
-                                       stats = stat.scp,
+model_fixwin_2cp <- REHdynamics::MWrem(windows, edgelist = reh_2cp, 
+                                       stats = stat.2cp,
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
 ```
@@ -2862,58 +2973,47 @@ model_fixwin_scp <- REHdynamics::MWrem(windows, edgelist = reh_scp,
 2. Step 2: Extract the parameters by windows and plot them out
 ```{r}
 # extract the parameters
-fixmw_ine_scp_param <- 1
-for (i in 1:length(model_fixwin_scp)) {
-  fixmw_ine_scp_param[i] <- model_fixwin_scp[[i]][["coefficients"]][["inertia"]]
+fixmw_ine_2cp_param <- 1
+for (i in 1:length(model_fixwin_2cp)) {
+  fixmw_ine_2cp_param[i] <- model_fixwin_2cp[[i]][["coefficients"]][["inertia"]]
 }
-plot(fixmw_ine_scp_param, type = "lm") # plot the movement of parameter
+plot(fixmw_ine_2cp_param, type = "lm") # plot the movement of parameter
 ```
 
 *Test CPs of the Fixed MW parameters*
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
-BOCD_fixmw_ine_scp_param <- onlineCPD(fixmw_ine_scp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_scp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_scp_param)
+BOCD_fixmw_ine_2cp_param <- onlineCPD(fixmw_ine_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_2cp_param)
 ```
 
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_ine_scp_param <- cpt.var(fixmw_ine_scp_param, method="PELT")
-summary(PELT_fixmw_ine_scp_param)
+PELT_fixmw_ine_2cp_param <- cpt.var(fixmw_ine_2cp_param, method="PELT")
+summary(PELT_fixmw_ine_2cp_param)
 
 # plot the location of CPs
-plot(fixmw_ine_scp_param, type="l", col = "red")
-abline(v=PELT_fixmw_ine_scp_param@cpts[], col="black")
+plot(fixmw_ine_2cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_ine_2cp_param@cpts[], col="black")
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_scp_param <- cpt.var(fixmw_ine_scp_param, method = "BinSeg")
-cpts(BS_fixmw_ine_scp_param)
+BS_fixmw_ine_2cp_param <- cpt.var(fixmw_ine_2cp_param, method = "BinSeg")
+cpts(BS_fixmw_ine_2cp_param)
 
 # plot the location of CPs
-plot(fixmw_ine_scp_param)
-abline(v=BS_fixmw_ine_scp_param@cpts[], col="red")
+plot(fixmw_ine_2cp_param)
+abline(v=BS_fixmw_ine_2cp_param@cpts[], col="red")
 ```
 
 4. Wild BS
 ```{r}
-WBS_fixmw_ine_scp_param <- wbs(fixmw_ine_scp_param)
-changepoints(WBS_fixmw_ine_scp_param)
-plot(WBS_fixmw_ine_scp_param)
+WBS_fixmw_ine_2cp_param <- wbs(fixmw_ine_2cp_param)
+changepoints(WBS_fixmw_ine_2cp_param)
+plot(WBS_fixmw_ine_2cp_param)
 ```
-
-
-
-
-
-
-
-
-
-
-
 
