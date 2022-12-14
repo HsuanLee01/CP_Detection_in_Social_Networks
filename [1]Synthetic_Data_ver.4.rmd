@@ -80,7 +80,9 @@ library(matrixStats) # for rowMaxs
 # compute the statistics
 out.ncp <- remstats(tie_effects = formula, edgelist = reh_ncp) # also will be used for fitting REM
 stat.ncp <- out.ncp[["statistics"]] # extract the statistics from the list
+```
 
+```{r}
 # extract the statistics of inertia
 ine_ncp <- stat.ncp[,,"inertia"]
 
@@ -818,7 +820,7 @@ param.1cp_same.all <- list(
     if(t < 38200) { #8366
       0.15
     } else  {
-      0.07}
+      0.03}
   },
   
   "z_difference" = function(t) {
@@ -832,15 +834,15 @@ param.1cp_same.all <- list(
   "inertia" = function(t) {
     # set the location of CP
     if(t < 38200) { #8366
-      0.14
+      0.15
     } else  {
-      0.08}
+      0.07}
   },
   
   "out_shared_partner" = function(t) {
     # set the location of CP
     if(t < 38200) { #8366
-      0.13
+      0.15
     } else  {
       0.07}
   }
@@ -1545,7 +1547,7 @@ plot(WBS_ddmw_reci_1cp_param_same.all)
 tau <- max(reh_1cp_same.all$time)
 
 # specify the length of the window
-windows_1cp_same.all <- REHdynamics::createwindows(1200, tau)
+windows_1cp_same.all <- REHdynamics::createwindows(1800, tau)
 
 # fit to the REM model
 model_fixwin_1cp_same.all <- REHdynamics::MWrem(windows_1cp_same.all, edgelist = reh_1cp_same.all, 
@@ -1651,7 +1653,7 @@ abline(v=PELT_fixmw_ine_1cp_param_same.all@cpts[], col="black")
 ```
 
 ```{r}
-PELT_fixmw_osp_1cp_param_same.all <- cpt.var(fixmw_osp_1cp_param_same.all, method="PELT")
+PELT_fixmw_osp_1cp_param_same.all <- cpt.meanvar(fixmw_osp_1cp_param_same.all, method="PELT")
 summary(PELT_fixmw_osp_1cp_param_same.all)
 
 # plot the location of CPs
@@ -1692,12 +1694,12 @@ abline(v=BS_fixmw_ine_1cp_param_same.all@cpts[], col="red")
 
 ```{r}
 # cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_reci_1cp_param_same.all <- cpt.meanvar(fixmw_reci_1cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_reci_1cp_param_same.all)
+BS_fixmw_osp_1cp_param_same.all <- cpt.meanvar(fixmw_osp_1cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_osp_1cp_param_same.all)
 
 # plot the location of CPs
-plot(fixmw_reci_1cp_param_same.all)
-abline(v=BS_fixmw_reci_1cp_param_same.all@cpts[], col="red")
+plot(fixmw_osp_1cp_param_same.all)
+abline(v=BS_fixmw_osp_1cp_param_same.all@cpts[], col="red")
 ```
 
 4. Wild BS
