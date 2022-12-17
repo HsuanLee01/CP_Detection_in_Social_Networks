@@ -4162,30 +4162,30 @@ param.2cp_diff.all <- list(
   
   "z_send"= function(t) {
     # set the location of CP
-    if(t < 11880) { #8366
+    if(t < 21880) { #8366
       0.18
     } else
       
       if(t < 44260) { #7519
-          0.02
-          } else {0.17}
+          0.01
+          } else {0.18}
     },
   
   "z_difference" = function(t) {
     # set the location of CP
     if(t < 18250) { #8366
-      -0.05
+      -0.04
     } else
       
       if(t < 40710) { #7519
           -0.12
-          } else {0.02}
+          } else {0.01}
     },
   
   "inertia" = function(t) {
     # set the location of CP
     if(t < 16750) { #2574
-      0.02
+      0.05
       } else
         
         if(t < 53900) { #7519
@@ -4196,11 +4196,11 @@ param.2cp_diff.all <- list(
   "outdegreeSender" = function(t) {
     # set the location of CP
     if(t < 36370) { #8366
-      0.02
+      0.035
       } else
         
         if(t < 64000) { #7519
-          0.14
+          0.15
           } else {0.04}
     }
 )
@@ -4988,7 +4988,7 @@ plot(BOCD_fixmw_out_2cp_param_diff.all)
 
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_2cp_param_diff.all <- cpt.var(fixmw_send_2cp_param_diff.all, method="PELT")
+PELT_fixmw_send_2cp_param_diff.all <- cpt.meanvar(fixmw_send_2cp_param_diff.all, method="PELT")
 summary(PELT_fixmw_send_2cp_param_diff.all)
 
 # plot the location of CPs
