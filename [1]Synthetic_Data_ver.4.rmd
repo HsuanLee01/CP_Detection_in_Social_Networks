@@ -5448,66 +5448,6 @@ changepoints(WBS_fixmw_ine_3cp_param)
 plot(WBS_fixmw_ine_3cp_param)
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 **REH with 3 CPs for all the statistics (at same location)**
 
 ```{r}
@@ -5525,7 +5465,7 @@ param.3cp_same.all <- list(
   "z_send"= function(t) {
     # set the location of CP
     if(t < 16750) { #8366
-      0.18
+      0.19
     } else
       
       if(t < 38200) { #5365
@@ -5534,17 +5474,17 @@ param.3cp_same.all <- list(
           
           if(t < 53900) { #7519
           0.19
-          } else {-0.01}
+          } else {-0.02}
     },
   
   "z_difference" = function(t) {
     # set the location of CP
     if(t < 16750) { #8366
-      -0.06
+      -0.04
     } else
       
       if(t < 38200) { #5365
-        -0.13
+        -0.14
         } else
           
           if(t < 53900) { #7519
@@ -5555,26 +5495,26 @@ param.3cp_same.all <- list(
   "inertia" = function(t) {
     # set the location of CP
     if(t < 16750) { #2574
-      0.14
+      0.15
       } else 
       
       if(t < 38200) { #5365
-        0.02
+        0.01
         } else 
         
         if(t < 53900) { #7519
-          0.13
-          } else {0.03}
+          0.15
+          } else {0.02}
   },
   
   "outdegreeSender" = function(t) {
     # set the location of CP
     if(t < 16750) { #8366
-      -0.01
+      -0.02
       } else
         
         if(t < 38200) { #5365
-        0.11
+        0.08
         } else 
           
           if(t < 53900) { #7519
@@ -6482,3 +6422,987 @@ plot(WBS_fixmw_reci_3cp_param_same.all)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**REH with 3 CPs for all the statistics (at different locations)**
+
+```{r}
+set.seed(9252568)
+# REH with only inertia statistics
+#formula <- ~ 1 + remstats::inertia(scaling = "std")
+
+# set up the covariates
+#covar <- data.frame(id = 1:15, time = 0, z = rnorm(n = 15))
+
+# set up the value of parameters
+param.3cp_diff.all <- list(
+  "baseline" = -8.8,
+  
+  "z_send"= function(t) {
+    # set the location of CP
+    if(t < 21880) { #8366
+      0.17
+    } else
+      
+      if(t < 44260) { #5365
+        0.01
+        } else
+          
+          if(t < 61050) { #7519
+          0.19
+          } else {-0.02}
+    },
+  
+  "z_difference" = function(t) {
+    # set the location of CP
+    if(t < 13250) { #8366
+      -0.04
+    } else
+      
+      if(t < 30710) { #5365
+        -0.14
+        } else
+          
+          if(t < 63900) { #7519
+          -0.03
+          } else {0.1}
+    },
+  
+  "inertia" = function(t) {
+    # set the location of CP
+    if(t < 26750) { #2574
+      0.15
+      } else 
+      
+      if(t < 38200) { #5365
+        0.01
+        } else 
+        
+        if(t < 53900) { #7519
+          0.15
+          } else {0.02}
+  },
+  
+  "outdegreeSender" = function(t) {
+    # set the location of CP
+    if(t < 36370) { #8366
+      -0.03
+      } else
+        
+        if(t < 48200) { #5365
+        0.06
+        } else 
+          
+          if(t < 63520) { #7519
+          0.19
+          } else {0.05}
+    }
+)
+
+# create REH with 1 CP
+reh_3cp_diff.all <- list()
+
+rep <- 1 # replication times (number of datasets you wanna get)
+
+for (i in 1: rep){
+  reh_3cp_diff.all[[i]] <- generate(formula = formula, param = param.3cp_diff.all, M = 10000, covar = covar)
+  print(i)
+}
+```
+
+
+*Plot the Statistics out*
+```{r}
+# compute the statistics
+out.3cp_diff.all <- remstats(tie_effects = formula, edgelist = reh_3cp_diff.all) # also will be used for fitting REM
+stat.3cp_diff.all <- out.3cp_diff.all[["statistics"]] # extract the statistics from the list
+```
+
+```{r}
+# extract the statistics of send
+send_3cp_diff.all <- stat.3cp_diff.all[,,2]
+
+# aggregate the statistics of each time point
+send_3cp.agg.max_diff.all <- rowMaxs(send_3cp_diff.all)
+plot(send_3cp.agg.max_diff.all, type = "lm")
+
+send_3cp.agg.mean_diff.all <- rowMeans(send_3cp_diff.all)
+plot(send_3cp.agg.mean_diff.all, type = "lm")
+```
+
+```{r}
+# extract the statistics of diff
+diff_3cp_diff.all <- stat.3cp_diff.all[,,3]
+
+# aggregate the statistics of each time point
+diff_3cp.agg.max_diff.all <- rowMaxs(diff_3cp_diff.all)
+plot(diff_3cp.agg.max_diff.all, type = "lm")
+
+diff_3cp.agg.mean_diff.all <- rowMeans(diff_3cp_diff.all)
+plot(diff_3cp.agg.mean_diff.all, type = "lm")
+```
+
+```{r}
+# extract the statistics of inertia
+ine_3cp_diff.all <- stat.3cp_diff.all[,,4]
+
+# aggregate the statistics of each time point
+ine_3cp.agg.max_diff.all <- rowMaxs(ine_3cp_diff.all)
+plot(ine_3cp.agg.max_diff.all, type = "lm")
+
+ine_3cp.agg.mean_diff.all <- rowMeans(ine_3cp_diff.all)
+plot(ine_3cp.agg.mean_diff.all, type = "lm")
+```
+
+```{r}
+# extract the statistics of diff
+reci_3cp_diff.all <- stat.3cp_diff.all[,,5]
+
+# aggregate the statistics of each time point
+reci_3cp.agg.max_diff.all <- rowMaxs(reci_3cp_diff.all)
+plot(reci_3cp.agg.max_diff.all, type = "lm")
+
+reci_3cp.agg.mean_diff.all <- rowMeans(reci_3cp_diff.all)
+plot(reci_3cp.agg.mean_diff.all, type = "lm")
+```
+
+*Test CPs of the aggregated statistics (mean and max)*
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_send_3cp.agg.mean_diff.all <- onlineCPD(send_3cp.agg.mean_diff.all, 
+                                            getR = T, optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+BOCD_send_3cp.agg.mean_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_send_3cp.agg.mean_diff.all)
+
+BOCD_send_3cp.agg.max_diff.all <- onlineCPD(send_3cp.agg.max_diff.all, getR = T, 
+                                           optionalOutputs = T, truncRlim = 10^-4)
+BOCD_send_3cp.agg.max_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_send_3cp.agg.max_diff.all)
+```
+
+```{r}
+BOCD_diff_3cp.agg.mean_diff.all <- onlineCPD(diff_3cp.agg.mean_diff.all, 
+                                            getR = T, optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+BOCD_diff_3cp.agg.mean_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_diff_3cp.agg.mean_diff.all)
+
+BOCD_diff_3cp.agg.max_diff.all <- onlineCPD(diff_3cp.agg.max_diff.all, getR = T, 
+                                           optionalOutputs = T, truncRlim = 10^-4)
+BOCD_diff_3cp.agg.max_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_diff_3cp.agg.max_diff.all)
+```
+
+```{r}
+BOCD_ine_3cp.agg.mean_diff.all <- onlineCPD(ine_3cp.agg.mean_diff.all, 
+                                            getR = T, optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+BOCD_ine_3cp.agg.mean_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_3cp.agg.mean_diff.all)
+
+BOCD_ine_3cp.agg.max_diff.all <- onlineCPD(ine_3cp.agg.max_diff.all, getR = T, 
+                                           optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ine_3cp.agg.max_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_3cp.agg.max_diff.all)
+```
+
+```{r}
+BOCD_reci_3cp.agg.mean_diff.all <- onlineCPD(reci_3cp.agg.mean_diff.all, 
+                                            getR = T, optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+BOCD_reci_3cp.agg.mean_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_reci_3cp.agg.mean_diff.all)
+
+BOCD_reci_3cp.agg.max_diff.all <- onlineCPD(reci_3cp.agg.max_diff.all, getR = T, 
+                                           optionalOutputs = T, truncRlim = 10^-4)
+BOCD_reci_3cp.agg.max_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_reci_3cp.agg.max_diff.all)
+```
+
+2. PELT: Exact CPs Detection Method
+
+- Mean
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_send_3cp.agg.mean_diff.all <- cpt.var(send_3cp.agg.mean_diff.all, method="PELT")
+summary(PELT_send_3cp.agg.mean_diff.all)
+
+# plot the location of detected CPs
+plot(send_3cp.agg.mean_diff.all, type="point", col = "black")
+abline(v=PELT_send_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_diff_3cp.agg.mean_diff.all <- cpt.var(diff_3cp.agg.mean_diff.all, method="PELT")
+summary(PELT_diff_3cp.agg.mean_diff.all)
+
+# plot the location of detected CPs
+plot(diff_3cp.agg.mean_diff.all, type="point", col = "black")
+abline(v=PELT_diff_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_ine_3cp.agg.mean_diff.all <- cpt.var(ine_3cp.agg.mean_diff.all, method="PELT")
+summary(PELT_ine_3cp.agg.mean_diff.all)
+
+# plot the location of detected CPs
+plot(ine_3cp.agg.mean_diff.all, type="point", col = "black")
+abline(v=PELT_ine_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_reci_3cp.agg.mean_diff.all <- cpt.var(reci_3cp.agg.mean_diff.all, method="PELT")
+summary(PELT_reci_3cp.agg.mean_diff.all)
+
+# plot the location of detected CPs
+plot(reci_3cp.agg.mean_diff.all, type="point", col = "black")
+abline(v=PELT_reci_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+- Max
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_send_3cp.agg.max_diff.all <- cpt.var(send_3cp.agg.max_diff.all, method="PELT")
+summary(PELT_send_3cp.agg.max_diff.all)
+
+# plot the location of detected CPs
+plot(send_3cp.agg.max_diff.all, type="point", col = "black")
+abline(v=PELT_send_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_diff_3cp.agg.max_diff.all <- cpt.var(diff_3cp.agg.max_diff.all, method="PELT")
+summary(PELT_diff_3cp.agg.max_diff.all)
+
+# plot the location of detected CPs
+plot(diff_3cp.agg.max_diff.all, type="point", col = "black")
+abline(v=PELT_diff_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_ine_3cp.agg.max_diff.all <- cpt.var(ine_3cp.agg.max_diff.all, method="PELT")
+summary(PELT_ine_3cp.agg.max_diff.all)
+
+# plot the location of detected CPs
+plot(ine_3cp.agg.max_diff.all, type="point", col = "black")
+abline(v=PELT_ine_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_reci_3cp.agg.max_diff.all <- cpt.var(reci_3cp.agg.max_diff.all, method="PELT")
+summary(PELT_reci_3cp.agg.max_diff.all)
+
+# plot the location of detected CPs
+plot(reci_3cp.agg.max_diff.all, type="point", col = "black")
+abline(v=PELT_reci_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+3. BS: approximate CPs Detection Method
+
+- Mean
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_send_3cp.agg.mean_diff.all <- cpt.var(send_3cp.agg.mean_diff.all, method = "BinSeg")
+cpts(BS_send_3cp.agg.mean_diff.all)
+
+# plot the location of CPs
+plot(send_3cp.agg.mean_diff.all)
+abline(v=BS_send_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_diff_3cp.agg.mean_diff.all <- cpt.var(diff_3cp.agg.mean_diff.all, method = "BinSeg")
+cpts(BS_diff_3cp.agg.mean_diff.all)
+
+# plot the location of CPs
+plot(diff_3cp.agg.mean_diff.all)
+abline(v=BS_diff_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_ine_3cp.agg.mean_diff.all <- cpt.var(ine_3cp.agg.mean_diff.all, method = "BinSeg")
+cpts(BS_ine_3cp.agg.mean_diff.all)
+
+# plot the location of CPs
+plot(ine_3cp.agg.mean_diff.all)
+abline(v=BS_ine_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_reci_3cp.agg.mean_diff.all <- cpt.var(reci_3cp.agg.mean_diff.all, method = "BinSeg")
+cpts(BS_reci_3cp.agg.mean_diff.all)
+
+# plot the location of CPs
+plot(reci_3cp.agg.mean_diff.all)
+ablreci(v=BS_reci_3cp.agg.mean_diff.all@cpts[], col="red")
+```
+
+- Max
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_send_3cp.agg.max_diff.all <- cpt.var(send_3cp.agg.max_diff.all, method = "BinSeg")
+cpts(BS_send_3cp.agg.max_diff.all)
+
+# plot the location of CPs
+plot(send_3cp.agg.max_diff.all)
+abline(v=BS_send_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_diff_3cp.agg.max_diff.all <- cpt.var(diff_3cp.agg.max_diff.all, method = "BinSeg")
+cpts(BS_diff_3cp.agg.max_diff.all)
+
+# plot the location of CPs
+plot(diff_3cp.agg.max_diff.all)
+abline(v=BS_diff_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_ine_3cp.agg.max_diff.all <- cpt.var(ine_3cp.agg.max_diff.all, method = "BinSeg")
+cpts(BS_ine_3cp.agg.max_diff.all)
+
+# plot the location of CPs
+plot(ine_3cp.agg.max_diff.all)
+abline(v=BS_ine_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_reci_3cp.agg.max_diff.all <- cpt.var(reci_3cp.agg.max_diff.all, method = "BinSeg")
+cpts(BS_reci_3cp.agg.max_diff.all)
+
+# plot the location of CPs
+plot(reci_3cp.agg.max_diff.all)
+abline(v=BS_diff_3cp.agg.max_diff.all@cpts[], col="red")
+```
+
+4. Wild BS
+
+- Mean
+```{r}
+WBS_send_3cp.agg.mean_diff.all <- wbs(send_3cp.agg.mean_diff.all)
+changepoints(WBS_send_3cp.agg.mean_diff.all)
+plot(WBS_send_3cp.agg.mean_diff.all)
+```
+
+```{r}
+WBS_diff_3cp.agg.mean_diff.all <- wbs(diff_3cp.agg.mean_diff.all)
+changepoints(WBS_diff_3cp.agg.mean_diff.all)
+plot(WBS_diff_3cp.agg.mean_diff.all)
+```
+
+```{r}
+WBS_ine_3cp.agg.mean_diff.all <- wbs(ine_3cp.agg.mean_diff.all)
+changepoints(WBS_ine_3cp.agg.mean_diff.all)
+plot(WBS_ine_3cp.agg.mean_diff.all)
+```
+
+```{r}
+WBS_reci_3cp.agg.mean_diff.all <- wbs(reci_3cp.agg.mean_diff.all)
+changepoints(WBS_reci_3cp.agg.mean_diff.all)
+plot(WBS_reci_3cp.agg.mean_diff.all)
+```
+
+- Max
+```{r}
+WBS_send_3cp.agg.max_diff.all <- wbs(send_3cp.agg.max_diff.all)
+changepoints(WBS_send_3cp.agg.max_diff.all)
+plot(WBS_send_3cp.agg.max_diff.all)
+```
+
+```{r}
+WBS_diff_3cp.agg.max_diff.all <- wbs(diff_3cp.agg.max_diff.all)
+changepoints(WBS_diff_3cp.agg.max_diff.all)
+plot(WBS_diff_3cp.agg.max_diff.all)
+```
+
+```{r}
+WBS_ine_3cp.agg.max_diff.all <- wbs(ine_3cp.agg.max_diff.all)
+changepoints(WBS_ine_3cp.agg.max_diff.all)
+plot(WBS_ine_3cp.agg.max_diff.all)
+```
+
+```{r}
+WBS_reci_3cp.agg.max_diff.all <- wbs(reci_3cp.agg.max_diff.all)
+changepoints(WBS_reci_3cp.agg.max_diff.all)
+plot(WBS_reci_3cp.agg.max_diff.all)
+```
+
+*Test CPs of the aggregated statistics (top 5% of maximum statistics by timepoints)*
+
+```{r}
+# compute the mean of top 5% of maximum statistics by timepoints
+top_send_3cp_diff.all <- max_mean_time(send_3cp_diff.all, percent = 0.05)$means_max.values_each_timepoint
+plot(top_send_3cp_diff.all) # plot it out
+```
+
+```{r}
+# compute the mean of top 5% of maximum statistics by timepoints
+top_diff_3cp_diff.all <- max_mean_time(diff_3cp_diff.all, percent = 0.05)$means_max.values_each_timepoint
+plot(top_diff_3cp_diff.all) # plot it out
+```
+
+```{r}
+# compute the mean of top 5% of maximum statistics by timepoints
+top_ine_3cp_diff.all <- max_mean_time(ine_3cp_diff.all, percent = 0.05)$means_max.values_each_timepoint
+plot(top_ine_3cp_diff.all) # plot it out
+```
+
+```{r}
+# compute the mean of top 5% of maximum statistics by timepoints
+top_reci_3cp_diff.all <- max_mean_time(reci_3cp_diff.all, percent = 0.05)$means_max.values_each_timepoint
+plot(top_reci_3cp_diff.all) # plot it out
+```
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+# test the CPs
+BOCD_send_3cp.agg.top_diff.all <- onlineCPD(top_send_3cp_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_send_3cp.agg.top_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_send_3cp.agg.top_diff.all)
+```
+
+```{r}
+# test the CPs
+BOCD_diff_3cp.agg.top_diff.all <- onlineCPD(top_diff_3cp_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_diff_3cp.agg.top_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_diff_3cp.agg.top_diff.all)
+```
+
+```{r}
+# test the CPs
+BOCD_ine_3cp.agg.top_diff.all <- onlineCPD(top_ine_3cp_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ine_3cp.agg.top_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ine_3cp.agg.top_diff.all)
+```
+
+```{r}
+# test the CPs
+BOCD_reci_3cp.agg.top_diff.all <- onlineCPD(top_reci_3cp_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_reci_3cp.agg.top_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_reci_3cp.agg.top_diff.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_send_3cp.agg.top_diff.all <- cpt.var(top_send_3cp_diff.all, method="PELT")
+summary(PELT_send_3cp.agg.top_diff.all)
+
+# plot the location of detected CPs
+plot(top_send_3cp_diff.all, type="point", col = "black")
+abline(v=PELT_ine_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_diff_3cp.agg.top_diff.all <- cpt.var(top_diff_3cp_diff.all, method="PELT")
+summary(PELT_diff_3cp.agg.top_diff.all)
+
+# plot the location of detected CPs
+plot(top_diff_3cp_diff.all, type="point", col = "black")
+abline(v=PELT_diff_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_ine_3cp.agg.top_diff.all <- cpt.var(top_ine_3cp_diff.all, method="PELT")
+summary(PELT_ine_3cp.agg.top_diff.all)
+
+# plot the location of detected CPs
+plot(top_ine_3cp_diff.all, type="point", col = "black")
+abline(v=PELT_ine_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+PELT_reci_3cp.agg.top_diff.all <- cpt.var(top_reci_3cp_diff.all, method="PELT")
+summary(PELT_reci_3cp.agg.top_diff.all)
+
+# plot the location of detected CPs
+plot(top_reci_3cp_diff.all, type="point", col = "black")
+abline(v=PELT_reci_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_send_3cp.agg.top_diff.all <- cpt.meanvar(top_send_3cp_diff.all, method = "BinSeg")
+cpts(BS_send_3cp.agg.top_diff.all)
+
+# plot the location of CPs
+plot(top_send_3cp_diff.all)
+abline(v=BS_send_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_diff_3cp.agg.top_diff.all <- cpt.meanvar(top_diff_3cp_diff.all, method = "BinSeg")
+cpts(BS_diff_3cp.agg.top_diff.all)
+
+# plot the location of CPs
+plot(top_diff_3cp_diff.all)
+abline(v=BS_diff_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_ine_3cp.agg.top_diff.all <- cpt.meanvar(top_ine_3cp_diff.all, method = "BinSeg")
+cpts(BS_ine_3cp.agg.top_diff.all)
+
+# plot the location of CPs
+plot(top_ine_3cp_diff.all)
+abline(v=BS_ine_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_reci_3cp.agg.top_diff.all <- cpt.meanvar(top_reci_3cp_diff.all, method = "BinSeg")
+cpts(BS_reci_3cp.agg.top_diff.all)
+
+# plot the location of CPs
+plot(top_reci_3cp_diff.all)
+abline(v=BS_reci_3cp.agg.top_diff.all@cpts[], col="red")
+```
+
+4. Wild BS
+```{r}
+WBS_send_3cp.agg.top <- wbs(top_send_3cp_diff.all)
+changepoints(WBS_send_3cp.agg.top_diff.all)
+plot(WBS_send_3cp.agg.top_diff.all)
+```
+
+```{r}
+WBS_diff_3cp.agg.top <- wbs(top_diff_3cp_diff.all)
+changepoints(WBS_diff_3cp.agg.top_diff.all)
+plot(WBS_diff_3cp.agg.top_diff.all)
+```
+
+```{r}
+WBS_ine_3cp.agg.top <- wbs(top_ine_3cp_diff.all)
+changepoints(WBS_ine_3cp.agg.top_diff.all)
+plot(WBS_ine_3cp.agg.top_diff.all)
+```
+
+```{r}
+WBS_reci_3cp.agg.top <- wbs(top_reci_3cp_diff.all)
+changepoints(WBS_reci_3cp.agg.top_diff.all)
+plot(WBS_reci_3cp.agg.top_diff.all)
+```
+
+*Fit the Data-Driven MW REM on the REH with 1 CP*
+
+```{r}
+# extract the synthetic data with 1 CP (data frmae)
+reh_3cp_diff.all <- reh_3cp_diff.all[[1]]
+```
+
+```{r}
+# Save the created REH
+saveRDS(object = reh_3cp_diff.all, file = "REH_3CP_diff.all.RDS")
+```
+
+1. Step 1: compute the optimal lengths of the windows
+```{r}
+# obtain data-driven window widths
+ddwin_3cp_diff.all <- ddwindows(edgelist = reh_3cp_diff.all, tie_effects = formula, mintime = 2000, 
+		covar = covar)
+```
+
+2. Step 2: fit the REM by windows
+```{r}
+#  fits a moving window relational event model
+model_ddwin_3cp_diff.all <- MWrem(windows = ddwin_3cp_diff.all$windows, edgelist = reh_3cp_diff.all, 
+		stats = stat.3cp_diff.all, actors = covar$id, directed = TRUE)
+```
+
+3. Step 3: extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+ddmw_send_3cp_param_diff.all <- 1
+for (i in 1:length(model_ddwin_3cp_diff.all)) {
+  ddmw_send_3cp_param_diff.all[i] <- model_ddwin_3cp_diff.all[[i]][["coefficients"]][["send.z"]]
+}
+plot(ddmw_send_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+ddmw_diff_3cp_param_diff.all <- 1
+for (i in 1:length(model_ddwin_3cp_diff.all)) {
+  ddmw_diff_3cp_param_diff.all[i] <- model_ddwin_3cp_diff.all[[i]][["coefficients"]][["difference.z"]]
+}
+plot(ddmw_diff_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+ddmw_ine_3cp_param_diff.all <- 1
+for (i in 1:length(model_ddwin_3cp_diff.all)) {
+  ddmw_ine_3cp_param_diff.all[i] <- model_ddwin_3cp_diff.all[[i]][["coefficients"]][["inertia"]]
+}
+plot(ddmw_ine_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+ddmw_reci_3cp_param_diff.all <- 1
+for (i in 1:length(model_ddwin_3cp_diff.all)) {
+  ddmw_reci_3cp_param_diff.all[i] <- model_ddwin_3cp_diff.all[[i]][["coefficients"]][["reciprocity"]]
+}
+plot(ddmw_reci_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+*Test CPs of the DDMW parameters*
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_ddmw_send_3cp_param_diff.all <- onlineCPD(ddmw_send_3cp_param_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ddmw_send_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ddmw_send_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_ddmw_diff_3cp_param_diff.all <- onlineCPD(ddmw_diff_3cp_param_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ddmw_diff_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ddmw_diff_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_ddmw_ine_3cp_param_diff.all <- onlineCPD(ddmw_ine_3cp_param_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ddmw_ine_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ddmw_ine_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_ddmw_reci_3cp_param_diff.all <- onlineCPD(ddmw_reci_3cp_param_diff.all, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_ddmw_reci_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_ddmw_reci_3cp_param_diff.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_ddmw_send_3cp_param_diff.all <- cpt.var(ddmw_send_3cp_param_diff.all, method="PELT")
+summary(PELT_ddmw_send_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_send_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_ddmw_send_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_ddmw_diff_3cp_param_diff.all <- cpt.var(ddmw_diff_3cp_param_diff.all, method="PELT")
+summary(PELT_ddmw_diff_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_diff_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_ddmw_diff_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_ddmw_ine_3cp_param_diff.all <- cpt.var(ddmw_ine_3cp_param_diff.all, method="PELT")
+summary(PELT_ddmw_ine_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_ine_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_ddmw_ine_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_ddmw_reci_3cp_param_diff.all <- cpt.var(ddmw_reci_3cp_param_diff.all, method="PELT")
+summary(PELT_ddmw_reci_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_reci_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_ddmw_reci_3cp_param_diff.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_ddmw_send_3cp_param_diff.all <- cpt.var(ddmw_send_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_ddmw_send_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_send_3cp_param_diff.all)
+abline(v=BS_ddmw_send_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_ddmw_diff_3cp_param_diff.all <- cpt.var(ddmw_diff_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_ddmw_diff_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_diff_3cp_param_diff.all)
+abline(v=BS_ddmw_diff_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_ddmw_ine_3cp_param_diff.all <- cpt.var(ddmw_ine_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_ddmw_ine_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_ine_3cp_param_diff.all)
+abline(v=BS_ddmw_ine_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_ddmw_reci_3cp_param_diff.all <- cpt.var(ddmw_reci_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_ddmw_reci_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(ddmw_reci_3cp_param_diff.all)
+abline(v=BS_ddmw_reci_3cp_param_diff.all@cpts[], col="black")
+```
+
+4. Wild BS
+```{r}
+WBS_ddmw_send_3cp_param_diff.all <- wbs(ddmw_send_3cp_param_diff.all)
+changepoints(WBS_ddmw_send_3cp_param_diff.all)
+plot(WBS_ddmw_send_3cp_param_diff.all)
+```
+
+```{r}
+WBS_ddmw_diff_3cp_param_diff.all <- wbs(ddmw_diff_3cp_param_diff.all)
+changepoints(WBS_ddmw_diff_3cp_param_diff.all)
+plot(WBS_ddmw_diff_3cp_param_diff.all)
+```
+
+```{r}
+WBS_ddmw_ine_3cp_param_diff.all <- wbs(ddmw_ine_3cp_param_diff.all)
+changepoints(WBS_ddmw_ine_3cp_param_diff.all)
+plot(WBS_ddmw_ine_3cp_param_diff.all)
+```
+
+```{r}
+WBS_ddmw_reci_3cp_param_diff.all <- wbs(ddmw_reci_3cp_param_diff.all)
+changepoints(WBS_ddmw_reci_3cp_param_diff.all)
+plot(WBS_ddmw_reci_3cp_param_diff.all)
+```
+
+*Fit the Fixed MW REM on the REH with One CP*
+
+1. Step 1: Decide the length of the window, and fit it into REM
+```{r}
+# maximum time point of the REH
+tau <- max(reh_3cp_diff.all$time)
+
+# specify the length of the window
+windows_3cp_diff.all <- REHdynamics::createwindows(1500, tau)
+
+# fit to the REM model
+model_fixwin_3cp_diff.all <- REHdynamics::MWrem(windows_3cp_diff.all, edgelist = reh_3cp_diff.all, 
+                                       stats = stat.3cp_diff.all,
+                                       actors = covar$id, directed = TRUE, 
+                                       method = "MLE", model = "tie", ncores = 2)
+```
+
+2. Step 2: Extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+fixmw_send_3cp_param_diff.all <- 1
+for (i in 1:length(model_fixwin_3cp_diff.all)) {
+  fixmw_send_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["send.z"]]
+}
+plot(fixmw_send_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_diff_3cp_param_diff.all <- 1
+for (i in 1:length(model_fixwin_3cp_diff.all)) {
+  fixmw_diff_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["difference.z"]]
+}
+plot(fixmw_diff_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_ine_3cp_param_diff.all <- 1
+for (i in 1:length(model_fixwin_3cp_diff.all)) {
+  fixmw_ine_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["inertia"]]
+}
+plot(fixmw_ine_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_3cp_param_diff.all <- 1
+for (i in 1:length(model_fixwin_3cp_diff.all)) {
+  fixmw_out_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["outdegreeSender"]]
+}
+plot(fixmw_out_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+*Test CPs of the Fixed MW parameters*
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_3cp_param_diff.all <- onlineCPD(fixmw_send_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_diff_3cp_param_diff.all <- onlineCPD(fixmw_diff_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_ine_3cp_param_diff.all <- onlineCPD(fixmw_ine_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_out_3cp_param_diff.all <- onlineCPD(fixmw_out_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_3cp_param_diff.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_3cp_param_diff.all <- cpt.meanvar(fixmw_send_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_send_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_send_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_3cp_param_diff.all <- cpt.meanvar(fixmw_diff_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_diff_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_diff_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_3cp_param_diff.all <- cpt.meanvar(fixmw_ine_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_ine_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_ine_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_3cp_param_diff.all <- cpt.meanvar(fixmw_out_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_out_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_out_3cp_param_diff.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_3cp_param_diff.all <- cpt.meanvar(fixmw_send_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_send_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param_diff.all)
+abline(v=BS_fixmw_send_3cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_3cp_param_diff.all <- cpt.meanvar(fixmw_diff_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_diff_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param_diff.all)
+abline(v=BS_fixmw_diff_3cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_3cp_param_diff.all <- cpt.meanvar(fixmw_ine_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_ine_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param_diff.all)
+abline(v=BS_fixmw_ine_3cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_3cp_param_diff.all <- cpt.meanvar(fixmw_out_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_out_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param_diff.all)
+abline(v=BS_fixmw_out_3cp_param_diff.all@cpts[], col="red")
+```
+
+4. Wild BS
+```{r}
+WBS_fixmw_send_3cp_param_diff.all <- wbs(fixmw_send_3cp_param_diff.all)
+changepoints(WBS_fixmw_send_3cp_param_diff.all)
+plot(WBS_fixmw_send_3cp_param_diff.all)
+```
+
+```{r}
+WBS_fixmw_diff_3cp_param_diff.all <- wbs(fixmw_diff_3cp_param_diff.all)
+changepoints(WBS_fixmw_diff_3cp_param_diff.all)
+plot(WBS_fixmw_diff_3cp_param_diff.all)
+```
+
+```{r}
+WBS_fixmw_ine_3cp_param_diff.all <- wbs(fixmw_ine_3cp_param_diff.all)
+changepoints(WBS_fixmw_ine_3cp_param_diff.all)
+plot(WBS_fixmw_ine_3cp_param_diff.all)
+```
+
+```{r}
+WBS_fixmw_out_3cp_param_diff.all <- wbs(fixmw_out_3cp_param_diff.all)
+changepoints(WBS_fixmw_out_3cp_param_diff.all)
+plot(WBS_fixmw_out_3cp_param_diff.all)
+```
