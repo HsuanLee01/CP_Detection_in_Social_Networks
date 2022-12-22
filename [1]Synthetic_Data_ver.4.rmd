@@ -6464,11 +6464,11 @@ param.3cp_diff.all <- list(
   "z_send"= function(t) {
     # set the location of CP
     if(t < 21880) { #8366
-      0.17
+      0.19
     } else
       
       if(t < 44260) { #5365
-        0.01
+        -0.01
         } else
           
           if(t < 61050) { #7519
@@ -6479,7 +6479,7 @@ param.3cp_diff.all <- list(
   "z_difference" = function(t) {
     # set the location of CP
     if(t < 13250) { #8366
-      -0.04
+      -0.03
     } else
       
       if(t < 30710) { #5365
