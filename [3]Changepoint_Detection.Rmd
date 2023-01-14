@@ -1,0 +1,1047 @@
+---
+title: "Changepoint Detection"
+author: "Hsuan Lee"
+output: pdf_document
+---
+
+```{r}
+library(ocp) # package for BOCD
+library(changepoint) # package for PELT, BS
+```
+
+# No Changepoint REH Data
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_ncp_param <- onlineCPD(fixmw_send_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_ncp_param)
+```
+
+```{r}
+BOCD_fixmw_diff_ncp_param <- onlineCPD(fixmw_diff_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_ncp_param)
+```
+
+```{r}
+BOCD_fixmw_ine_ncp_param <- onlineCPD(fixmw_ine_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_ncp_param)
+```
+
+```{r}
+BOCD_fixmw_out_ncp_param <- onlineCPD(fixmw_out_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_ncp_param)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_ine_ncp_param <- cpt.meanvar(fixmw_ine_ncp_param, method="PELT")
+summary(PELT_fixmw_ine_ncp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_ncp_param, type="point", col = "red")
+abline(v=PELT_fixmw_ine_ncp_param@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_ncp_param <- cpt.meanvar(fixmw_ine_ncp_param, method = "BinSeg")
+cpts(BS_fixmw_ine_ncp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_ncp_param, type = "l")
+abline(v=BS_fixmw_ine_ncp_param@cpts[], col="red")
+```
+
+# 1 Changepoint REH Data (inertia only)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_1cp_param <- onlineCPD(fixmw_send_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_1cp_param)
+```
+
+```{r}
+BOCD_fixmw_diff_1cp_param <- onlineCPD(fixmw_diff_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_1cp_param)
+```
+
+```{r}
+BOCD_fixmw_ine_1cp_param <- onlineCPD(fixmw_ine_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_1cp_param)
+```
+
+```{r}
+BOCD_fixmw_out_1cp_param <- onlineCPD(fixmw_out_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_1cp_param)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_1cp_param <- cpt.meanvar(fixmw_send_1cp_param, method="PELT")
+summary(PELT_fixmw_send_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_send_1cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_1cp_param <- cpt.meanvar(fixmw_diff_1cp_param, method="PELT")
+summary(PELT_fixmw_diff_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_diff_1cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_1cp_param <- cpt.meanvar(fixmw_ine_1cp_param, method="PELT")
+summary(PELT_fixmw_ine_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_1cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_ine_1cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_1cp_param <- cpt.meanvar(fixmw_out_1cp_param, method="PELT")
+summary(PELT_fixmw_out_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_out_1cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_out_1cp_param@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_1cp_param <- cpt.meanvar(fixmw_send_1cp_param, method = "BinSeg")
+cpts(BS_fixmw_send_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param)
+abline(v=BS_fixmw_send_1cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_1cp_param <- cpt.meanvar(fixmw_diff_1cp_param, method = "BinSeg")
+cpts(BS_fixmw_diff_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param)
+abline(v=BS_fixmw_diff_1cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_1cp_param <- cpt.meanvar(fixmw_ine_1cp_param, method = "BinSeg")
+cpts(BS_fixmw_ine_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_1cp_param)
+abline(v=BS_fixmw_ine_1cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_1cp_param <- cpt.meanvar(fixmw_out_1cp_param, method = "BinSeg")
+cpts(BS_fixmw_out_1cp_param)
+
+# plot the location of CPs
+plot(fixmw_out_1cp_param)
+abline(v=BS_fixmw_out_1cp_param@cpts[], col="red")
+```
+
+# 1 Changepoint REH Data (all social interaction drivers at same locations)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_1cp_param_same.all <- onlineCPD(fixmw_send_1cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_1cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_diff_1cp_param_same.all <- onlineCPD(fixmw_diff_1cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_1cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_ine_1cp_param_same.all <- onlineCPD(fixmw_ine_1cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_1cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_out_1cp_param_same.all <- onlineCPD(fixmw_out_1cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_1cp_param_same.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_1cp_param_same.all <- cpt.meanvar(fixmw_send_1cp_param_same.all, method="PELT")
+summary(PELT_fixmw_send_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_send_1cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_1cp_param_same.all <- cpt.meanvar(fixmw_diff_1cp_param_same.all, method="PELT")
+summary(PELT_fixmw_diff_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_diff_1cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_1cp_param_same.all <- cpt.meanvar(fixmw_ine_1cp_param_same.all, method="PELT")
+summary(PELT_fixmw_ine_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_ine_1cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_ine_1cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_1cp_param_same.all <- cpt.meanvar(fixmw_out_1cp_param_same.all, method="PELT")
+summary(PELT_fixmw_out_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_out_1cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_out_1cp_param_same.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_1cp_param_same.all <- cpt.meanvar(fixmw_send_1cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_send_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param_same.all)
+abline(v=BS_fixmw_send_1cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_1cp_param_same.all <- cpt.meanvar(fixmw_diff_1cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_diff_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param_same.all)
+abline(v=BS_fixmw_diff_1cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_1cp_param_same.all <- cpt.meanvar(fixmw_ine_1cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_ine_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_ine_1cp_param_same.all)
+abline(v=BS_fixmw_ine_1cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_1cp_param_same.all <- cpt.meanvar(fixmw_out_1cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_out_1cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_out_1cp_param_same.all)
+abline(v=BS_fixmw_out_1cp_param_same.all@cpts[], col="red")
+```
+
+# 1 Changepoint REH Data (all social interaction driver at different locations)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_1cp_param_diff.all <- onlineCPD(fixmw_send_1cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_1cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_diff_1cp_param_diff.all <- onlineCPD(fixmw_diff_1cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_1cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_ine_1cp_param_diff.all <- onlineCPD(fixmw_ine_1cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_1cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_out_1cp_param_diff.all <- onlineCPD(fixmw_out_1cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_1cp_param_diff.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_1cp_param_diff.all <- cpt.var(fixmw_send_1cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_send_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_send_1cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_1cp_param_diff.all <- cpt.var(fixmw_diff_1cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_diff_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_diff_1cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_1cp_param_diff.all <- cpt.var(fixmw_ine_1cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_ine_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_1cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_ine_1cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_1cp_param_diff.all <- cpt.var(fixmw_out_1cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_out_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_1cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_out_1cp_param_diff.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_1cp_param_diff.all <- cpt.meanvar(fixmw_send_1cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_send_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_1cp_param_diff.all)
+abline(v=BS_fixmw_send_1cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_1cp_param_diff.all <- cpt.meanvar(fixmw_diff_1cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_diff_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_1cp_param_diff.all)
+abline(v=BS_fixmw_diff_1cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_1cp_param_diff.all <- cpt.meanvar(fixmw_ine_1cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_ine_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_1cp_param_diff.all)
+abline(v=BS_fixmw_ine_1cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_1cp_param_diff.all <- cpt.meanvar(fixmw_out_1cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_out_1cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_1cp_param_diff.all)
+abline(v=BS_fixmw_out_1cp_param_diff.all@cpts[], col="red")
+```
+
+# 2 Changepoints REH Data (inertia only)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_2cp_param <- onlineCPD(fixmw_send_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_2cp_param)
+```
+
+```{r}
+BOCD_fixmw_diff_2cp_param <- onlineCPD(fixmw_diff_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_2cp_param)
+```
+
+```{r}
+BOCD_fixmw_ine_2cp_param <- onlineCPD(fixmw_ine_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_2cp_param)
+```
+
+```{r}
+BOCD_fixmw_out_2cp_param <- onlineCPD(fixmw_out_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_2cp_param)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_2cp_param <- cpt.var(fixmw_send_2cp_param, method="PELT")
+summary(PELT_fixmw_send_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_2cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_send_2cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_2cp_param <- cpt.var(fixmw_diff_2cp_param, method="PELT")
+summary(PELT_fixmw_diff_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_2cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_diff_2cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_2cp_param <- cpt.meanvar(fixmw_ine_2cp_param, method="PELT")
+summary(PELT_fixmw_ine_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_2cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_ine_2cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_2cp_param <- cpt.var(fixmw_out_2cp_param, method="PELT")
+summary(PELT_fixmw_out_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_out_2cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_out_2cp_param@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_2cp_param <- cpt.var(fixmw_send_2cp_param, method = "BinSeg")
+cpts(BS_fixmw_send_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_2cp_param)
+abline(v=BS_fixmw_send_2cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_2cp_param <- cpt.var(fixmw_diff_2cp_param, method = "BinSeg")
+cpts(BS_fixmw_diff_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_2cp_param)
+abline(v=BS_fixmw_diff_2cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_2cp_param <- cpt.var(fixmw_ine_2cp_param, method = "BinSeg")
+cpts(BS_fixmw_ine_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_2cp_param)
+abline(v=BS_fixmw_ine_2cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_2cp_param <- cpt.var(fixmw_out_2cp_param, method = "BinSeg")
+cpts(BS_fixmw_out_2cp_param)
+
+# plot the location of CPs
+plot(fixmw_out_2cp_param)
+abline(v=BS_fixmw_out_2cp_param@cpts[], col="red")
+```
+
+# 2 Changepoints REH Data (all social interaction drivers at same locations)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_2cp_param_same.all <- onlineCPD(fixmw_send_2cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_2cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_diff_2cp_param_same.all <- onlineCPD(fixmw_diff_2cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_2cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_ine_2cp_param_same.all <- onlineCPD(fixmw_ine_2cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_2cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_out_2cp_param_same.all <- onlineCPD(fixmw_out_2cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_2cp_param_same.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_2cp_param_same.all <- cpt.meanvar(fixmw_send_2cp_param_same.all, method="PELT")
+summary(PELT_fixmw_send_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_send_2cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_send_2cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_2cp_param_same.all <- cpt.meanvar(fixmw_diff_2cp_param_same.all, method="PELT")
+summary(PELT_fixmw_diff_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_diff_2cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_diff_2cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_2cp_param_same.all <- cpt.meanvar(fixmw_ine_2cp_param_same.all, method="PELT")
+summary(PELT_fixmw_ine_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_ine_2cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_ine_2cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_2cp_param_same.all <- cpt.meanvar(fixmw_out_2cp_param_same.all, method="PELT")
+summary(PELT_fixmw_out_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_out_2cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_out_2cp_param_same.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_2cp_param_same.all <- cpt.meanvar(fixmw_send_2cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_send_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_send_2cp_param_same.all)
+abline(v=BS_fixmw_send_2cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_2cp_param_same.all <- cpt.meanvar(fixmw_diff_2cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_diff_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_diff_2cp_param_same.all)
+abline(v=BS_fixmw_diff_2cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_2cp_param_same.all <- cpt.meanvar(fixmw_ine_2cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_ine_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_ine_2cp_param_same.all)
+abline(v=BS_fixmw_ine_2cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_2cp_param_same.all <- cpt.meanvar(fixmw_out_2cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_out_2cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_out_2cp_param_same.all)
+abline(v=BS_fixmw_out_2cp_param_same.all@cpts[], col="red")
+```
+
+# 2 Changepoints REH Data (all social interaction driver at different locations)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_2cp_param_diff.all <- onlineCPD(fixmw_send_2cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_2cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_diff_2cp_param_diff.all <- onlineCPD(fixmw_diff_2cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_2cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_ine_2cp_param_diff.all <- onlineCPD(fixmw_ine_2cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_2cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_out_2cp_param_diff.all <- onlineCPD(fixmw_out_2cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_2cp_param_diff.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_2cp_param_diff.all <- cpt.meanvar(fixmw_send_2cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_send_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_2cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_send_2cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_2cp_param_diff.all <- cpt.meanvar(fixmw_diff_2cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_diff_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_2cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_diff_2cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_2cp_param_diff.all <- cpt.meanvar(fixmw_ine_2cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_ine_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_2cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_ine_2cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_2cp_param_diff.all <- cpt.meanvar(fixmw_out_2cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_out_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_2cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_out_2cp_param_diff.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_2cp_param_diff.all <- cpt.meanvar(fixmw_send_2cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_send_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_2cp_param_diff.all)
+abline(v=BS_fixmw_send_2cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_2cp_param_diff.all <- cpt.meanvar(fixmw_diff_2cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_diff_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_2cp_param_diff.all)
+abline(v=BS_fixmw_diff_2cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_2cp_param_diff.all <- cpt.meanvar(fixmw_ine_2cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_ine_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_2cp_param_diff.all)
+abline(v=BS_fixmw_ine_2cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_2cp_param_diff.all <- cpt.meanvar(fixmw_out_2cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_out_2cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_2cp_param_diff.all)
+abline(v=BS_fixmw_out_2cp_param_diff.all@cpts[], col="red")
+```
+
+# 3 Changepoints REH Data (inertia only)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_3cp_param <- onlineCPD(fixmw_send_3cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_3cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_3cp_param)
+```
+
+```{r}
+BOCD_fixmw_diff_3cp_param <- onlineCPD(fixmw_diff_3cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_3cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_3cp_param)
+```
+
+```{r}
+BOCD_fixmw_ine_3cp_param <- onlineCPD(fixmw_ine_3cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_3cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_3cp_param)
+```
+
+```{r}
+BOCD_fixmw_out_3cp_param <- onlineCPD(fixmw_out_3cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_3cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_3cp_param)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_3cp_param <- cpt.var(fixmw_send_3cp_param, method="PELT")
+summary(PELT_fixmw_send_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_send_3cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_3cp_param <- cpt.var(fixmw_diff_3cp_param, method="PELT")
+summary(PELT_fixmw_diff_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_diff_3cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_3cp_param <- cpt.var(fixmw_ine_3cp_param, method="PELT")
+summary(PELT_fixmw_ine_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_ine_3cp_param@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_3cp_param <- cpt.var(fixmw_out_3cp_param, method="PELT")
+summary(PELT_fixmw_out_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param, type="l", col = "red")
+abline(v=PELT_fixmw_out_3cp_param@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_3cp_param <- cpt.var(fixmw_send_3cp_param, method = "BinSeg")
+cpts(BS_fixmw_send_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param)
+abline(v=BS_fixmw_send_3cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_3cp_param <- cpt.var(fixmw_diff_3cp_param, method = "BinSeg")
+cpts(BS_fixmw_diff_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param)
+abline(v=BS_fixmw_diff_3cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_3cp_param <- cpt.var(fixmw_ine_3cp_param, method = "BinSeg")
+cpts(BS_fixmw_ine_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param)
+abline(v=BS_fixmw_ine_3cp_param@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_3cp_param <- cpt.var(fixmw_out_3cp_param, method = "BinSeg")
+cpts(BS_fixmw_out_3cp_param)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param)
+abline(v=BS_fixmw_out_3cp_param@cpts[], col="red")
+```
+
+# 3 Changepoints REH Data (all social interaction drivers at same locations)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_3cp_param_same.all <- onlineCPD(fixmw_send_3cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_3cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_3cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_diff_3cp_param_same.all <- onlineCPD(fixmw_diff_3cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_3cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_3cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_ine_3cp_param_same.all <- onlineCPD(fixmw_ine_3cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_3cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_3cp_param_same.all)
+```
+
+```{r}
+BOCD_fixmw_out_3cp_param_same.all <- onlineCPD(fixmw_out_3cp_param_same.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_3cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_3cp_param_same.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_3cp_param_same.all <- cpt.meanvar(fixmw_send_3cp_param_same.all, method="PELT")
+summary(PELT_fixmw_send_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_send_3cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_3cp_param_same.all <- cpt.meanvar(fixmw_diff_3cp_param_same.all, method="PELT")
+summary(PELT_fixmw_diff_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_diff_3cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_3cp_param_same.all <- cpt.meanvar(fixmw_ine_3cp_param_same.all, method="PELT")
+summary(PELT_fixmw_ine_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_ine_3cp_param_same.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_3cp_param_same.all <- cpt.meanvar(fixmw_out_3cp_param_same.all, method="PELT")
+summary(PELT_fixmw_out_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param_same.all, type="l", col = "red")
+abline(v=PELT_fixmw_out_3cp_param_same.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_3cp_param_same.all <- cpt.meanvar(fixmw_send_3cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_send_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param_same.all)
+abline(v=BS_fixmw_send_3cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_3cp_param_same.all <- cpt.meanvar(fixmw_diff_3cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_diff_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param_same.all)
+abline(v=BS_fixmw_diff_3cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_3cp_param_same.all <- cpt.meanvar(fixmw_ine_3cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_ine_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param_same.all)
+abline(v=BS_fixmw_ine_3cp_param_same.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_3cp_param_same.all <- cpt.meanvar(fixmw_out_3cp_param_same.all, method = "BinSeg")
+cpts(BS_fixmw_out_3cp_param_same.all)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param_same.all)
+abline(v=BS_fixmw_out_3cp_param_same.all@cpts[], col="red")
+```
+
+# 3 Changepoints REH Data (all social interaction driver at different locations)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+BOCD_fixmw_send_3cp_param_diff.all <- onlineCPD(fixmw_send_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_send_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_send_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_diff_3cp_param_diff.all <- onlineCPD(fixmw_diff_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_diff_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_diff_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_ine_3cp_param_diff.all <- onlineCPD(fixmw_ine_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_ine_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_ine_3cp_param_diff.all)
+```
+
+```{r}
+BOCD_fixmw_out_3cp_param_diff.all <- onlineCPD(fixmw_out_3cp_param_diff.all, 
+                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
+BOCD_fixmw_out_3cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
+plot(BOCD_fixmw_out_3cp_param_diff.all)
+```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+PELT_fixmw_send_3cp_param_diff.all <- cpt.meanvar(fixmw_send_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_send_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_send_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_diff_3cp_param_diff.all <- cpt.meanvar(fixmw_diff_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_diff_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_diff_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_ine_3cp_param_diff.all <- cpt.meanvar(fixmw_ine_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_ine_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_ine_3cp_param_diff.all@cpts[], col="black")
+```
+
+```{r}
+PELT_fixmw_out_3cp_param_diff.all <- cpt.meanvar(fixmw_out_3cp_param_diff.all, method="PELT")
+summary(PELT_fixmw_out_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param_diff.all, type="l", col = "red")
+abline(v=PELT_fixmw_out_3cp_param_diff.all@cpts[], col="black")
+```
+
+3. BS: approximate CPs Detection Method
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_send_3cp_param_diff.all <- cpt.meanvar(fixmw_send_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_send_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_send_3cp_param_diff.all)
+abline(v=BS_fixmw_send_3cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_diff_3cp_param_diff.all <- cpt.meanvar(fixmw_diff_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_diff_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_diff_3cp_param_diff.all)
+abline(v=BS_fixmw_diff_3cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_ine_3cp_param_diff.all <- cpt.meanvar(fixmw_ine_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_ine_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_ine_3cp_param_diff.all)
+abline(v=BS_fixmw_ine_3cp_param_diff.all@cpts[], col="red")
+```
+
+```{r}
+# cpt.meanvar -> find changes in both mean and variance for data
+BS_fixmw_out_3cp_param_diff.all <- cpt.meanvar(fixmw_out_3cp_param_diff.all, method = "BinSeg")
+cpts(BS_fixmw_out_3cp_param_diff.all)
+
+# plot the location of CPs
+plot(fixmw_out_3cp_param_diff.all)
+abline(v=BS_fixmw_out_3cp_param_diff.all@cpts[], col="red")
+```
