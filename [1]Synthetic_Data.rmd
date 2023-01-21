@@ -6,7 +6,7 @@ output: pdf_document
 ```{r}
 setwd(paste("C:/Users/HsuanLee/Desktop/Methodology and Statistics/",
 "Changepoints Inference in Relational Event Data of a Social Network/",
-"Changepoint-Inference-in-REH-of-a-Social-Network", sep = ""))
+"CP-Inference-in-REH-of-Social-Network", sep = ""))
 ```
 
 # Simulate the REH

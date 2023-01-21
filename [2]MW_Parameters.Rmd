@@ -13,7 +13,7 @@ set.seed(9252568)
 ```{r}
 setwd(paste("C:/Users/HsuanLee/Desktop/Methodology and Statistics/",
 "Changepoints Inference in Relational Event Data of a Social Network/",
-"Changepoint-Inference-in-REH-of-a-Social-Network", sep = ""))
+"CP-Inference-in-REH-of-Social-Network", sep = ""))
 ```
 
 # Assign the Formula and the Covariates
@@ -33,7 +33,7 @@ covar <- data.frame(id = 1:30, time = 0, z = rnorm(n = 30))
 
 **Read the Data**
 ```{r}
-REH_NCP <- readRDS("Data/REH_NCP.RDS")
+REH_NCP <- readRDS("Synthetic_Data/REH_NCP.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -101,7 +101,7 @@ plot(fixmw_out_ncp_param, type = "point") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_1CP <- readRDS("Data/REH_1CP.RDS")
+REH_1CP <- readRDS("Synthetic_Data/REH_1CP.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -169,7 +169,7 @@ plot(fixmw_out_1cp_param, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_1CP_same.all <- readRDS("Data/REH_1CP_same.all.RDS")
+REH_1CP_same.all <- readRDS("Synthetic_Data/REH_1CP_same.all.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -236,7 +236,7 @@ plot(fixmw_out_1cp_param_same.all, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_1CP_diff.all <- readRDS("Data/REH_1CP_diff.all.RDS")
+REH_1CP_diff.all <- readRDS("Synthetic_Data/REH_1CP_diff.all.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -304,7 +304,7 @@ plot(fixmw_out_1cp_param_diff.all, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_2CP <- readRDS("Data/REH_2CP.RDS")
+REH_2CP <- readRDS("Synthetic_Data/REH_2CP.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -372,7 +372,7 @@ plot(fixmw_out_2cp_param, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_2CP_same.all <- readRDS("Data/REH_2CP_same.all.RDS")
+REH_2CP_same.all <- readRDS("Synthetic_Data/REH_2CP_same.all.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -440,7 +440,7 @@ plot(fixmw_out_2cp_param_same.all, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_2CP_diff.all <- readRDS("Data/REH_2CP_diff.all.RDS")
+REH_2CP_diff.all <- readRDS("Synthetic_Data/REH_2CP_diff.all.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -508,7 +508,7 @@ plot(fixmw_out_2cp_param_diff.all, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_3CP <- readRDS("Data/REH_3CP.RDS")
+REH_3CP <- readRDS("Synthetic_Data/REH_3CP.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -576,7 +576,7 @@ plot(fixmw_out_3cp_param, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_3CP_same.all <- readRDS("Data/REH_3CP_same.all.RDS")
+REH_3CP_same.all <- readRDS("Synthetic_Data/REH_3CP_same.all.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
@@ -644,7 +644,7 @@ plot(fixmw_out_3cp_param_same.all, type = "lm") # plot the movement of parameter
 
 **Read the Data**
 ```{r}
-REH_3CP_diff.all <- readRDS("Data/REH_3CP_diff.all.RDS")
+REH_3CP_diff.all <- readRDS("Synthetic_Data/REH_3CP_diff.all.RDS")
 ```
 
 **Extract the Statistics Used for Fitting the REM**
