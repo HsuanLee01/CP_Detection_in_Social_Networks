@@ -5,7 +5,7 @@ Changepoint Inference in REH of a Social Network
 
 ---
 This repository includes all the required files to replicate the simulation study of Hsuan Lee's "Changepoint inferece in Relational Event History data of a Social Network". 
-Software requirements are R (http://www.r-project.org}.
+Software requirements is R (http://www.r-project.org}.
 
 ---
 
