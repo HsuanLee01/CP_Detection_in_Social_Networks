@@ -1,4 +1,4 @@
-# Research Repository
+Research Repository
 ===
 
 Changepoint Inference in REH of a Social Network
