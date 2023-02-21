@@ -18,6 +18,10 @@ setwd(paste("C:/Users/HsuanLee/Desktop/Methodology and Statistics/",
 
 # Assign the Formula and the Covariates
 ```{r}
+set.seed(9252568)
+```
+
+```{r}
 formula <- ~ 1 + remstats::send("z", covar) + # Exogenous statistics
   remstats::difference("z", covar) + # Exogenous statistics
   remstats::inertia(scaling = "std") + # Endogenous statistics
@@ -39,62 +43,87 @@ REH_NCP <- readRDS("Synthetic_Data/REH_NCP.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.ncp <- remstats(tie_effects = formula, edgelist = REH_NCP)
-stat.ncp <- out.ncp[["statistics"]] # extract the statistics from the list
+out.ncp <- list()
+for (i in 1:length(REH_NCP)) {
+  out.ncp[[i]] <- remstats(tie_effects = formula, edgelist = REH_NCP[[i]])
+}
+
+# extract the statistics from the list
+stat.ncp <- list()
+for (i in 1:length(REH_NCP)) {
+  stat.ncp[[i]] <- out.ncp[[i]][["statistics"]]
+}
 ```
 
 **Fit the Fixed MW REM on the REH with No CP**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_NCP$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_NCP)) {
+  tau[i] <- max(REH_NCP[[i]]$time)
+}
 
 # specify the length of the window
-windows_ncp <- REHdynamics::createwindows(1000, tau)
+windows_ncp <- list()
+for (i in 1:length(REH_NCP)) {
+  windows_ncp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_ncp <- REHdynamics::MWrem(windows_ncp, edgelist = REH_NCP, 
-                                       stats = stat.ncp,
+model_fixwin_ncp <- list()
+for (i in 1:length(REH_NCP)) {
+  model_fixwin_ncp[[i]] <- REHdynamics::MWrem(windows_ncp[[i]], edgelist = REH_NCP[[i]], 
+                                       stats = stat.ncp[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_ncp_param <- 1
-for (i in 1:length(model_fixwin_ncp)) {
-  fixmw_send_ncp_param[i] <- model_fixwin_ncp[[i]][["coefficients"]][["send.z"]]
+fixmw_send_ncp_param <- vector(mode='list', length = length(model_fixwin_ncp))
+for (i in 1:length(REH_NCP)) {
+  for (win in 1:length(model_fixwin_ncp[[i]])) {
+    fixmw_send_ncp_param[[i]][win] <- 
+      model_fixwin_ncp[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_ncp_param, type = "point") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_ncp_param <- 1
-for (i in 1:length(model_fixwin_ncp)) {
-  fixmw_diff_ncp_param[i] <- model_fixwin_ncp[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_ncp_param, type = "point") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_ncp_param <- 1
-for (i in 1:length(model_fixwin_ncp)) {
-  fixmw_ine_ncp_param[i] <- model_fixwin_ncp[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_ncp_param <- vector(mode='list', length = length(model_fixwin_ncp))
+for (i in 1:length(REH_NCP)) {
+  for (win in 1:length(model_fixwin_ncp[[i]])) {
+    fixmw_diff_ncp_param[[i]][win] <- 
+      model_fixwin_ncp[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_ncp_param, type = "point") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_ncp_param <- 1
-for (i in 1:length(model_fixwin_ncp)) {
-  fixmw_out_ncp_param[i] <- model_fixwin_ncp[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_ncp_param <- vector(mode='list', length = length(model_fixwin_ncp))
+for (i in 1:length(REH_NCP)) {
+  for (win in 1:length(model_fixwin_ncp[[i]])) {
+    fixmw_ine_ncp_param[[i]][win] <- 
+      model_fixwin_ncp[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_ncp_param, type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_ncp_param <- vector(mode='list', length = length(model_fixwin_ncp))
+for (i in 1:length(REH_NCP)) {
+  for (win in 1:length(model_fixwin_ncp[[i]])) {
+    fixmw_out_ncp_param[[i]][win] <- 
+      model_fixwin_ncp[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 1 Changepoint REH Data (inertia only)
@@ -107,62 +136,87 @@ REH_1CP <- readRDS("Synthetic_Data/REH_1CP.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.1cp <- remstats(tie_effects = formula, edgelist = REH_1CP) # also will be used for fitting REM
-stat.1cp <- out.1cp[["statistics"]] # extract the statistics from the list
+out.1cp <- list()
+for (i in 1:length(REH_1CP)) {
+  out.1cp[[i]] <- remstats(tie_effects = formula, edgelist = REH_1CP[[i]])
+}
+
+# extract the statistics from the list
+stat.1cp <- list()
+for (i in 1:length(REH_1CP)) {
+  stat.1cp[[i]] <- out.1cp[[i]][["statistics"]]
+}
 ```
 
 **Fit the Fixed MW REM on the REH with One CP (inertia only)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_1CP$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_1CP)) {
+  tau[i] <- max(REH_1CP[[i]]$time)
+}
 
 # specify the length of the window
-windows_1cp <- REHdynamics::createwindows(1500, tau)
+windows_1cp <- list()
+for (i in 1:length(REH_1CP)) {
+  windows_1cp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_1cp <- REHdynamics::MWrem(windows_1cp, edgelist = REH_1CP, 
-                                       stats = stat.1cp,
+model_fixwin_1cp <- list()
+for (i in 1:length(REH_1CP)) {
+  model_fixwin_1cp[[i]] <- REHdynamics::MWrem(windows_1cp[[i]], edgelist = REH_1CP[[i]], 
+                                       stats = stat.1cp[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_1cp_param <- 1
-for (i in 1:length(model_fixwin_1cp)) {
-  fixmw_send_1cp_param[i] <- model_fixwin_1cp[[i]][["coefficients"]][["send.z"]]
+fixmw_send_1cp_param <- vector(mode='list', length = length(model_fixwin_1cp))
+for (i in 1:length(REH_1CP)) {
+  for (win in 1:length(model_fixwin_1cp[[i]])) {
+    fixmw_send_1cp_param[[i]][win] <- 
+      model_fixwin_1cp[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_1cp_param, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_1cp_param <- 1
-for (i in 1:length(model_fixwin_1cp)) {
-  fixmw_diff_1cp_param[i] <- model_fixwin_1cp[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_1cp_param, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_1cp_param <- 1
-for (i in 1:length(model_fixwin_1cp)) {
-  fixmw_ine_1cp_param[i] <- model_fixwin_1cp[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_1cp_param <- vector(mode='list', length = length(model_fixwin_1cp))
+for (i in 1:length(REH_1CP)) {
+  for (win in 1:length(model_fixwin_1cp[[i]])) {
+    fixmw_diff_1cp_param[[i]][win] <- 
+      model_fixwin_1cp[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_1cp_param, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_1cp_param <- 1
-for (i in 1:length(model_fixwin_1cp)) {
-  fixmw_out_1cp_param[i] <- model_fixwin_1cp[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_1cp_param <- vector(mode='list', length = length(model_fixwin_1cp))
+for (i in 1:length(REH_1CP)) {
+  for (win in 1:length(model_fixwin_1cp[[i]])) {
+    fixmw_ine_1cp_param[[i]][win] <- 
+      model_fixwin_1cp[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_1cp_param, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_1cp_param <- vector(mode='list', length = length(model_fixwin_1cp))
+for (i in 1:length(REH_1CP)) {
+  for (win in 1:length(model_fixwin_1cp[[i]])) {
+    fixmw_out_1cp_param[[i]][win] <- 
+      model_fixwin_1cp[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 1 Changepoint REH Data (all social interaction drivers at same locations)
@@ -175,61 +229,87 @@ REH_1CP_same.all <- readRDS("Synthetic_Data/REH_1CP_same.all.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.1cp_same.all <- remstats(tie_effects = formula, edgelist = REH_1CP_same.all) # also will be used for fitting REM
-stat.1cp_same.all <- out.1cp_same.all[["statistics"]] # extract the statistics from the list
+out.1cp_same.all <- list()
+for (i in 1:length(REH_1CP_same.all)) {
+  out.1cp_same.all[[i]] <- remstats(tie_effects = formula, edgelist = REH_1CP_same.all[[i]])
+}
+
+# extract the statistics from the list
+stat.1cp_same.all <- list()
+for (i in 1:length(REH_1CP_same.all)) {
+  stat.1cp_same.all[[i]] <- out.1cp_same.all[[i]][["statistics"]]
+}
 ```
 
 **Fit the Fixed MW REM on the REH with One CP (same location)**
+
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_1CP_same.all$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_1CP_same.all)) {
+  tau[i] <- max(REH_1CP_same.all[[i]]$time)
+}
 
 # specify the length of the window
-windows_1cp_same.all <- REHdynamics::createwindows(1500, tau)
+windows_1cp_same.all <- list()
+for (i in 1:length(REH_1CP_same.all)) {
+  windows_1cp_same.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_1cp_same.all <- REHdynamics::MWrem(windows_1cp_same.all, edgelist = REH_1CP_same.all, 
-                                       stats = stat.1cp_same.all,
+model_fixwin_1cp_same.all <- list()
+for (i in 1:length(REH_1CP_same.all)) {
+  model_fixwin_1cp_same.all[[i]] <- REHdynamics::MWrem(windows_1cp_same.all[[i]], edgelist = REH_1CP_same.all[[i]], 
+                                       stats = stat.1cp_same.all[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_1cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_1cp_same.all)) {
-  fixmw_send_1cp_param_same.all[i] <- model_fixwin_1cp_same.all[[i]][["coefficients"]][["send.z"]]
+fixmw_send_1cp_param_same.all <- vector(mode='list', length = length(model_fixwin_1cp_same.all))
+for (i in 1:length(REH_1CP_same.all)) {
+  for (win in 1:length(model_fixwin_1cp_same.all[[i]])) {
+    fixmw_send_1cp_param_same.all[[i]][win] <- 
+      model_fixwin_1cp_same.all[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_1cp_param_same.all, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_1cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_1cp_same.all)) {
-  fixmw_diff_1cp_param_same.all[i] <- model_fixwin_1cp_same.all[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_1cp_param_same.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_1cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_1cp_same.all)) {
-  fixmw_ine_1cp_param_same.all[i] <- model_fixwin_1cp_same.all[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_1cp_param_same.all <- vector(mode='list', length = length(model_fixwin_1cp_same.all))
+for (i in 1:length(REH_1CP_same.all)) {
+  for (win in 1:length(model_fixwin_1cp_same.all[[i]])) {
+    fixmw_diff_1cp_param_same.all[[i]][win] <- 
+      model_fixwin_1cp_same.all[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_1cp_param_same.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_1cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_1cp_same.all)) {
-  fixmw_out_1cp_param_same.all[i] <- model_fixwin_1cp_same.all[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_1cp_param_same.all <- vector(mode='list', length = length(model_fixwin_1cp_same.all))
+for (i in 1:length(REH_1CP_same.all)) {
+  for (win in 1:length(model_fixwin_1cp_same.all[[i]])) {
+    fixmw_ine_1cp_param_same.all[[i]][win] <- 
+      model_fixwin_1cp_same.all[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_1cp_param_same.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_1cp_param_same.all <- vector(mode='list', length = length(model_fixwin_1cp_same.all))
+for (i in 1:length(REH_1CP_same.all)) {
+  for (win in 1:length(model_fixwin_1cp_same.all[[i]])) {
+    fixmw_out_1cp_param_same.all[[i]][win] <- 
+      model_fixwin_1cp_same.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 1 Changepoint REH Data (all social interaction driver at different locations)
@@ -242,62 +322,87 @@ REH_1CP_diff.all <- readRDS("Synthetic_Data/REH_1CP_diff.all.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.1cp_diff.all <- remstats(tie_effects = formula, edgelist = REH_1CP_diff.all) # also will be used for fitting REM
-stat.1cp_diff.all <- out.1cp_diff.all[["statistics"]] # extract the statistics from the list
+out.1cp_diff.all <- list()
+for (i in 1:length(REH_1CP_diff.all)) {
+  out.1cp_diff.all[[i]] <- remstats(tie_effects = formula, edgelist = REH_1CP_diff.all[[i]])
+}
+
+# extract the statistics from the list
+stat.1cp_diff.all <- list()
+for (i in 1:length(REH_1CP_diff.all)) {
+  stat.1cp_diff.all[[i]] <- out.1cp_diff.all[[i]][["statistics"]]
+}
 ```
 
-**Fit the Fixed MW REM on the REH with One CP (different locations)**
+**Fit the Fixed MW REM on the REH with One CP (different location)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_1CP_diff.all$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_1CP_diff.all)) {
+  tau[i] <- max(REH_1CP_diff.all[[i]]$time)
+}
 
 # specify the length of the window
-windows_1cp_diff.all <- REHdynamics::createwindows(1500, tau)
+windows_1cp_diff.all <- list()
+for (i in 1:length(REH_1CP_diff.all)) {
+  windows_1cp_diff.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_1cp_diff.all <- REHdynamics::MWrem(windows_1cp_diff.all, edgelist = REH_1CP_diff.all, 
-                                       stats = stat.1cp_diff.all,
+model_fixwin_1cp_diff.all <- list()
+for (i in 1:length(REH_1CP_diff.all)) {
+  model_fixwin_1cp_diff.all[[i]] <- REHdynamics::MWrem(windows_1cp_diff.all[[i]], edgelist = REH_1CP_diff.all[[i]], 
+                                       stats = stat.1cp_diff.all[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_1cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_1cp_diff.all)) {
-  fixmw_send_1cp_param_diff.all[i] <- model_fixwin_1cp_diff.all[[i]][["coefficients"]][["send.z"]]
+fixmw_send_1cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_1cp_diff.all))
+for (i in 1:length(REH_1CP_diff.all)) {
+  for (win in 1:length(model_fixwin_1cp_diff.all[[i]])) {
+    fixmw_send_1cp_param_diff.all[[i]][win] <- 
+      model_fixwin_1cp_diff.all[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_1cp_param_diff.all, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_1cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_1cp_diff.all)) {
-  fixmw_diff_1cp_param_diff.all[i] <- model_fixwin_1cp_diff.all[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_1cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_1cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_1cp_diff.all)) {
-  fixmw_ine_1cp_param_diff.all[i] <- model_fixwin_1cp_diff.all[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_1cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_1cp_diff.all))
+for (i in 1:length(REH_1CP_diff.all)) {
+  for (win in 1:length(model_fixwin_1cp_diff.all[[i]])) {
+    fixmw_diff_1cp_param_diff.all[[i]][win] <- 
+      model_fixwin_1cp_diff.all[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_1cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_1cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_1cp_diff.all)) {
-  fixmw_out_1cp_param_diff.all[i] <- model_fixwin_1cp_diff.all[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_1cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_1cp_diff.all))
+for (i in 1:length(REH_1CP_diff.all)) {
+  for (win in 1:length(model_fixwin_1cp_diff.all[[i]])) {
+    fixmw_ine_1cp_param_diff.all[[i]][win] <- 
+      model_fixwin_1cp_diff.all[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_1cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_1cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_1cp_diff.all))
+for (i in 1:length(REH_1CP_diff.all)) {
+  for (win in 1:length(model_fixwin_1cp_diff.all[[i]])) {
+    fixmw_out_1cp_param_diff.all[[i]][win] <- 
+      model_fixwin_1cp_diff.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 2 Changepoints REH Data (inertia only)
@@ -310,62 +415,87 @@ REH_2CP <- readRDS("Synthetic_Data/REH_2CP.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.2cp <- remstats(tie_effects = formula, edgelist = REH_2CP) # also will be used for fitting REM
-stat.2cp <- out.2cp[["statistics"]] # extract the statistics from the list
+out.2cp <- list()
+for (i in 1:length(REH_2CP)) {
+  out.2cp[[i]] <- remstats(tie_effects = formula, edgelist = REH_2CP[[i]])
+}
+
+# extract the statistics from the list
+stat.2cp <- list()
+for (i in 1:length(REH_2CP)) {
+  stat.2cp[[i]] <- out.2cp[[i]][["statistics"]]
+}
 ```
 
-**Fit the Fixed MW REM on the REH with 2 CPs (inertia only)**
+**Fit the Fixed MW REM on the REH with Two CPs (inertia only)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_2CP$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_2CP)) {
+  tau[i] <- max(REH_2CP[[i]]$time)
+}
 
 # specify the length of the window
-windows_2cp <- REHdynamics::createwindows(1500, tau)
+windows_2cp <- list()
+for (i in 1:length(REH_2CP)) {
+  windows_2cp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_2cp <- REHdynamics::MWrem(windows_2cp, edgelist = REH_2CP, 
-                                       stats = stat.2cp,
+model_fixwin_2cp <- list()
+for (i in 1:length(REH_2CP)) {
+  model_fixwin_2cp[[i]] <- REHdynamics::MWrem(windows_2cp[[i]], edgelist = REH_2CP[[i]], 
+                                       stats = stat.2cp[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_2cp_param <- 1
-for (i in 1:length(model_fixwin_2cp)) {
-  fixmw_send_2cp_param[i] <- model_fixwin_2cp[[i]][["coefficients"]][["send.z"]]
+fixmw_send_2cp_param <- vector(mode='list', length = length(model_fixwin_2cp))
+for (i in 1:length(REH_2CP)) {
+  for (win in 1:length(model_fixwin_2cp[[i]])) {
+    fixmw_send_2cp_param[[i]][win] <- 
+      model_fixwin_2cp[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_2cp_param, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_2cp_param <- 1
-for (i in 1:length(model_fixwin_2cp)) {
-  fixmw_diff_2cp_param[i] <- model_fixwin_2cp[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_2cp_param, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_2cp_param <- 1
-for (i in 1:length(model_fixwin_2cp)) {
-  fixmw_ine_2cp_param[i] <- model_fixwin_2cp[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_2cp_param <- vector(mode='list', length = length(model_fixwin_2cp))
+for (i in 1:length(REH_2CP)) {
+  for (win in 1:length(model_fixwin_2cp[[i]])) {
+    fixmw_diff_2cp_param[[i]][win] <- 
+      model_fixwin_2cp[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_2cp_param, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_2cp_param <- 1
-for (i in 1:length(model_fixwin_2cp)) {
-  fixmw_out_2cp_param[i] <- model_fixwin_2cp[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_2cp_param <- vector(mode='list', length = length(model_fixwin_2cp))
+for (i in 1:length(REH_2CP)) {
+  for (win in 1:length(model_fixwin_2cp[[i]])) {
+    fixmw_ine_2cp_param[[i]][win] <- 
+      model_fixwin_2cp[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_2cp_param, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_2cp_param <- vector(mode='list', length = length(model_fixwin_2cp))
+for (i in 1:length(REH_2CP)) {
+  for (win in 1:length(model_fixwin_2cp[[i]])) {
+    fixmw_out_2cp_param[[i]][win] <- 
+      model_fixwin_2cp[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 2 Changepoints REH Data (all social interaction drivers at same locations)
@@ -378,62 +508,87 @@ REH_2CP_same.all <- readRDS("Synthetic_Data/REH_2CP_same.all.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.2cp_same.all <- remstats(tie_effects = formula, edgelist = REH_2CP_same.all) # also will be used for fitting REM
-stat.2cp_same.all <- out.2cp_same.all[["statistics"]] # extract the statistics from the list
+out.2cp_same.all <- list()
+for (i in 1:length(REH_2CP_same.all)) {
+  out.2cp_same.all[[i]] <- remstats(tie_effects = formula, edgelist = REH_2CP_same.all[[i]])
+}
+
+# extract the statistics from the list
+stat.2cp_same.all <- list()
+for (i in 1:length(REH_2CP_same.all)) {
+  stat.2cp_same.all[[i]] <- out.2cp_same.all[[i]][["statistics"]]
+}
 ```
 
-**Fit the Fixed MW REM on the REH with 2 CPs (same location)**
+**Fit the Fixed MW REM on the REH with Two CPs (same location)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_2CP_same.all$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_2CP_same.all)) {
+  tau[i] <- max(REH_2CP_same.all[[i]]$time)
+}
 
 # specify the length of the window
-windows_2cp_same.all <- REHdynamics::createwindows(1500, tau)
+windows_2cp_same.all <- list()
+for (i in 1:length(REH_2CP_same.all)) {
+  windows_2cp_same.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_2cp_same.all <- REHdynamics::MWrem(windows_2cp_same.all, edgelist = REH_2CP_same.all, 
-                                       stats = stat.2cp_same.all,
+model_fixwin_2cp_same.all <- list()
+for (i in 1:length(REH_2CP_same.all)) {
+  model_fixwin_2cp_same.all[[i]] <- REHdynamics::MWrem(windows_2cp_same.all[[i]], edgelist = REH_2CP_same.all[[i]], 
+                                       stats = stat.2cp_same.all[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_2cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_2cp_same.all)) {
-  fixmw_send_2cp_param_same.all[i] <- model_fixwin_2cp_same.all[[i]][["coefficients"]][["send.z"]]
+fixmw_send_2cp_param_same.all <- vector(mode='list', length = length(model_fixwin_2cp_same.all))
+for (i in 1:length(REH_2CP_same.all)) {
+  for (win in 1:length(model_fixwin_2cp_same.all[[i]])) {
+    fixmw_send_2cp_param_same.all[[i]][win] <- 
+      model_fixwin_2cp_same.all[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_2cp_param_same.all, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_2cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_2cp_same.all)) {
-  fixmw_diff_2cp_param_same.all[i] <- model_fixwin_2cp_same.all[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_2cp_param_same.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_2cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_2cp_same.all)) {
-  fixmw_ine_2cp_param_same.all[i] <- model_fixwin_2cp_same.all[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_2cp_param_same.all <- vector(mode='list', length = length(model_fixwin_2cp_same.all))
+for (i in 1:length(REH_2CP_same.all)) {
+  for (win in 1:length(model_fixwin_2cp_same.all[[i]])) {
+    fixmw_diff_2cp_param_same.all[[i]][win] <- 
+      model_fixwin_2cp_same.all[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_2cp_param_same.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_2cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_2cp_same.all)) {
-  fixmw_out_2cp_param_same.all[i] <- model_fixwin_2cp_same.all[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_2cp_param_same.all <- vector(mode='list', length = length(model_fixwin_2cp_same.all))
+for (i in 1:length(REH_2CP_same.all)) {
+  for (win in 1:length(model_fixwin_2cp_same.all[[i]])) {
+    fixmw_ine_2cp_param_same.all[[i]][win] <- 
+      model_fixwin_2cp_same.all[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_2cp_param_same.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_2cp_param_same.all <- vector(mode='list', length = length(model_fixwin_2cp_same.all))
+for (i in 1:length(REH_2CP_same.all)) {
+  for (win in 1:length(model_fixwin_2cp_same.all[[i]])) {
+    fixmw_out_2cp_param_same.all[[i]][win] <- 
+      model_fixwin_2cp_same.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 2 Changepoints REH Data (all social interaction driver at different locations)
@@ -446,62 +601,87 @@ REH_2CP_diff.all <- readRDS("Synthetic_Data/REH_2CP_diff.all.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.2cp_diff.all <- remstats(tie_effects = formula, edgelist = REH_2CP_diff.all) # also will be used for fitting REM
-stat.2cp_diff.all <- out.2cp_diff.all[["statistics"]] # extract the statistics from the list
+out.2cp_diff.all <- list()
+for (i in 1:length(REH_2CP_diff.all)) {
+  out.2cp_diff.all[[i]] <- remstats(tie_effects = formula, edgelist = REH_2CP_diff.all[[i]])
+}
+
+# extract the statistics from the list
+stat.2cp_diff.all <- list()
+for (i in 1:length(REH_2CP_diff.all)) {
+  stat.2cp_diff.all[[i]] <- out.2cp_diff.all[[i]][["statistics"]]
+}
 ```
 
-**Fit the Fixed MW REM on the REH with 2 CPs (different locations)**
+**Fit the Fixed MW REM on the REH with One CP (different location)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_2CP_diff.all$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_2CP_diff.all)) {
+  tau[i] <- max(REH_2CP_diff.all[[i]]$time)
+}
 
 # specify the length of the window
-windows_2cp_diff.all <- REHdynamics::createwindows(1500, tau)
+windows_2cp_diff.all <- list()
+for (i in 1:length(REH_2CP_diff.all)) {
+  windows_2cp_diff.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_2cp_diff.all <- REHdynamics::MWrem(windows_2cp_diff.all, edgelist = REH_2CP_diff.all, 
-                                       stats = stat.2cp_diff.all,
+model_fixwin_2cp_diff.all <- list()
+for (i in 1:length(REH_2CP_diff.all)) {
+  model_fixwin_2cp_diff.all[[i]] <- REHdynamics::MWrem(windows_2cp_diff.all[[i]], edgelist = REH_2CP_diff.all[[i]], 
+                                       stats = stat.2cp_diff.all[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_2cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_2cp_diff.all)) {
-  fixmw_send_2cp_param_diff.all[i] <- model_fixwin_2cp_diff.all[[i]][["coefficients"]][["send.z"]]
+fixmw_send_2cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_2cp_diff.all))
+for (i in 1:length(REH_2CP_diff.all)) {
+  for (win in 1:length(model_fixwin_2cp_diff.all[[i]])) {
+    fixmw_send_2cp_param_diff.all[[i]][win] <- 
+      model_fixwin_2cp_diff.all[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_2cp_param_diff.all, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_2cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_2cp_diff.all)) {
-  fixmw_diff_2cp_param_diff.all[i] <- model_fixwin_2cp_diff.all[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_2cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_2cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_2cp_diff.all)) {
-  fixmw_ine_2cp_param_diff.all[i] <- model_fixwin_2cp_diff.all[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_2cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_2cp_diff.all))
+for (i in 1:length(REH_2CP_diff.all)) {
+  for (win in 1:length(model_fixwin_2cp_diff.all[[i]])) {
+    fixmw_diff_2cp_param_diff.all[[i]][win] <- 
+      model_fixwin_2cp_diff.all[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_2cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_2cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_2cp_diff.all)) {
-  fixmw_out_2cp_param_diff.all[i] <- model_fixwin_2cp_diff.all[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_2cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_2cp_diff.all))
+for (i in 1:length(REH_2CP_diff.all)) {
+  for (win in 1:length(model_fixwin_2cp_diff.all[[i]])) {
+    fixmw_ine_2cp_param_diff.all[[i]][win] <- 
+      model_fixwin_2cp_diff.all[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_2cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_2cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_2cp_diff.all))
+for (i in 1:length(REH_2CP_diff.all)) {
+  for (win in 1:length(model_fixwin_2cp_diff.all[[i]])) {
+    fixmw_out_2cp_param_diff.all[[i]][win] <- 
+      model_fixwin_2cp_diff.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 3 Changepoints REH Data (inertia only)
@@ -514,62 +694,87 @@ REH_3CP <- readRDS("Synthetic_Data/REH_3CP.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.3cp <- remstats(tie_effects = formula, edgelist = REH_3CP) # also will be used for fitting REM
-stat.3cp <- out.3cp[["statistics"]] # extract the statistics from the list
+out.3cp <- list()
+for (i in 1:length(REH_3CP)) {
+  out.3cp[[i]] <- remstats(tie_effects = formula, edgelist = REH_3CP[[i]])
+}
+
+# extract the statistics from the list
+stat.3cp <- list()
+for (i in 1:length(REH_3CP)) {
+  stat.3cp[[i]] <- out.3cp[[i]][["statistics"]]
+}
 ```
 
-**Fit the Fixed MW REM on the REH with 2 CPs (inertia only)**
+**Fit the Fixed MW REM on the REH with Three CPs (inertia only)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_3CP$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_3CP)) {
+  tau[i] <- max(REH_3CP[[i]]$time)
+}
 
 # specify the length of the window
-windows_3cp <- REHdynamics::createwindows(1500, tau)
+windows_3cp <- list()
+for (i in 1:length(REH_3CP)) {
+  windows_3cp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_3cp <- REHdynamics::MWrem(windows_3cp, edgelist = REH_3CP, 
-                                       stats = stat.3cp,
+model_fixwin_3cp <- list()
+for (i in 1:length(REH_3CP)) {
+  model_fixwin_3cp[[i]] <- REHdynamics::MWrem(windows_3cp[[i]], edgelist = REH_3CP[[i]], 
+                                       stats = stat.3cp[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_3cp_param <- 1
-for (i in 1:length(model_fixwin_3cp)) {
-  fixmw_send_3cp_param[i] <- model_fixwin_3cp[[i]][["coefficients"]][["send.z"]]
+fixmw_send_3cp_param <- vector(mode='list', length = length(model_fixwin_3cp))
+for (i in 1:length(REH_3CP)) {
+  for (win in 1:length(model_fixwin_3cp[[i]])) {
+    fixmw_send_3cp_param[[i]][win] <- 
+      model_fixwin_3cp[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_3cp_param, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_3cp_param <- 1
-for (i in 1:length(model_fixwin_3cp)) {
-  fixmw_diff_3cp_param[i] <- model_fixwin_3cp[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_3cp_param, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_3cp_param <- 1
-for (i in 1:length(model_fixwin_3cp)) {
-  fixmw_ine_3cp_param[i] <- model_fixwin_3cp[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_3cp_param <- vector(mode='list', length = length(model_fixwin_3cp))
+for (i in 1:length(REH_3CP)) {
+  for (win in 1:length(model_fixwin_3cp[[i]])) {
+    fixmw_diff_3cp_param[[i]][win] <- 
+      model_fixwin_3cp[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_3cp_param, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_3cp_param <- 1
-for (i in 1:length(model_fixwin_3cp)) {
-  fixmw_out_3cp_param[i] <- model_fixwin_3cp[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_3cp_param <- vector(mode='list', length = length(model_fixwin_3cp))
+for (i in 1:length(REH_3CP)) {
+  for (win in 1:length(model_fixwin_3cp[[i]])) {
+    fixmw_ine_3cp_param[[i]][win] <- 
+      model_fixwin_3cp[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_3cp_param, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_3cp_param <- vector(mode='list', length = length(model_fixwin_3cp))
+for (i in 1:length(REH_3CP)) {
+  for (win in 1:length(model_fixwin_3cp[[i]])) {
+    fixmw_out_3cp_param[[i]][win] <- 
+      model_fixwin_3cp[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 3 Changepoints REH Data (all social interaction drivers at same locations)
@@ -582,62 +787,87 @@ REH_3CP_same.all <- readRDS("Synthetic_Data/REH_3CP_same.all.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.3cp_same.all <- remstats(tie_effects = formula, edgelist = REH_3CP_same.all) # also will be used for fitting REM
-stat.3cp_same.all <- out.3cp_same.all[["statistics"]] # extract the statistics from the list
+out.3cp_same.all <- list()
+for (i in 1:length(REH_3CP_same.all)) {
+  out.3cp_same.all[[i]] <- remstats(tie_effects = formula, edgelist = REH_3CP_same.all[[i]])
+}
+
+# extract the statistics from the list
+stat.3cp_same.all <- list()
+for (i in 1:length(REH_3CP_same.all)) {
+  stat.3cp_same.all[[i]] <- out.3cp_same.all[[i]][["statistics"]]
+}
 ```
 
-**Fit the Fixed MW REM on the REH with 3 CPs (same location)**
+**Fit the Fixed MW REM on the REH with Two CPs (same location)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_3CP_same.all$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_3CP_same.all)) {
+  tau[i] <- max(REH_3CP_same.all[[i]]$time)
+}
 
 # specify the length of the window
-windows_3cp_same.all <- REHdynamics::createwindows(1500, tau)
+windows_3cp_same.all <- list()
+for (i in 1:length(REH_3CP_same.all)) {
+  windows_3cp_same.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_3cp_same.all <- REHdynamics::MWrem(windows_3cp_same.all, edgelist = REH_3CP_same.all, 
-                                       stats = stat.3cp_same.all,
+model_fixwin_3cp_same.all <- list()
+for (i in 1:length(REH_3CP_same.all)) {
+  model_fixwin_3cp_same.all[[i]] <- REHdynamics::MWrem(windows_3cp_same.all[[i]], edgelist = REH_3CP_same.all[[i]], 
+                                       stats = stat.3cp_same.all[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_3cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_3cp_same.all)) {
-  fixmw_send_3cp_param_same.all[i] <- model_fixwin_3cp_same.all[[i]][["coefficients"]][["send.z"]]
+fixmw_send_3cp_param_same.all <- vector(mode='list', length = length(model_fixwin_3cp_same.all))
+for (i in 1:length(REH_3CP_same.all)) {
+  for (win in 1:length(model_fixwin_3cp_same.all[[i]])) {
+    fixmw_send_3cp_param_same.all[[i]][win] <- 
+      model_fixwin_3cp_same.all[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_3cp_param_same.all, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_3cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_3cp_same.all)) {
-  fixmw_diff_3cp_param_same.all[i] <- model_fixwin_3cp_same.all[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_3cp_param_same.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_3cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_3cp_same.all)) {
-  fixmw_ine_3cp_param_same.all[i] <- model_fixwin_3cp_same.all[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_3cp_param_same.all <- vector(mode='list', length = length(model_fixwin_3cp_same.all))
+for (i in 1:length(REH_3CP_same.all)) {
+  for (win in 1:length(model_fixwin_3cp_same.all[[i]])) {
+    fixmw_diff_3cp_param_same.all[[i]][win] <- 
+      model_fixwin_3cp_same.all[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_3cp_param_same.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_3cp_param_same.all <- 1
-for (i in 1:length(model_fixwin_3cp_same.all)) {
-  fixmw_out_3cp_param_same.all[i] <- model_fixwin_3cp_same.all[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_3cp_param_same.all <- vector(mode='list', length = length(model_fixwin_3cp_same.all))
+for (i in 1:length(REH_3CP_same.all)) {
+  for (win in 1:length(model_fixwin_3cp_same.all[[i]])) {
+    fixmw_ine_3cp_param_same.all[[i]][win] <- 
+      model_fixwin_3cp_same.all[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_3cp_param_same.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_3cp_param_same.all <- vector(mode='list', length = length(model_fixwin_3cp_same.all))
+for (i in 1:length(REH_3CP_same.all)) {
+  for (win in 1:length(model_fixwin_3cp_same.all[[i]])) {
+    fixmw_out_3cp_param_same.all[[i]][win] <- 
+      model_fixwin_3cp_same.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```
 
 # 3 Changepoints REH Data (all social interaction driver at different locations)
@@ -650,60 +880,85 @@ REH_3CP_diff.all <- readRDS("Synthetic_Data/REH_3CP_diff.all.RDS")
 **Extract the Statistics Used for Fitting the REM**
 ```{r}
 # compute the statistics
-out.3cp_diff.all <- remstats(tie_effects = formula, edgelist = REH_3CP_diff.all) # also will be used for fitting REM
-stat.3cp_diff.all <- out.3cp_diff.all[["statistics"]] # extract the statistics from the list
+out.3cp_diff.all <- list()
+for (i in 1:length(REH_3CP_diff.all)) {
+  out.3cp_diff.all[[i]] <- remstats(tie_effects = formula, edgelist = REH_3CP_diff.all[[i]])
+}
+
+# extract the statistics from the list
+stat.3cp_diff.all <- list()
+for (i in 1:length(REH_3CP_diff.all)) {
+  stat.3cp_diff.all[[i]] <- out.3cp_diff.all[[i]][["statistics"]]
+}
 ```
 
-**Fit the Fixed MW REM on the REH with 3 CPs (different locations)**
+**Fit the Fixed MW REM on the REH with One CP (different location)**
 
 1. Step 1: Decide the length of the window, and fit it into REM
 ```{r}
-# maximum time point of the REH
-tau <- max(REH_3CP_diff.all$time)
+# maximum time point of each iteration of REH
+tau <- 0
+for (i in 1:length(REH_3CP_diff.all)) {
+  tau[i] <- max(REH_3CP_diff.all[[i]]$time)
+}
 
 # specify the length of the window
-windows_3cp_diff.all <- REHdynamics::createwindows(1500, tau)
+windows_3cp_diff.all <- list()
+for (i in 1:length(REH_3CP_diff.all)) {
+  windows_3cp_diff.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+}
 
 # fit to the REM model
-model_fixwin_3cp_diff.all <- REHdynamics::MWrem(windows_3cp_diff.all, edgelist = REH_3CP_diff.all, 
-                                       stats = stat.3cp_diff.all,
+model_fixwin_3cp_diff.all <- list()
+for (i in 1:length(REH_3CP_diff.all)) {
+  model_fixwin_3cp_diff.all[[i]] <- REHdynamics::MWrem(windows_3cp_diff.all[[i]], edgelist = REH_3CP_diff.all[[i]], 
+                                       stats = stat.3cp_diff.all[[i]],
                                        actors = covar$id, directed = TRUE, 
                                        method = "MLE", model = "tie", ncores = 2)
+}
 ```
 
-2. Step 2: Extract the parameters by windows and plot them out
+2. Step 2: Extract the parameters by windows
 ```{r}
 # extract the parameters
-fixmw_send_3cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_3cp_diff.all)) {
-  fixmw_send_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["send.z"]]
+fixmw_send_3cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_3cp_diff.all))
+for (i in 1:length(REH_3CP_diff.all)) {
+  for (win in 1:length(model_fixwin_3cp_diff.all[[i]])) {
+    fixmw_send_3cp_param_diff.all[[i]][win] <- 
+      model_fixwin_3cp_diff.all[[i]][[win]][["coefficients"]][["send.z"]]
+  }
 }
-plot(fixmw_send_3cp_param_diff.all, type = "lm") # plot the movement of parameter
-```
-
-```{r}
-# extract the parameters
-fixmw_diff_3cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_3cp_diff.all)) {
-  fixmw_diff_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["difference.z"]]
-}
-plot(fixmw_diff_3cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_ine_3cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_3cp_diff.all)) {
-  fixmw_ine_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["inertia"]]
+fixmw_diff_3cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_3cp_diff.all))
+for (i in 1:length(REH_3CP_diff.all)) {
+  for (win in 1:length(model_fixwin_3cp_diff.all[[i]])) {
+    fixmw_diff_3cp_param_diff.all[[i]][win] <- 
+      model_fixwin_3cp_diff.all[[i]][[win]][["coefficients"]][["difference.z"]]
+  }
 }
-plot(fixmw_ine_3cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
 # extract the parameters
-fixmw_out_3cp_param_diff.all <- 1
-for (i in 1:length(model_fixwin_3cp_diff.all)) {
-  fixmw_out_3cp_param_diff.all[i] <- model_fixwin_3cp_diff.all[[i]][["coefficients"]][["outdegreeSender"]]
+fixmw_ine_3cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_3cp_diff.all))
+for (i in 1:length(REH_3CP_diff.all)) {
+  for (win in 1:length(model_fixwin_3cp_diff.all[[i]])) {
+    fixmw_ine_3cp_param_diff.all[[i]][win] <- 
+      model_fixwin_3cp_diff.all[[i]][[win]][["coefficients"]][["inertia"]]
+  }
 }
-plot(fixmw_out_3cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_3cp_param_diff.all <- vector(mode='list', length = length(model_fixwin_3cp_diff.all))
+for (i in 1:length(REH_3CP_diff.all)) {
+  for (win in 1:length(model_fixwin_3cp_diff.all[[i]])) {
+    fixmw_out_3cp_param_diff.all[[i]][win] <- 
+      model_fixwin_3cp_diff.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
+  }
+}
 ```

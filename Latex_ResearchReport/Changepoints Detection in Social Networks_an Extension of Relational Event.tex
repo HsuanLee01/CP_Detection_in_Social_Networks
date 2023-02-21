@@ -43,64 +43,64 @@
 \begin{document}
 
 \begin{titlepage}
-    \begin{center}
-        \vspace*{1cm}
-            
-        \Huge
-        \textbf{Changepoints Inference in Relational Event Data of a Social Network}
-            
-        \vspace{0.8cm}
-        \LARGE
-        RESEARCH REPORT
-            
-        \vspace{2cm}
-            
-        \textbf{Hsuan Lee (9252568)}
-        
-        \vspace{1cm}
-        Supervisors: 
-        
-        \vspace{0.5cm}
-        
-        Dr. Mahdi Shafiee Kamalabad 
-        
-        \& 
-        
-        Dr. Javier Garcia Bernardo
-        
-        \vspace{2cm}
-        \Large
-        
-        \ Programme: MSBBSS
-        
-        \vspace{0.3cm}
-        
-        \emph{Department of Methodology \& Statistics}\\
-        
-        \vspace{0.3cm}
-        Utrecht University\\
-        the Netherlands\\
-        
-        \vspace{1.5cm}    
-        \Large
-        Date: 10.01.2022
-        
-        Words Count: 2497
-        
-        Candidate Journal: Social Networks
-        
-        FETC Case Number: 22-1870; 22-1871
-        
-    \end{center}
+	\begin{center}
+		\vspace*{0.3cm}
+		
+		\Huge
+		\textbf{Changepoints Detection in Social Networks: an Extension of Relational Event Model}
+		
+		\vspace{1.8cm}
+		\LARGE
+		MID-TERM RESEARCH REPORT
+		
+		\vspace{1.8cm}
+		
+		\textbf{Hsuan Lee (9252568)}
+		
+		\vspace{1cm}
+		Supervisors: 
+		
+		\vspace{0.5cm}
+		
+		Dr. Mahdi Shafiee Kamalabad 
+		
+		\& 
+		
+		Dr. Javier Garcia Bernardo
+		
+		\vspace{2cm}
+		\Large
+		
+		\ Programme: MSBBSS
+		
+		\vspace{0.3cm}
+		
+		\emph{Department of Methodology \& Statistics}\\
+		
+		\vspace{0.3cm}
+		Utrecht University\\
+		the Netherlands\\
+		
+		\vspace{1.5cm}    
+		\Large
+		Date: 10.01.2022
+		
+		Words Count: 2497
+		
+		Candidate Journal: Social Networks
+		
+		FETC Case Number: 22-1870; 22-1871
+		
+	\end{center}
 \end{titlepage}
 
 \articletype{THESIS PROPOSAL}
 
 \section{\fontsize{14}{15}\selectfont Introduction}
 
-\hspace{0.2cm} Changepoints (CPs) are sudden shifts within the time series data which reflect the transitions occurring across conditions\cite{sharmaTrendAnalysisChange2016}\cite{aminikhanghahiSurveyMethodsTime2017}. Methods aimed at spotting changepoints are termed changepoint detection methods(CPD). Changepoint detection is essential in many domains, in the social network area, by detecting changepoints, one can better respond to or be able to prevent certain emergencies (e.g., unexpected conditions caused by poor communication in the surgical room). Meanwhile, the evolution of the social network can be observed more clearly. However, research and applications of changepoint detection are relatively lacking in the social network field.\\
+\hspace{0.2cm} Changepoints are sudden shifts within the time series data which reflect the transitions occurring across conditions\cite{sharmaTrendAnalysisChange2016}\cite{aminikhanghahiSurveyMethodsTime2017}. The detection of changepoints is essential in many domains. In the social network area, due to the rich dynamics of social networks, changepoint detection allows us to spot the time points when influential events occurred in the network, assisting us to observe the dynamic evolution of the network more clearly. However, research and applications of changepoint detection are relatively lacking in the social network field.\\
 
-To infer the changepoints in social networks, performing CPDs under the Relational Event History data (REH) framework is a possible option. The REH is a type of data that records the interactions of actors in a social network over time, i.e., time-ordered sequences of social interactions\cite{meijerink-bosmanDynamicRelationalEvent2022}. REH is basically composed of three elements, i.e., sender, receiver, and time (\autoref{Table 1}), denoted as (s,r,t). In REH, each event occurring in the social network is equipped with these three messages. Given a REH, the values of certain specific social interaction drivers (e.g., inertia, reciprocity, etc.) are able to be computed and parameterized by fitting a Relational Event Model(REM). In REM, the parameters reveal the influence level of each social interaction driver on the social interaction in the social network.\\
+To infer the changepoints in social networks, performing changepoint detection methods under the Relational Event History data (REH) framework is a possible option. The REH is a type of data that records the interactions of actors in a social network over time, i.e., time-ordered sequences of social interactions\cite{meijerink-bosmanDynamicRelationalEvent2022}. REH is basically composed of three elements, i.e., sender, receiver, and time (\autoref{Table 1}), denoted as (s,r,t). In REH, each event occurring in the social network is equipped with these three messages. Given a REH, the values of certain specific social interaction drivers (e.g., inertia, reciprocity, etc.) are able to be computed and parameterized by fitting a Relational Event Model(REM). In REM, the parameters reveal the influence level of each social interaction driver on the social interaction in the social network.\\
 
 A limitation of REM is that it assumes that the social interaction drivers hold constant influence levels on social networks over time, which seems unrealistic considering the dynamic nature of real-life interactions. To liberate this assumption, Mulder and Leenders \cite{mulderModelingEvolutionInteraction2019} proposed the Moving Window approach (MW) built upon the REM construct, which is capable of capturing the dynamics of the influence levels across time. The main concept of MW is to delineate specific duration of time (i.e. window) that partially overlaps with the subsequent window and slides over the entire event history. Thereafter, by modeling each window, the fluctuations in influence level of each social interaction driver is analyzed and observable. The difficulty, however, is that the influence level typically vary between consecutive windows, leaving the visual identification of changepoints a challenge.\\
 

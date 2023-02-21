@@ -1,0 +1,79 @@
+---
+title: "Comparison of CPDs"
+author: "Hsuan Lee"
+output: pdf_document
+---
+
+# Create the function for MSE
+```{r}
+MSE_CPD <- function(pred_CPs, actu_CPs){
+  
+  single_MSE <- 0 # create an blank vector for storing
+  
+  for (CP in 1:length(pred_CPs)) {
+    # MSE of each CP
+    single_MSE[CP] <- (pred_CPs[CP] - actu_CPs[CP])^2
+    }
+  
+  # sum the MSE from each CP
+  sum_MSE <- sum(single_MSE)
+  
+  # MSE
+  MSE <- sum_MSE / length(pred_CPs)
+  
+  return(MSE)
+}
+```
+
+# Create the function for MSD
+```{r}
+MSD_CPD <- function(pred_CPs, actu_CPs){
+  
+  single_MSD <- 0 # create an blank vector for storing
+  
+  for (CP in 1:length(pred_CPs)) {
+    # MSD of each CP
+    single_MSD[CP] <- pred_CPs[CP] - actu_CPs[CP]
+    }
+  
+  # sum the MSD from each CP
+  sum_MSD <- sum(single_MSD)
+  
+  # MSD
+  MSD <- sum_MSD / length(pred_CPs)
+  
+  return(MSD)
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

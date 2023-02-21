@@ -15,28 +15,163 @@ library(changepoint) # package for PELT, BS
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
-BOCD_fixmw_send_ncp_param <- onlineCPD(fixmw_send_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_send_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_send_ncp_param)
+# Detect the CPs
+BOCD_fixmw_send_ncp_param <- list()
+for (i in 1:length(fixmw_send_ncp_param)) {
+  BOCD_fixmw_send_ncp_param[[i]] <- onlineCPD(fixmw_send_ncp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_ncp_send <- list()
+for (i in 1:length(BOCD_fixmw_send_ncp_param)) {
+  locat_BOCD_ncp_send[[i]] <- BOCD_fixmw_send_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_send_ncp_param)) {
+  plot(BOCD_fixmw_send_ncp_param[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_diff_ncp_param <- onlineCPD(fixmw_diff_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_diff_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_diff_ncp_param)
+# Detect the CPs
+BOCD_fixmw_diff_ncp_param <- list()
+for (i in 1:length(fixmw_diff_ncp_param)) {
+  BOCD_fixmw_diff_ncp_param[[i]] <- onlineCPD(fixmw_diff_ncp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_ncp_diff <- list()
+for (i in 1:length(BOCD_fixmw_diff_ncp_param)) {
+  locat_BOCD_ncp_diff[[i]] <- BOCD_fixmw_diff_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_diff_ncp_param)) {
+  plot(BOCD_fixmw_diff_ncp_param[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_ine_ncp_param <- onlineCPD(fixmw_ine_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_ncp_param)
+# Detect the CPs
+BOCD_fixmw_ine_ncp_param <- list()
+for (i in 1:length(fixmw_ine_ncp_param)) {
+  BOCD_fixmw_ine_ncp_param[[i]] <- onlineCPD(fixmw_ine_ncp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_ncp_ine <- list()
+for (i in 1:length(BOCD_fixmw_ine_ncp_param)) {
+  locat_BOCD_ncp_ine[[i]] <- BOCD_fixmw_ine_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_ine_ncp_param)) {
+  plot(BOCD_fixmw_ine_ncp_param[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_out_ncp_param <- onlineCPD(fixmw_out_ncp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_out_ncp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_out_ncp_param)
+# Detect the CPs
+BOCD_fixmw_out_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  BOCD_fixmw_out_ncp_param[[i]] <- onlineCPD(fixmw_out_ncp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_ncp_out <- list()
+for (i in 1:length(BOCD_fixmw_out_ncp_param)) {
+  locat_BOCD_ncp_out[[i]] <- BOCD_fixmw_out_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_out_ncp_param)) {
+  plot(BOCD_fixmw_out_ncp_param[[i]])
+}
 ```
+
+2. PELT: Exact CPs Detection Method
+```{r}
+# detect the changepoints
+PELT_fixmw_ine_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  PELT_fixmw_ine_ncp_param[[i]] <- cpt.meanvar(fixmw_ine_ncp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_ncp_ine <- list()
+for (i in 1:length(PELT_fixmw_ine_ncp_param)) {
+  locat_PELT_ncp_ine[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_ine_ncp_param[[i]]@cpts[-length(PELT_fixmw_ine_ncp_param[[i]]@cpts)]
+}
+
+
+
+
+
+
+
+# plot the location of CPs
+plot(fixmw_ine_ncp_param[[15]], type="point", col = "black")
+abline(v=PELT_fixmw_ine_ncp_param[[14]]@cpts[-length(PELT_fixmw_ine_ncp_param[[15]]@cpts)], col="black")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 2. PELT: Exact CPs Detection Method
 ```{r}
@@ -59,9 +194,155 @@ plot(fixmw_ine_ncp_param, type = "l")
 abline(v=BS_fixmw_ine_ncp_param@cpts[], col="red")
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 1 Changepoint REH Data (inertia only)
 
 **Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+# Detect the CPs
+BOCD_fixmw_send_1cp_param <- list()
+for (i in 1:length(fixmw_send_1cp_param)) {
+  BOCD_fixmw_send_1cp_param[[i]] <- onlineCPD(fixmw_send_1cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_send <- list()
+for (i in 1:length(BOCD_fixmw_send_1cp_param)) {
+  locat_BOCD_1cp_send[[i]] <- BOCD_fixmw_send_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_send_1cp_param)) {
+  plot(BOCD_fixmw_send_1cp_param[[i]])
+}
+```
+
+```{r}
+# Detect the CPs
+BOCD_fixmw_diff_1cp_param <- list()
+for (i in 1:length(fixmw_diff_1cp_param)) {
+  BOCD_fixmw_diff_1cp_param[[i]] <- onlineCPD(fixmw_diff_1cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_diff <- list()
+for (i in 1:length(BOCD_fixmw_diff_1cp_param)) {
+  locat_BOCD_1cp_diff[[i]] <- BOCD_fixmw_diff_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_diff_1cp_param)) {
+  plot(BOCD_fixmw_diff_1cp_param[[i]])
+}
+```
+
+```{r}
+# Detect the CPs
+BOCD_fixmw_ine_1cp_param <- list()
+for (i in 1:length(fixmw_ine_1cp_param)) {
+  BOCD_fixmw_ine_1cp_param[[i]] <- onlineCPD(fixmw_ine_1cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_ine <- list()
+for (i in 1:length(BOCD_fixmw_ine_1cp_param)) {
+  locat_BOCD_1cp_ine[[i]] <- BOCD_fixmw_ine_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_ine_1cp_param)) {
+  plot(BOCD_fixmw_ine_1cp_param[[i]])
+}
+```
+
+```{r}
+# Detect the CPs
+BOCD_fixmw_out_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  BOCD_fixmw_out_1cp_param[[i]] <- onlineCPD(fixmw_out_1cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_out <- list()
+for (i in 1:length(BOCD_fixmw_out_1cp_param)) {
+  locat_BOCD_1cp_out[[i]] <- BOCD_fixmw_out_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_out_1cp_param)) {
+  plot(BOCD_fixmw_out_1cp_param[[i]])
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
@@ -166,7 +447,150 @@ plot(fixmw_out_1cp_param)
 abline(v=BS_fixmw_out_1cp_param@cpts[], col="red")
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 1 Changepoint REH Data (all social interaction drivers at same locations)
+
+**Test CPs of the Fixed MW parameters**
+
+1. BOCD: Exact CPs Detection Method
+```{r}
+# Detect the CPs
+BOCD_fixmw_send_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_send_1cp_param_same.all)) {
+  BOCD_fixmw_send_1cp_param_same.all[[i]] <- onlineCPD(fixmw_send_1cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_send_same.all <- list()
+for (i in 1:length(BOCD_fixmw_send_1cp_param_same.all)) {
+  locat_BOCD_1cp_send_same.all[[i]] <- BOCD_fixmw_send_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_send_1cp_param_same.all)) {
+  plot(BOCD_fixmw_send_1cp_param_same.all[[i]])
+}
+```
+
+```{r}
+# Detect the CPs
+BOCD_fixmw_diff_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_diff_1cp_param_same.all)) {
+  BOCD_fixmw_diff_1cp_param_same.all[[i]] <- onlineCPD(fixmw_diff_1cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_diff_same.all <- list()
+for (i in 1:length(BOCD_fixmw_diff_1cp_param_same.all)) {
+  locat_BOCD_1cp_diff_same.all[[i]] <- BOCD_fixmw_diff_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_diff_1cp_param_same.all)) {
+  plot(BOCD_fixmw_diff_1cp_param_same.all[[i]])
+}
+```
+
+```{r}
+# Detect the CPs
+BOCD_fixmw_ine_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_ine_1cp_param_same.all)) {
+  BOCD_fixmw_ine_1cp_param_same.all[[i]] <- onlineCPD(fixmw_ine_1cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_ine_same.all <- list()
+for (i in 1:length(BOCD_fixmw_ine_1cp_param_same.all)) {
+  locat_BOCD_1cp_ine_same.all[[i]] <- BOCD_fixmw_ine_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_ine_1cp_param_same.all)) {
+  plot(BOCD_fixmw_ine_1cp_param_same.all[[i]])
+}
+```
+
+```{r}
+# Detect the CPs
+BOCD_fixmw_out_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  BOCD_fixmw_out_1cp_param_same.all[[i]] <- onlineCPD(fixmw_out_1cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_1cp_out_same.all <- list()
+for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
+  locat_BOCD_1cp_out_same.all[[i]] <- BOCD_fixmw_out_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
+  plot(BOCD_fixmw_out_1cp_param_same.all[[i]])
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 **Test CPs of the Fixed MW parameters**
 
