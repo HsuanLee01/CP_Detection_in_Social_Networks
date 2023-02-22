@@ -735,89 +735,89 @@ abline(v=BS_fixmw_out_1cp_param_same.all@cpts[], col="red")
 1. BOCD: Exact CPs Detection Method
 ```{r}
 # Detect the CPs
-BOCD_fixmw_send_1cp_param_same.all <- list()
-for (i in 1:length(fixmw_send_1cp_param_same.all)) {
-  BOCD_fixmw_send_1cp_param_same.all[[i]] <- onlineCPD(fixmw_send_1cp_param_same.all[[i]], 
+BOCD_fixmw_send_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_send_1cp_param_diff.all)) {
+  BOCD_fixmw_send_1cp_param_diff.all[[i]] <- onlineCPD(fixmw_send_1cp_param_diff.all[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
 
 # location of the CPs
-locat_BOCD_1cp_send_same.all <- list()
-for (i in 1:length(BOCD_fixmw_send_1cp_param_same.all)) {
-  locat_BOCD_1cp_send_same.all[[i]] <- BOCD_fixmw_send_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+locat_BOCD_1cp_send_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_send_1cp_param_diff.all)) {
+  locat_BOCD_1cp_send_diff.all[[i]] <- BOCD_fixmw_send_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
 }
 
 # plot the CPs for each iteration
-for (i in 1:length(BOCD_fixmw_send_1cp_param_same.all)) {
-  plot(BOCD_fixmw_send_1cp_param_same.all[[i]])
+for (i in 1:length(BOCD_fixmw_send_1cp_param_diff.all)) {
+  plot(BOCD_fixmw_send_1cp_param_diff.all[[i]])
 }
 ```
 
 ```{r}
 # Detect the CPs
-BOCD_fixmw_diff_1cp_param_same.all <- list()
-for (i in 1:length(fixmw_diff_1cp_param_same.all)) {
-  BOCD_fixmw_diff_1cp_param_same.all[[i]] <- onlineCPD(fixmw_diff_1cp_param_same.all[[i]], 
+BOCD_fixmw_diff_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_diff_1cp_param_diff.all)) {
+  BOCD_fixmw_diff_1cp_param_diff.all[[i]] <- onlineCPD(fixmw_diff_1cp_param_diff.all[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
 
 # location of the CPs
-locat_BOCD_1cp_diff_same.all <- list()
-for (i in 1:length(BOCD_fixmw_diff_1cp_param_same.all)) {
-  locat_BOCD_1cp_diff_same.all[[i]] <- BOCD_fixmw_diff_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+locat_BOCD_1cp_diff_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_diff_1cp_param_diff.all)) {
+  locat_BOCD_1cp_diff_diff.all[[i]] <- BOCD_fixmw_diff_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
 }
 
 # plot the CPs for each iteration
-for (i in 1:length(BOCD_fixmw_diff_1cp_param_same.all)) {
-  plot(BOCD_fixmw_diff_1cp_param_same.all[[i]])
+for (i in 1:length(BOCD_fixmw_diff_1cp_param_diff.all)) {
+  plot(BOCD_fixmw_diff_1cp_param_diff.all[[i]])
 }
 ```
 
 ```{r}
 # Detect the CPs
-BOCD_fixmw_ine_1cp_param_same.all <- list()
-for (i in 1:length(fixmw_ine_1cp_param_same.all)) {
-  BOCD_fixmw_ine_1cp_param_same.all[[i]] <- onlineCPD(fixmw_ine_1cp_param_same.all[[i]], 
+BOCD_fixmw_ine_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_ine_1cp_param_diff.all)) {
+  BOCD_fixmw_ine_1cp_param_diff.all[[i]] <- onlineCPD(fixmw_ine_1cp_param_diff.all[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
 
 # location of the CPs
-locat_BOCD_1cp_ine_same.all <- list()
-for (i in 1:length(BOCD_fixmw_ine_1cp_param_same.all)) {
-  locat_BOCD_1cp_ine_same.all[[i]] <- BOCD_fixmw_ine_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+locat_BOCD_1cp_ine_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_ine_1cp_param_diff.all)) {
+  locat_BOCD_1cp_ine_diff.all[[i]] <- BOCD_fixmw_ine_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
 }
 
 # plot the CPs for each iteration
-for (i in 1:length(BOCD_fixmw_ine_1cp_param_same.all)) {
-  plot(BOCD_fixmw_ine_1cp_param_same.all[[i]])
+for (i in 1:length(BOCD_fixmw_ine_1cp_param_diff.all)) {
+  plot(BOCD_fixmw_ine_1cp_param_diff.all[[i]])
 }
 ```
 
 ```{r}
 # Detect the CPs
-BOCD_fixmw_out_1cp_param_same.all <- list()
-for (i in 1:length(fixmw_out_1cp_param_same.all)) {
-  BOCD_fixmw_out_1cp_param_same.all[[i]] <- onlineCPD(fixmw_out_1cp_param_same.all[[i]], 
+BOCD_fixmw_out_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  BOCD_fixmw_out_1cp_param_diff.all[[i]] <- onlineCPD(fixmw_out_1cp_param_diff.all[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
 
 # location of the CPs
-locat_BOCD_1cp_out_same.all <- list()
-for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
-  locat_BOCD_1cp_out_same.all[[i]] <- BOCD_fixmw_out_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+locat_BOCD_1cp_out_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_out_1cp_param_diff.all)) {
+  locat_BOCD_1cp_out_diff.all[[i]] <- BOCD_fixmw_out_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
 }
 
 # plot the CPs for each iteration
-for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
-  plot(BOCD_fixmw_out_1cp_param_same.all[[i]])
+for (i in 1:length(BOCD_fixmw_out_1cp_param_diff.all)) {
+  plot(BOCD_fixmw_out_1cp_param_diff.all[[i]])
 }
 ```
 
