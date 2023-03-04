@@ -105,6 +105,50 @@ for (i in 1:length(BOCD_fixmw_out_ncp_param)) {
 2. PELT: Exact CPs Detection Method
 ```{r}
 # detect the changepoints
+PELT_fixmw_send_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  PELT_fixmw_send_ncp_param[[i]] <- cpt.meanvar(fixmw_send_ncp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_ncp_send <- list()
+for (i in 1:length(PELT_fixmw_send_ncp_param)) {
+  locat_PELT_ncp_send[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_send_ncp_param[[i]]@cpts[-length(PELT_fixmw_send_ncp_param[[i]]@cpts)]
+}
+
+# plot the location of CPs
+for (i in 1:length(PELT_fixmw_send_ncp_param)) {
+  plot(PELT_fixmw_send_ncp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_send_ncp_param[[i]]@cpts[-length(PELT_fixmw_send_ncp_param[[i]]@cpts)], col="black")
+}
+```
+
+```{r}
+# detect the changepoints
+PELT_fixmw_diff_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  PELT_fixmw_diff_ncp_param[[i]] <- cpt.meanvar(fixmw_diff_ncp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_ncp_diff <- list()
+for (i in 1:length(PELT_fixmw_diff_ncp_param)) {
+  locat_PELT_ncp_diff[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_diff_ncp_param[[i]]@cpts[-length(PELT_fixmw_diff_ncp_param[[i]]@cpts)]
+}
+
+# plot the location of CPs
+for (i in 1:length(PELT_fixmw_diff_ncp_param)) {
+  plot(PELT_fixmw_diff_ncp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_diff_ncp_param[[i]]@cpts[-length(PELT_fixmw_diff_ncp_param[[i]]@cpts)], col="black")
+}
+```
+
+```{r}
+# detect the changepoints
 PELT_fixmw_ine_ncp_param <- list()
 for (i in 1:length(fixmw_out_ncp_param)) {
   PELT_fixmw_ine_ncp_param[[i]] <- cpt.meanvar(fixmw_ine_ncp_param[[i]], method="PELT")
@@ -118,95 +162,123 @@ for (i in 1:length(PELT_fixmw_ine_ncp_param)) {
     PELT_fixmw_ine_ncp_param[[i]]@cpts[-length(PELT_fixmw_ine_ncp_param[[i]]@cpts)]
 }
 
-
-
-
-
-
-
 # plot the location of CPs
-plot(fixmw_ine_ncp_param[[15]], type="point", col = "black")
-abline(v=PELT_fixmw_ine_ncp_param[[14]]@cpts[-length(PELT_fixmw_ine_ncp_param[[15]]@cpts)], col="black")
+for (i in 1:length(PELT_fixmw_ine_ncp_param)) {
+  plot(PELT_fixmw_ine_ncp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_ine_ncp_param[[i]]@cpts[-length(PELT_fixmw_ine_ncp_param[[i]]@cpts)], col="black")
+}
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_ine_ncp_param <- cpt.meanvar(fixmw_ine_ncp_param, method="PELT")
-summary(PELT_fixmw_ine_ncp_param)
+# detect the changepoints
+PELT_fixmw_out_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  PELT_fixmw_out_ncp_param[[i]] <- cpt.meanvar(fixmw_out_ncp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_ncp_out <- list()
+for (i in 1:length(PELT_fixmw_out_ncp_param)) {
+  locat_PELT_ncp_out[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_out_ncp_param[[i]]@cpts[-length(PELT_fixmw_out_ncp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_ncp_param, type="point", col = "red")
-abline(v=PELT_fixmw_ine_ncp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_out_ncp_param)) {
+  plot(PELT_fixmw_out_ncp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_out_ncp_param[[i]]@cpts[-length(PELT_fixmw_out_ncp_param[[i]]@cpts)], col="black")
+}
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_ncp_param <- cpt.meanvar(fixmw_ine_ncp_param, method = "BinSeg")
-cpts(BS_fixmw_ine_ncp_param)
+# detect the changepoints
+BS_fixmw_send_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  BS_fixmw_send_ncp_param[[i]] <- cpt.meanvar(fixmw_send_ncp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_ncp_send <- list()
+for (i in 1:length(BS_fixmw_send_ncp_param)) {
+  locat_BS_ncp_send[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_send_ncp_param[[i]]@cpts[-length(BS_fixmw_send_ncp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_ncp_param, type = "l")
-abline(v=BS_fixmw_ine_ncp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_send_ncp_param)) {
+  plot(BS_fixmw_send_ncp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_send_ncp_param[[i]]@cpts[-length(BS_fixmw_send_ncp_param[[i]]@cpts)], col="black")
+}
 ```
 
+```{r}
+# detect the changepoints
+BS_fixmw_diff_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  BS_fixmw_diff_ncp_param[[i]] <- cpt.meanvar(fixmw_diff_ncp_param[[i]], method="BinSeg")
+}
 
+# location of the changepoints
+locat_BS_ncp_diff <- list()
+for (i in 1:length(BS_fixmw_diff_ncp_param)) {
+  locat_BS_ncp_diff[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_diff_ncp_param[[i]]@cpts[-length(BS_fixmw_diff_ncp_param[[i]]@cpts)]
+}
 
+# plot the location of CPs
+for (i in 1:length(BS_fixmw_diff_ncp_param)) {
+  plot(BS_fixmw_diff_ncp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_diff_ncp_param[[i]]@cpts[-length(BS_fixmw_diff_ncp_param[[i]]@cpts)], col="black")
+}
+```
 
+```{r}
+# detect the changepoints
+BS_fixmw_ine_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  BS_fixmw_ine_ncp_param[[i]] <- cpt.meanvar(fixmw_ine_ncp_param[[i]], method="BinSeg")
+}
 
+# location of the changepoints
+locat_BS_ncp_ine <- list()
+for (i in 1:length(BS_fixmw_ine_ncp_param)) {
+  locat_BS_ncp_ine[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_ine_ncp_param[[i]]@cpts[-length(BS_fixmw_ine_ncp_param[[i]]@cpts)]
+}
 
+# plot the location of CPs
+for (i in 1:length(BS_fixmw_ine_ncp_param)) {
+  plot(BS_fixmw_ine_ncp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_ine_ncp_param[[i]]@cpts[-length(BS_fixmw_ine_ncp_param[[i]]@cpts)], col="black")
+}
+```
 
+```{r}
+# detect the changepoints
+BS_fixmw_out_ncp_param <- list()
+for (i in 1:length(fixmw_out_ncp_param)) {
+  BS_fixmw_out_ncp_param[[i]] <- cpt.meanvar(fixmw_out_ncp_param[[i]], method="BinSeg")
+}
 
+# location of the changepoints
+locat_BS_ncp_out <- list()
+for (i in 1:length(BS_fixmw_out_ncp_param)) {
+  locat_BS_ncp_out[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_out_ncp_param[[i]]@cpts[-length(BS_fixmw_out_ncp_param[[i]]@cpts)]
+}
 
-
-
-
-
-
+# plot the location of CPs
+for (i in 1:length(BS_fixmw_out_ncp_param)) {
+  plot(BS_fixmw_out_ncp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_out_ncp_param[[i]]@cpts[-length(BS_fixmw_out_ncp_param[[i]]@cpts)], col="black")
+}
+```
 
 # 1 Changepoint REH Data (inertia only)
 
@@ -301,170 +373,183 @@ for (i in 1:length(BOCD_fixmw_out_1cp_param)) {
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1. BOCD: Exact CPs Detection Method
-```{r}
-BOCD_fixmw_send_1cp_param <- onlineCPD(fixmw_send_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_send_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_send_1cp_param)
-```
-
-```{r}
-BOCD_fixmw_diff_1cp_param <- onlineCPD(fixmw_diff_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_diff_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_diff_1cp_param)
-```
-
-```{r}
-BOCD_fixmw_ine_1cp_param <- onlineCPD(fixmw_ine_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_1cp_param)
-```
-
-```{r}
-BOCD_fixmw_out_1cp_param <- onlineCPD(fixmw_out_1cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_out_1cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_out_1cp_param)
-```
-
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_1cp_param <- cpt.meanvar(fixmw_send_1cp_param, method="PELT")
-summary(PELT_fixmw_send_1cp_param)
+# detect the changepoints
+PELT_fixmw_send_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  PELT_fixmw_send_1cp_param[[i]] <- cpt.meanvar(fixmw_send_1cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_send <- list()
+for (i in 1:length(PELT_fixmw_send_1cp_param)) {
+  locat_PELT_1cp_send[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_send_1cp_param[[i]]@cpts[-length(PELT_fixmw_send_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_1cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_send_1cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_send_1cp_param)) {
+  plot(PELT_fixmw_send_1cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_send_1cp_param[[i]]@cpts[-length(PELT_fixmw_send_1cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_diff_1cp_param <- cpt.meanvar(fixmw_diff_1cp_param, method="PELT")
-summary(PELT_fixmw_diff_1cp_param)
+# detect the changepoints
+PELT_fixmw_diff_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  PELT_fixmw_diff_1cp_param[[i]] <- cpt.meanvar(fixmw_diff_1cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_diff <- list()
+for (i in 1:length(PELT_fixmw_diff_1cp_param)) {
+  locat_PELT_1cp_diff[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_diff_1cp_param[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_1cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_diff_1cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_diff_1cp_param)) {
+  plot(PELT_fixmw_diff_1cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_diff_1cp_param[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_ine_1cp_param <- cpt.meanvar(fixmw_ine_1cp_param, method="PELT")
-summary(PELT_fixmw_ine_1cp_param)
+# detect the changepoints
+PELT_fixmw_ine_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  PELT_fixmw_ine_1cp_param[[i]] <- cpt.meanvar(fixmw_ine_1cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_ine <- list()
+for (i in 1:length(PELT_fixmw_ine_1cp_param)) {
+  locat_PELT_1cp_ine[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_ine_1cp_param[[i]]@cpts[-length(PELT_fixmw_ine_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_1cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_ine_1cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_ine_1cp_param)) {
+  plot(PELT_fixmw_ine_1cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_ine_1cp_param[[i]]@cpts[-length(PELT_fixmw_ine_1cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_out_1cp_param <- cpt.meanvar(fixmw_out_1cp_param, method="PELT")
-summary(PELT_fixmw_out_1cp_param)
+# detect the changepoints
+PELT_fixmw_out_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  PELT_fixmw_out_1cp_param[[i]] <- cpt.meanvar(fixmw_out_1cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_out <- list()
+for (i in 1:length(PELT_fixmw_out_1cp_param)) {
+  locat_PELT_1cp_out[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_out_1cp_param[[i]]@cpts[-length(PELT_fixmw_out_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_1cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_out_1cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_out_1cp_param)) {
+  plot(PELT_fixmw_out_1cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_out_1cp_param[[i]]@cpts[-length(PELT_fixmw_out_1cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_send_1cp_param <- cpt.meanvar(fixmw_send_1cp_param, method = "BinSeg")
-cpts(BS_fixmw_send_1cp_param)
+# detect the changepoints
+BS_fixmw_send_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  BS_fixmw_send_1cp_param[[i]] <- cpt.meanvar(fixmw_send_1cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_send <- list()
+for (i in 1:length(BS_fixmw_send_1cp_param)) {
+  locat_BS_1cp_send[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_send_1cp_param[[i]]@cpts[-length(BS_fixmw_send_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_1cp_param)
-abline(v=BS_fixmw_send_1cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_send_1cp_param)) {
+  plot(BS_fixmw_send_1cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_send_1cp_param[[i]]@cpts[-length(BS_fixmw_send_1cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_diff_1cp_param <- cpt.meanvar(fixmw_diff_1cp_param, method = "BinSeg")
-cpts(BS_fixmw_diff_1cp_param)
+# detect the changepoints
+BS_fixmw_diff_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  BS_fixmw_diff_1cp_param[[i]] <- cpt.meanvar(fixmw_diff_1cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_diff <- list()
+for (i in 1:length(BS_fixmw_diff_1cp_param)) {
+  locat_BS_1cp_diff[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_diff_1cp_param[[i]]@cpts[-length(BS_fixmw_diff_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_1cp_param)
-abline(v=BS_fixmw_diff_1cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_diff_1cp_param)) {
+  plot(BS_fixmw_diff_1cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_diff_1cp_param[[i]]@cpts[-length(BS_fixmw_diff_1cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_1cp_param <- cpt.meanvar(fixmw_ine_1cp_param, method = "BinSeg")
-cpts(BS_fixmw_ine_1cp_param)
+# detect the changepoints
+BS_fixmw_ine_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  BS_fixmw_ine_1cp_param[[i]] <- cpt.meanvar(fixmw_ine_1cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_ine <- list()
+for (i in 1:length(BS_fixmw_ine_1cp_param)) {
+  locat_BS_1cp_ine[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_ine_1cp_param[[i]]@cpts[-length(BS_fixmw_ine_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_1cp_param)
-abline(v=BS_fixmw_ine_1cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_ine_1cp_param)) {
+  plot(BS_fixmw_ine_1cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_ine_1cp_param[[i]]@cpts[-length(BS_fixmw_ine_1cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_out_1cp_param <- cpt.meanvar(fixmw_out_1cp_param, method = "BinSeg")
-cpts(BS_fixmw_out_1cp_param)
+# detect the changepoints
+BS_fixmw_out_1cp_param <- list()
+for (i in 1:length(fixmw_out_1cp_param)) {
+  BS_fixmw_out_1cp_param[[i]] <- cpt.meanvar(fixmw_out_1cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_out <- list()
+for (i in 1:length(BS_fixmw_out_1cp_param)) {
+  locat_BS_1cp_out[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_out_1cp_param[[i]]@cpts[-length(BS_fixmw_out_1cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_1cp_param)
-abline(v=BS_fixmw_out_1cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_out_1cp_param)) {
+  plot(BS_fixmw_out_1cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_out_1cp_param[[i]]@cpts[-length(BS_fixmw_out_1cp_param[[i]]@cpts)], col="black")
+}
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # 1 Changepoint REH Data (all social interaction drivers at same locations)
 
@@ -559,174 +644,183 @@ for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-**Test CPs of the Fixed MW parameters**
-
-1. BOCD: Exact CPs Detection Method
-```{r}
-BOCD_fixmw_send_1cp_param_same.all <- onlineCPD(fixmw_send_1cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_send_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_send_1cp_param_same.all)
-```
-
-```{r}
-BOCD_fixmw_diff_1cp_param_same.all <- onlineCPD(fixmw_diff_1cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_diff_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_diff_1cp_param_same.all)
-```
-
-```{r}
-BOCD_fixmw_ine_1cp_param_same.all <- onlineCPD(fixmw_ine_1cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_1cp_param_same.all)
-```
-
-```{r}
-BOCD_fixmw_out_1cp_param_same.all <- onlineCPD(fixmw_out_1cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_out_1cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_out_1cp_param_same.all)
-```
-
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_1cp_param_same.all <- cpt.meanvar(fixmw_send_1cp_param_same.all, method="PELT")
-summary(PELT_fixmw_send_1cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_send_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  PELT_fixmw_send_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_send_1cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_send_same.all <- list()
+for (i in 1:length(PELT_fixmw_send_1cp_param_same.all)) {
+  locat_PELT_1cp_send_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_send_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_send_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_1cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_send_1cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_send_1cp_param_same.all)) {
+  plot(PELT_fixmw_send_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_send_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_send_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_diff_1cp_param_same.all <- cpt.meanvar(fixmw_diff_1cp_param_same.all, method="PELT")
-summary(PELT_fixmw_diff_1cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_diff_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  PELT_fixmw_diff_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_diff_1cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_diff_same.all <- list()
+for (i in 1:length(PELT_fixmw_diff_1cp_param_same.all)) {
+  locat_PELT_1cp_diff_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_diff_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_1cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_diff_1cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_diff_1cp_param_same.all)) {
+  plot(PELT_fixmw_diff_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_diff_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_ine_1cp_param_same.all <- cpt.meanvar(fixmw_ine_1cp_param_same.all, method="PELT")
-summary(PELT_fixmw_ine_1cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_ine_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  PELT_fixmw_ine_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_ine_1cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_ine_same.all <- list()
+for (i in 1:length(PELT_fixmw_ine_1cp_param_same.all)) {
+  locat_PELT_1cp_ine_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_ine_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_ine_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_1cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_ine_1cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_ine_1cp_param_same.all)) {
+  plot(PELT_fixmw_ine_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_ine_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_ine_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_out_1cp_param_same.all <- cpt.meanvar(fixmw_out_1cp_param_same.all, method="PELT")
-summary(PELT_fixmw_out_1cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_out_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  PELT_fixmw_out_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_out_1cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_out_same.all <- list()
+for (i in 1:length(PELT_fixmw_out_1cp_param_same.all)) {
+  locat_PELT_1cp_out_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_out_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_out_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_1cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_out_1cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_out_1cp_param_same.all)) {
+  plot(PELT_fixmw_out_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_out_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_out_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_send_1cp_param_same.all <- cpt.meanvar(fixmw_send_1cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_send_1cp_param_same.all)
+# detect the changepoints
+BS_fixmw_send_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  BS_fixmw_send_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_send_1cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_send_same.all <- list()
+for (i in 1:length(BS_fixmw_send_1cp_param_same.all)) {
+  locat_BS_1cp_send_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_send_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_send_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_1cp_param_same.all)
-abline(v=BS_fixmw_send_1cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_send_1cp_param_same.all)) {
+  plot(BS_fixmw_send_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_send_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_send_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_diff_1cp_param_same.all <- cpt.meanvar(fixmw_diff_1cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_diff_1cp_param_same.all)
+# detect the changepoints
+BS_fixmw_diff_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  BS_fixmw_diff_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_diff_1cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_diff_same.all <- list()
+for (i in 1:length(BS_fixmw_diff_1cp_param_same.all)) {
+  locat_BS_1cp_diff_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_diff_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_diff_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_1cp_param_same.all)
-abline(v=BS_fixmw_diff_1cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_diff_1cp_param_same.all)) {
+  plot(BS_fixmw_diff_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_diff_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_diff_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_1cp_param_same.all <- cpt.meanvar(fixmw_ine_1cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_ine_1cp_param_same.all)
+# detect the changepoints
+BS_fixmw_ine_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  BS_fixmw_ine_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_ine_1cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_ine_same.all <- list()
+for (i in 1:length(BS_fixmw_ine_1cp_param_same.all)) {
+  locat_BS_1cp_ine_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_ine_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_ine_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_1cp_param_same.all)
-abline(v=BS_fixmw_ine_1cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_ine_1cp_param_same.all)) {
+  plot(BS_fixmw_ine_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_ine_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_ine_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_out_1cp_param_same.all <- cpt.meanvar(fixmw_out_1cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_out_1cp_param_same.all)
+# detect the changepoints
+BS_fixmw_out_1cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_same.all)) {
+  BS_fixmw_out_1cp_param_same.all[[i]] <- cpt.meanvar(fixmw_out_1cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_out_same.all <- list()
+for (i in 1:length(BS_fixmw_out_1cp_param_same.all)) {
+  locat_BS_1cp_out_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_out_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_out_1cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_1cp_param_same.all)
-abline(v=BS_fixmw_out_1cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_out_1cp_param_same.all)) {
+  plot(BS_fixmw_out_1cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_out_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_out_1cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # 1 Changepoint REH Data (all social interaction driver at different locations)
 
@@ -821,145 +915,182 @@ for (i in 1:length(BOCD_fixmw_out_1cp_param_diff.all)) {
 }
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1. BOCD: Exact CPs Detection Method
-```{r}
-BOCD_fixmw_send_1cp_param_diff.all <- onlineCPD(fixmw_send_1cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_send_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_send_1cp_param_diff.all)
-```
-
-```{r}
-BOCD_fixmw_diff_1cp_param_diff.all <- onlineCPD(fixmw_diff_1cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_diff_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_diff_1cp_param_diff.all)
-```
-
-```{r}
-BOCD_fixmw_ine_1cp_param_diff.all <- onlineCPD(fixmw_ine_1cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_1cp_param_diff.all)
-```
-
-```{r}
-BOCD_fixmw_out_1cp_param_diff.all <- onlineCPD(fixmw_out_1cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_out_1cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_out_1cp_param_diff.all)
-```
-
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_1cp_param_diff.all <- cpt.var(fixmw_send_1cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_send_1cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_send_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  PELT_fixmw_send_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_send_1cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_send_diff.all <- list()
+for (i in 1:length(PELT_fixmw_send_1cp_param_diff.all)) {
+  locat_PELT_1cp_send_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_send_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_send_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_1cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_send_1cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_send_1cp_param_diff.all)) {
+  plot(PELT_fixmw_send_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_send_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_send_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_diff_1cp_param_diff.all <- cpt.var(fixmw_diff_1cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_diff_1cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_diff_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  PELT_fixmw_diff_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_diff_1cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_diff_diff.all <- list()
+for (i in 1:length(PELT_fixmw_diff_1cp_param_diff.all)) {
+  locat_PELT_1cp_diff_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_diff_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_1cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_diff_1cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_diff_1cp_param_diff.all)) {
+  plot(PELT_fixmw_diff_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_diff_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_ine_1cp_param_diff.all <- cpt.var(fixmw_ine_1cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_ine_1cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_ine_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  PELT_fixmw_ine_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_ine_1cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_ine_diff.all <- list()
+for (i in 1:length(PELT_fixmw_ine_1cp_param_diff.all)) {
+  locat_PELT_1cp_ine_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_ine_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_ine_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_1cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_ine_1cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_ine_1cp_param_diff.all)) {
+  plot(PELT_fixmw_ine_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_ine_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_ine_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_out_1cp_param_diff.all <- cpt.var(fixmw_out_1cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_out_1cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_out_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  PELT_fixmw_out_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_out_1cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_1cp_out_diff.all <- list()
+for (i in 1:length(PELT_fixmw_out_1cp_param_diff.all)) {
+  locat_PELT_1cp_out_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_out_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_out_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_1cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_out_1cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_out_1cp_param_diff.all)) {
+  plot(PELT_fixmw_out_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_out_1cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_out_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_send_1cp_param_diff.all <- cpt.meanvar(fixmw_send_1cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_send_1cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_send_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  BS_fixmw_send_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_send_1cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_send_diff.all <- list()
+for (i in 1:length(BS_fixmw_send_1cp_param_diff.all)) {
+  locat_BS_1cp_send_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_send_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_send_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_1cp_param_diff.all)
-abline(v=BS_fixmw_send_1cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_send_1cp_param_diff.all)) {
+  plot(BS_fixmw_send_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_send_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_send_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_diff_1cp_param_diff.all <- cpt.meanvar(fixmw_diff_1cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_diff_1cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_diff_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  BS_fixmw_diff_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_diff_1cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_diff_diff.all <- list()
+for (i in 1:length(BS_fixmw_diff_1cp_param_diff.all)) {
+  locat_BS_1cp_diff_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_diff_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_diff_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_1cp_param_diff.all)
-abline(v=BS_fixmw_diff_1cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_diff_1cp_param_diff.all)) {
+  plot(BS_fixmw_diff_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_diff_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_diff_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_1cp_param_diff.all <- cpt.meanvar(fixmw_ine_1cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_ine_1cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_ine_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  BS_fixmw_ine_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_ine_1cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_ine_diff.all <- list()
+for (i in 1:length(BS_fixmw_ine_1cp_param_diff.all)) {
+  locat_BS_1cp_ine_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_ine_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_ine_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_1cp_param_diff.all)
-abline(v=BS_fixmw_ine_1cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_ine_1cp_param_diff.all)) {
+  plot(BS_fixmw_ine_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_ine_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_ine_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_out_1cp_param_diff.all <- cpt.meanvar(fixmw_out_1cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_out_1cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_out_1cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
+  BS_fixmw_out_1cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_out_1cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_1cp_out_diff.all <- list()
+for (i in 1:length(BS_fixmw_out_1cp_param_diff.all)) {
+  locat_BS_1cp_out_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_out_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_out_1cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_1cp_param_diff.all)
-abline(v=BS_fixmw_out_1cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_out_1cp_param_diff.all)) {
+  plot(BS_fixmw_out_1cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_out_1cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_out_1cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 # 2 Changepoints REH Data (inertia only)
@@ -968,105 +1099,269 @@ abline(v=BS_fixmw_out_1cp_param_diff.all@cpts[], col="red")
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
-BOCD_fixmw_send_2cp_param <- onlineCPD(fixmw_send_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_send_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_send_2cp_param)
+# Detect the CPs
+BOCD_fixmw_send_2cp_param <- list()
+for (i in 1:length(fixmw_send_2cp_param)) {
+  BOCD_fixmw_send_2cp_param[[i]] <- onlineCPD(fixmw_send_2cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_send <- list()
+for (i in 1:length(BOCD_fixmw_send_2cp_param)) {
+  locat_BOCD_2cp_send[[i]] <- BOCD_fixmw_send_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_send_2cp_param)) {
+  plot(BOCD_fixmw_send_2cp_param[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_diff_2cp_param <- onlineCPD(fixmw_diff_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_diff_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_diff_2cp_param)
+# Detect the CPs
+BOCD_fixmw_diff_2cp_param <- list()
+for (i in 1:length(fixmw_diff_2cp_param)) {
+  BOCD_fixmw_diff_2cp_param[[i]] <- onlineCPD(fixmw_diff_2cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_diff <- list()
+for (i in 1:length(BOCD_fixmw_diff_2cp_param)) {
+  locat_BOCD_2cp_diff[[i]] <- BOCD_fixmw_diff_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_diff_2cp_param)) {
+  plot(BOCD_fixmw_diff_2cp_param[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_ine_2cp_param <- onlineCPD(fixmw_ine_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_2cp_param)
+# Detect the CPs
+BOCD_fixmw_ine_2cp_param <- list()
+for (i in 1:length(fixmw_ine_2cp_param)) {
+  BOCD_fixmw_ine_2cp_param[[i]] <- onlineCPD(fixmw_ine_2cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_ine <- list()
+for (i in 1:length(BOCD_fixmw_ine_2cp_param)) {
+  locat_BOCD_2cp_ine[[i]] <- BOCD_fixmw_ine_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_ine_2cp_param)) {
+  plot(BOCD_fixmw_ine_2cp_param[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_out_2cp_param <- onlineCPD(fixmw_out_2cp_param, getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_out_2cp_param[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_out_2cp_param)
+# Detect the CPs
+BOCD_fixmw_out_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  BOCD_fixmw_out_2cp_param[[i]] <- onlineCPD(fixmw_out_2cp_param[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_out <- list()
+for (i in 1:length(BOCD_fixmw_out_2cp_param)) {
+  locat_BOCD_2cp_out[[i]] <- BOCD_fixmw_out_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_out_2cp_param)) {
+  plot(BOCD_fixmw_out_2cp_param[[i]])
+}
 ```
 
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_2cp_param <- cpt.var(fixmw_send_2cp_param, method="PELT")
-summary(PELT_fixmw_send_2cp_param)
+# detect the changepoints
+PELT_fixmw_send_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  PELT_fixmw_send_2cp_param[[i]] <- cpt.meanvar(fixmw_send_2cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_send <- list()
+for (i in 1:length(PELT_fixmw_send_2cp_param)) {
+  locat_PELT_2cp_send[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_send_2cp_param[[i]]@cpts[-length(PELT_fixmw_send_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_2cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_send_2cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_send_2cp_param)) {
+  plot(PELT_fixmw_send_2cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_send_2cp_param[[i]]@cpts[-length(PELT_fixmw_send_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_diff_2cp_param <- cpt.var(fixmw_diff_2cp_param, method="PELT")
-summary(PELT_fixmw_diff_2cp_param)
+# detect the changepoints
+PELT_fixmw_diff_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  PELT_fixmw_diff_2cp_param[[i]] <- cpt.meanvar(fixmw_diff_2cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_diff <- list()
+for (i in 1:length(PELT_fixmw_diff_2cp_param)) {
+  locat_PELT_2cp_diff[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_diff_2cp_param[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_2cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_diff_2cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_diff_2cp_param)) {
+  plot(PELT_fixmw_diff_2cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_diff_2cp_param[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_ine_2cp_param <- cpt.meanvar(fixmw_ine_2cp_param, method="PELT")
-summary(PELT_fixmw_ine_2cp_param)
+# detect the changepoints
+PELT_fixmw_ine_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  PELT_fixmw_ine_2cp_param[[i]] <- cpt.meanvar(fixmw_ine_2cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_ine <- list()
+for (i in 1:length(PELT_fixmw_ine_2cp_param)) {
+  locat_PELT_2cp_ine[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_ine_2cp_param[[i]]@cpts[-length(PELT_fixmw_ine_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_2cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_ine_2cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_ine_2cp_param)) {
+  plot(PELT_fixmw_ine_2cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_ine_2cp_param[[i]]@cpts[-length(PELT_fixmw_ine_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_out_2cp_param <- cpt.var(fixmw_out_2cp_param, method="PELT")
-summary(PELT_fixmw_out_2cp_param)
+# detect the changepoints
+PELT_fixmw_out_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  PELT_fixmw_out_2cp_param[[i]] <- cpt.meanvar(fixmw_out_2cp_param[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_out <- list()
+for (i in 1:length(PELT_fixmw_out_2cp_param)) {
+  locat_PELT_2cp_out[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_out_2cp_param[[i]]@cpts[-length(PELT_fixmw_out_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_2cp_param, type="l", col = "red")
-abline(v=PELT_fixmw_out_2cp_param@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_out_2cp_param)) {
+  plot(PELT_fixmw_out_2cp_param[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_out_2cp_param[[i]]@cpts[-length(PELT_fixmw_out_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_send_2cp_param <- cpt.var(fixmw_send_2cp_param, method = "BinSeg")
-cpts(BS_fixmw_send_2cp_param)
+# detect the changepoints
+BS_fixmw_send_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  BS_fixmw_send_2cp_param[[i]] <- cpt.meanvar(fixmw_send_2cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_send <- list()
+for (i in 1:length(BS_fixmw_send_2cp_param)) {
+  locat_BS_2cp_send[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_send_2cp_param[[i]]@cpts[-length(BS_fixmw_send_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_2cp_param)
-abline(v=BS_fixmw_send_2cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_send_2cp_param)) {
+  plot(BS_fixmw_send_2cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_send_2cp_param[[i]]@cpts[-length(BS_fixmw_send_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_diff_2cp_param <- cpt.var(fixmw_diff_2cp_param, method = "BinSeg")
-cpts(BS_fixmw_diff_2cp_param)
+# detect the changepoints
+BS_fixmw_diff_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  BS_fixmw_diff_2cp_param[[i]] <- cpt.meanvar(fixmw_diff_2cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_diff <- list()
+for (i in 1:length(BS_fixmw_diff_2cp_param)) {
+  locat_BS_2cp_diff[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_diff_2cp_param[[i]]@cpts[-length(BS_fixmw_diff_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_2cp_param)
-abline(v=BS_fixmw_diff_2cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_diff_2cp_param)) {
+  plot(BS_fixmw_diff_2cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_diff_2cp_param[[i]]@cpts[-length(BS_fixmw_diff_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_2cp_param <- cpt.var(fixmw_ine_2cp_param, method = "BinSeg")
-cpts(BS_fixmw_ine_2cp_param)
+# detect the changepoints
+BS_fixmw_ine_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  BS_fixmw_ine_2cp_param[[i]] <- cpt.meanvar(fixmw_ine_2cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_ine <- list()
+for (i in 1:length(BS_fixmw_ine_2cp_param)) {
+  locat_BS_2cp_ine[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_ine_2cp_param[[i]]@cpts[-length(BS_fixmw_ine_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_2cp_param)
-abline(v=BS_fixmw_ine_2cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_ine_2cp_param)) {
+  plot(BS_fixmw_ine_2cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_ine_2cp_param[[i]]@cpts[-length(BS_fixmw_ine_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_out_2cp_param <- cpt.var(fixmw_out_2cp_param, method = "BinSeg")
-cpts(BS_fixmw_out_2cp_param)
+# detect the changepoints
+BS_fixmw_out_2cp_param <- list()
+for (i in 1:length(fixmw_out_2cp_param)) {
+  BS_fixmw_out_2cp_param[[i]] <- cpt.meanvar(fixmw_out_2cp_param[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_out <- list()
+for (i in 1:length(BS_fixmw_out_2cp_param)) {
+  locat_BS_2cp_out[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_out_2cp_param[[i]]@cpts[-length(BS_fixmw_out_2cp_param[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_2cp_param)
-abline(v=BS_fixmw_out_2cp_param@cpts[], col="red")
+for (i in 1:length(BS_fixmw_out_2cp_param)) {
+  plot(BS_fixmw_out_2cp_param[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_out_2cp_param[[i]]@cpts[-length(BS_fixmw_out_2cp_param[[i]]@cpts)], col="black")
+}
 ```
 
 # 2 Changepoints REH Data (all social interaction drivers at same locations)
@@ -1075,109 +1370,269 @@ abline(v=BS_fixmw_out_2cp_param@cpts[], col="red")
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
-BOCD_fixmw_send_2cp_param_same.all <- onlineCPD(fixmw_send_2cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_send_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_send_2cp_param_same.all)
+# Detect the CPs
+BOCD_fixmw_send_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_send_2cp_param_same.all)) {
+  BOCD_fixmw_send_2cp_param_same.all[[i]] <- onlineCPD(fixmw_send_2cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_send_same.all <- list()
+for (i in 1:length(BOCD_fixmw_send_2cp_param_same.all)) {
+  locat_BOCD_2cp_send_same.all[[i]] <- BOCD_fixmw_send_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_send_2cp_param_same.all)) {
+  plot(BOCD_fixmw_send_2cp_param_same.all[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_diff_2cp_param_same.all <- onlineCPD(fixmw_diff_2cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_diff_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_diff_2cp_param_same.all)
+# Detect the CPs
+BOCD_fixmw_diff_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_diff_2cp_param_same.all)) {
+  BOCD_fixmw_diff_2cp_param_same.all[[i]] <- onlineCPD(fixmw_diff_2cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_diff_same.all <- list()
+for (i in 1:length(BOCD_fixmw_diff_2cp_param_same.all)) {
+  locat_BOCD_2cp_diff_same.all[[i]] <- BOCD_fixmw_diff_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_diff_2cp_param_same.all)) {
+  plot(BOCD_fixmw_diff_2cp_param_same.all[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_ine_2cp_param_same.all <- onlineCPD(fixmw_ine_2cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_2cp_param_same.all)
+# Detect the CPs
+BOCD_fixmw_ine_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_ine_2cp_param_same.all)) {
+  BOCD_fixmw_ine_2cp_param_same.all[[i]] <- onlineCPD(fixmw_ine_2cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_ine_same.all <- list()
+for (i in 1:length(BOCD_fixmw_ine_2cp_param_same.all)) {
+  locat_BOCD_2cp_ine_same.all[[i]] <- BOCD_fixmw_ine_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_ine_2cp_param_same.all)) {
+  plot(BOCD_fixmw_ine_2cp_param_same.all[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_out_2cp_param_same.all <- onlineCPD(fixmw_out_2cp_param_same.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_out_2cp_param_same.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_out_2cp_param_same.all)
+# Detect the CPs
+BOCD_fixmw_out_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  BOCD_fixmw_out_2cp_param_same.all[[i]] <- onlineCPD(fixmw_out_2cp_param_same.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_out_same.all <- list()
+for (i in 1:length(BOCD_fixmw_out_2cp_param_same.all)) {
+  locat_BOCD_2cp_out_same.all[[i]] <- BOCD_fixmw_out_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_out_2cp_param_same.all)) {
+  plot(BOCD_fixmw_out_2cp_param_same.all[[i]])
+}
 ```
 
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_2cp_param_same.all <- cpt.meanvar(fixmw_send_2cp_param_same.all, method="PELT")
-summary(PELT_fixmw_send_2cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_send_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  PELT_fixmw_send_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_send_2cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_send_same.all <- list()
+for (i in 1:length(PELT_fixmw_send_2cp_param_same.all)) {
+  locat_PELT_2cp_send_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_send_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_send_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_2cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_send_2cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_send_2cp_param_same.all)) {
+  plot(PELT_fixmw_send_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_send_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_send_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_diff_2cp_param_same.all <- cpt.meanvar(fixmw_diff_2cp_param_same.all, method="PELT")
-summary(PELT_fixmw_diff_2cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_diff_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  PELT_fixmw_diff_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_diff_2cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_diff_same.all <- list()
+for (i in 1:length(PELT_fixmw_diff_2cp_param_same.all)) {
+  locat_PELT_2cp_diff_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_diff_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_2cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_diff_2cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_diff_2cp_param_same.all)) {
+  plot(PELT_fixmw_diff_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_diff_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_ine_2cp_param_same.all <- cpt.meanvar(fixmw_ine_2cp_param_same.all, method="PELT")
-summary(PELT_fixmw_ine_2cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_ine_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  PELT_fixmw_ine_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_ine_2cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_ine_same.all <- list()
+for (i in 1:length(PELT_fixmw_ine_2cp_param_same.all)) {
+  locat_PELT_2cp_ine_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_ine_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_ine_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_2cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_ine_2cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_ine_2cp_param_same.all)) {
+  plot(PELT_fixmw_ine_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_ine_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_ine_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_out_2cp_param_same.all <- cpt.meanvar(fixmw_out_2cp_param_same.all, method="PELT")
-summary(PELT_fixmw_out_2cp_param_same.all)
+# detect the changepoints
+PELT_fixmw_out_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  PELT_fixmw_out_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_out_2cp_param_same.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_out_same.all <- list()
+for (i in 1:length(PELT_fixmw_out_2cp_param_same.all)) {
+  locat_PELT_2cp_out_same.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_out_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_out_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_2cp_param_same.all, type="l", col = "red")
-abline(v=PELT_fixmw_out_2cp_param_same.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_out_2cp_param_same.all)) {
+  plot(PELT_fixmw_out_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_out_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_out_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_send_2cp_param_same.all <- cpt.meanvar(fixmw_send_2cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_send_2cp_param_same.all)
+# detect the changepoints
+BS_fixmw_send_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  BS_fixmw_send_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_send_2cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_send_same.all <- list()
+for (i in 1:length(BS_fixmw_send_2cp_param_same.all)) {
+  locat_BS_2cp_send_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_send_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_send_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_2cp_param_same.all)
-abline(v=BS_fixmw_send_2cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_send_2cp_param_same.all)) {
+  plot(BS_fixmw_send_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_send_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_send_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_diff_2cp_param_same.all <- cpt.meanvar(fixmw_diff_2cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_diff_2cp_param_same.all)
+# detect the changepoints
+BS_fixmw_diff_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  BS_fixmw_diff_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_diff_2cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_diff_same.all <- list()
+for (i in 1:length(BS_fixmw_diff_2cp_param_same.all)) {
+  locat_BS_2cp_diff_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_diff_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_diff_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_2cp_param_same.all)
-abline(v=BS_fixmw_diff_2cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_diff_2cp_param_same.all)) {
+  plot(BS_fixmw_diff_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_diff_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_diff_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_2cp_param_same.all <- cpt.meanvar(fixmw_ine_2cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_ine_2cp_param_same.all)
+# detect the changepoints
+BS_fixmw_ine_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  BS_fixmw_ine_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_ine_2cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_ine_same.all <- list()
+for (i in 1:length(BS_fixmw_ine_2cp_param_same.all)) {
+  locat_BS_2cp_ine_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_ine_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_ine_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_2cp_param_same.all)
-abline(v=BS_fixmw_ine_2cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_ine_2cp_param_same.all)) {
+  plot(BS_fixmw_ine_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_ine_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_ine_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_out_2cp_param_same.all <- cpt.meanvar(fixmw_out_2cp_param_same.all, method = "BinSeg")
-cpts(BS_fixmw_out_2cp_param_same.all)
+# detect the changepoints
+BS_fixmw_out_2cp_param_same.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_same.all)) {
+  BS_fixmw_out_2cp_param_same.all[[i]] <- cpt.meanvar(fixmw_out_2cp_param_same.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_out_same.all <- list()
+for (i in 1:length(BS_fixmw_out_2cp_param_same.all)) {
+  locat_BS_2cp_out_same.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_out_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_out_2cp_param_same.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_2cp_param_same.all)
-abline(v=BS_fixmw_out_2cp_param_same.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_out_2cp_param_same.all)) {
+  plot(BS_fixmw_out_2cp_param_same.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_out_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_out_2cp_param_same.all[[i]]@cpts)], col="black")
+}
 ```
 
 # 2 Changepoints REH Data (all social interaction driver at different locations)
@@ -1186,110 +1641,280 @@ abline(v=BS_fixmw_out_2cp_param_same.all@cpts[], col="red")
 
 1. BOCD: Exact CPs Detection Method
 ```{r}
-BOCD_fixmw_send_2cp_param_diff.all <- onlineCPD(fixmw_send_2cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_send_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_send_2cp_param_diff.all)
+# Detect the CPs
+BOCD_fixmw_send_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_send_2cp_param_diff.all)) {
+  BOCD_fixmw_send_2cp_param_diff.all[[i]] <- onlineCPD(fixmw_send_2cp_param_diff.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_send_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_send_2cp_param_diff.all)) {
+  locat_BOCD_2cp_send_diff.all[[i]] <- BOCD_fixmw_send_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_send_2cp_param_diff.all)) {
+  plot(BOCD_fixmw_send_2cp_param_diff.all[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_diff_2cp_param_diff.all <- onlineCPD(fixmw_diff_2cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_diff_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_diff_2cp_param_diff.all)
+# Detect the CPs
+BOCD_fixmw_diff_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_diff_2cp_param_diff.all)) {
+  BOCD_fixmw_diff_2cp_param_diff.all[[i]] <- onlineCPD(fixmw_diff_2cp_param_diff.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_diff_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_diff_2cp_param_diff.all)) {
+  locat_BOCD_2cp_diff_diff.all[[i]] <- BOCD_fixmw_diff_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_diff_2cp_param_diff.all)) {
+  plot(BOCD_fixmw_diff_2cp_param_diff.all[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_ine_2cp_param_diff.all <- onlineCPD(fixmw_ine_2cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_ine_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_ine_2cp_param_diff.all)
+# Detect the CPs
+BOCD_fixmw_ine_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_ine_2cp_param_diff.all)) {
+  BOCD_fixmw_ine_2cp_param_diff.all[[i]] <- onlineCPD(fixmw_ine_2cp_param_diff.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_ine_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_ine_2cp_param_diff.all)) {
+  locat_BOCD_2cp_ine_diff.all[[i]] <- BOCD_fixmw_ine_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_ine_2cp_param_diff.all)) {
+  plot(BOCD_fixmw_ine_2cp_param_diff.all[[i]])
+}
 ```
 
 ```{r}
-BOCD_fixmw_out_2cp_param_diff.all <- onlineCPD(fixmw_out_2cp_param_diff.all, 
-                                               getR = T, optionalOutputs = T, truncRlim = 10^-4)
-BOCD_fixmw_out_2cp_param_diff.all[["changepoint_lists"]][["maxCPs"]][[1]]
-plot(BOCD_fixmw_out_2cp_param_diff.all)
+# Detect the CPs
+BOCD_fixmw_out_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  BOCD_fixmw_out_2cp_param_diff.all[[i]] <- onlineCPD(fixmw_out_2cp_param_diff.all[[i]], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+}
+
+# location of the CPs
+locat_BOCD_2cp_out_diff.all <- list()
+for (i in 1:length(BOCD_fixmw_out_2cp_param_diff.all)) {
+  locat_BOCD_2cp_out_diff.all[[i]] <- BOCD_fixmw_out_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+}
+
+# plot the CPs for each iteration
+for (i in 1:length(BOCD_fixmw_out_2cp_param_diff.all)) {
+  plot(BOCD_fixmw_out_2cp_param_diff.all[[i]])
+}
 ```
 
 2. PELT: Exact CPs Detection Method
 ```{r}
-PELT_fixmw_send_2cp_param_diff.all <- cpt.meanvar(fixmw_send_2cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_send_2cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_send_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  PELT_fixmw_send_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_send_2cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_send_diff.all <- list()
+for (i in 1:length(PELT_fixmw_send_2cp_param_diff.all)) {
+  locat_PELT_2cp_send_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_send_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_send_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_2cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_send_2cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_send_2cp_param_diff.all)) {
+  plot(PELT_fixmw_send_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_send_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_send_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_diff_2cp_param_diff.all <- cpt.meanvar(fixmw_diff_2cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_diff_2cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_diff_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  PELT_fixmw_diff_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_diff_2cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_diff_diff.all <- list()
+for (i in 1:length(PELT_fixmw_diff_2cp_param_diff.all)) {
+  locat_PELT_2cp_diff_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_diff_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_2cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_diff_2cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_diff_2cp_param_diff.all)) {
+  plot(PELT_fixmw_diff_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_diff_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_ine_2cp_param_diff.all <- cpt.meanvar(fixmw_ine_2cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_ine_2cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_ine_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  PELT_fixmw_ine_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_ine_2cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_ine_diff.all <- list()
+for (i in 1:length(PELT_fixmw_ine_2cp_param_diff.all)) {
+  locat_PELT_2cp_ine_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_ine_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_ine_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_2cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_ine_2cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_ine_2cp_param_diff.all)) {
+  plot(PELT_fixmw_ine_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_ine_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_ine_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-PELT_fixmw_out_2cp_param_diff.all <- cpt.meanvar(fixmw_out_2cp_param_diff.all, method="PELT")
-summary(PELT_fixmw_out_2cp_param_diff.all)
+# detect the changepoints
+PELT_fixmw_out_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  PELT_fixmw_out_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_out_2cp_param_diff.all[[i]], method="PELT")
+}
+
+# location of the changepoints
+locat_PELT_2cp_out_diff.all <- list()
+for (i in 1:length(PELT_fixmw_out_2cp_param_diff.all)) {
+  locat_PELT_2cp_out_diff.all[[i]] <- 
+    # remove the last value of the vector, as PELT function indicates the last window as CP all the time
+    PELT_fixmw_out_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_out_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_2cp_param_diff.all, type="l", col = "red")
-abline(v=PELT_fixmw_out_2cp_param_diff.all@cpts[], col="black")
+for (i in 1:length(PELT_fixmw_out_2cp_param_diff.all)) {
+  plot(PELT_fixmw_out_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=PELT_fixmw_out_2cp_param_diff.all[[i]]@cpts[-length(PELT_fixmw_out_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 3. BS: approximate CPs Detection Method
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_send_2cp_param_diff.all <- cpt.meanvar(fixmw_send_2cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_send_2cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_send_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  BS_fixmw_send_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_send_2cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_send_diff.all <- list()
+for (i in 1:length(BS_fixmw_send_2cp_param_diff.all)) {
+  locat_BS_2cp_send_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_send_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_send_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_send_2cp_param_diff.all)
-abline(v=BS_fixmw_send_2cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_send_2cp_param_diff.all)) {
+  plot(BS_fixmw_send_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_send_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_send_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_diff_2cp_param_diff.all <- cpt.meanvar(fixmw_diff_2cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_diff_2cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_diff_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  BS_fixmw_diff_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_diff_2cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_diff_diff.all <- list()
+for (i in 1:length(BS_fixmw_diff_2cp_param_diff.all)) {
+  locat_BS_2cp_diff_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_diff_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_diff_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_diff_2cp_param_diff.all)
-abline(v=BS_fixmw_diff_2cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_diff_2cp_param_diff.all)) {
+  plot(BS_fixmw_diff_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_diff_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_diff_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_ine_2cp_param_diff.all <- cpt.meanvar(fixmw_ine_2cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_ine_2cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_ine_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  BS_fixmw_ine_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_ine_2cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_ine_diff.all <- list()
+for (i in 1:length(BS_fixmw_ine_2cp_param_diff.all)) {
+  locat_BS_2cp_ine_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_ine_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_ine_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_ine_2cp_param_diff.all)
-abline(v=BS_fixmw_ine_2cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_ine_2cp_param_diff.all)) {
+  plot(BS_fixmw_ine_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_ine_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_ine_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
 
 ```{r}
-# cpt.meanvar -> find changes in both mean and variance for data
-BS_fixmw_out_2cp_param_diff.all <- cpt.meanvar(fixmw_out_2cp_param_diff.all, method = "BinSeg")
-cpts(BS_fixmw_out_2cp_param_diff.all)
+# detect the changepoints
+BS_fixmw_out_2cp_param_diff.all <- list()
+for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
+  BS_fixmw_out_2cp_param_diff.all[[i]] <- cpt.meanvar(fixmw_out_2cp_param_diff.all[[i]], method="BinSeg")
+}
+
+# location of the changepoints
+locat_BS_2cp_out_diff.all <- list()
+for (i in 1:length(BS_fixmw_out_2cp_param_diff.all)) {
+  locat_BS_2cp_out_diff.all[[i]] <- 
+    # remove the last value of the vector, as BS function indicates the last window as CP all the time
+    BS_fixmw_out_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_out_2cp_param_diff.all[[i]]@cpts)]
+}
 
 # plot the location of CPs
-plot(fixmw_out_2cp_param_diff.all)
-abline(v=BS_fixmw_out_2cp_param_diff.all@cpts[], col="red")
+for (i in 1:length(BS_fixmw_out_2cp_param_diff.all)) {
+  plot(BS_fixmw_out_2cp_param_diff.all[[i]], type="point", col = "black")
+  abline(v=BS_fixmw_out_2cp_param_diff.all[[i]]@cpts[-length(BS_fixmw_out_2cp_param_diff.all[[i]]@cpts)], col="black")
+}
 ```
+
+
+
+
+
+-----------------------------------------
+
+
+
+
 
 # 3 Changepoints REH Data (inertia only)
 

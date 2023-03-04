@@ -3,6 +3,8 @@ title: "Comparison of CPDs"
 author: "Hsuan Lee"
 output: pdf_document
 ---
+# Correspondence Matrix, and F1 score
+
 
 # Create the function for MSE
 ```{r}

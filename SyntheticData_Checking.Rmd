@@ -1,0 +1,60 @@
+---
+title: "Synthetic Data Checking"
+author: "Hsuan Lee"
+output: pdf_document
+---
+
+**Extract the statistics and replace half of sender effect's statistics as 0**
+```{r}
+stat_check <- stat.ncp[[7]]
+#stat_check[5001:10000, 1:870, 1] <- 0
+stat_check[5001:10000, 1:870, 2] <- 0
+#stat_check[5001:10000, 1:870, 3] <- 0
+#stat_check[5001:10000, 1:870, 4] <- 0
+#stat_check[5001:10000, 1:870, 5] <- 0
+```
+
+**Maximum time of REH and specify the fixed window size** 
+```{r}
+tau_check <- max(REH_NCP[[7]]$time)
+windows_check <- REHdynamics::createwindows(1000, tau_check, overlap = 1/2)
+```
+
+**Fit the REM** -> Doesn't Work, REM does not allow the statistics as 0, as it does not correspond to the REH data
+```{r}
+model_fixwin_check <- REHdynamics::MWrem(windows_check, edgelist = REH_NCP[[7]], 
+                                         stats = stat_check,
+                                         actors = covar$id, directed = TRUE, 
+                                         method = "MLE", model = "tie", ncores = 2)
+```
+
+**Extract the Parameters**
+```{r}
+# extract the parameters
+fixmw_send_param_check <- 0
+
+for (win in 1:length(model_fixwin_check)) {
+  fixmw_send_param_check[win] <- model_fixwin_check[[win]][["coefficients"]][["send.z"]]
+  }
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

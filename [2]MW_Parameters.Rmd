@@ -68,7 +68,7 @@ for (i in 1:length(REH_NCP)) {
 # specify the length of the window
 windows_ncp <- list()
 for (i in 1:length(REH_NCP)) {
-  windows_ncp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+  windows_ncp[[i]] <- REHdynamics::createwindows(500, tau[i], overlap = 2/3)
 }
 
 # fit to the REM model
@@ -161,7 +161,7 @@ for (i in 1:length(REH_1CP)) {
 # specify the length of the window
 windows_1cp <- list()
 for (i in 1:length(REH_1CP)) {
-  windows_1cp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+  windows_1cp[[i]] <- REHdynamics::createwindows(500, tau[i], overlap = 2/3)
 }
 
 # fit to the REM model
@@ -683,6 +683,16 @@ for (i in 1:length(REH_2CP_diff.all)) {
   }
 }
 ```
+
+
+
+
+
+---------------------------------------
+
+
+
+
 
 # 3 Changepoints REH Data (inertia only)
 

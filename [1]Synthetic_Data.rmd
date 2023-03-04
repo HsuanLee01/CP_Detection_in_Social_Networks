@@ -478,6 +478,16 @@ for (i in 1: rep){
 saveRDS(object = reh_2cp_diff.all, file = "REH_2CP_diff.all.RDS")
 ```
 
+
+
+
+
+-----------------------------------------------
+
+
+
+
+
 # REH with 3 CPs for inertia, none for the rest
 ```{r}
 set.seed(9252568)
