@@ -38,7 +38,6 @@ library(remify)
 library(relevent) # fit REH to REM
 ```
 
-# REH with no CPs
 ```{r}
 set.seed(9252568)
 # REH with only inertia statistics
@@ -52,6 +51,7 @@ formula <- ~ 1 + remstats::send("z", covar) + # Exogenous statistics
 covar <- data.frame(id = 1:30, time = 0, z = rnorm(n = 30))
 ```
 
+# REH with no CPs
 ```{r}
 # set up the value of parameters
 param.ncp <- list(
@@ -223,25 +223,25 @@ param.1cp_diff.all <- list(
   "z_difference" = function(t) {
     # set the location of CP
     if(t < 31525) { # 5578
-      -0.05
+      -0.01
     } else  {
-      -0.15}
+      -0.14}
   },
   
   "inertia" = function(t) {
     # set the location of CP
     if(t < 13000) { # 2791
-      0.13
+      0.15
     } else  {
-      0.06}
+      0.03}
   },
   
   "outdegreeSender" = function(t) {
     # set the location of CP
     if(t < 38200) { # 6585
-      0.13
+      0.15
     } else  {
-      0.07}
+      0.03}
   }
 )
 
@@ -285,12 +285,12 @@ param.2cp <- list(
   "inertia" = function(t) {
     # set the location of CP
     if(t < 16750) { #2574
-      0.03
+      0.01
       } else
         
         if(t < 53900) { #7519
           0.12
-          } else {0.18}
+          } else {-0.01}
   },
   
   "outdegreeSender" = 0.12

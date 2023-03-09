@@ -11,6 +11,28 @@ library(changepoint) # package for PELT, BS
 
 # No Changepoint REH Data
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_ncp_param <- readRDS("Window_Parameters\fixmw_send_ncp_param.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_ncp_param <- readRDS("Window_Parameters\fixmw_diff_ncp_param.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_ncp_param <- readRDS("Window_Parameters\fixmw_ine_ncp_param.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_ncp_param <- readRDS("Window_Parameters\fixmw_out_ncp_param.RDS")
+```
+
 **Test CPs of the Fixed MW parameters**
 
 1. BOCD: Exact CPs Detection Method
@@ -281,6 +303,28 @@ for (i in 1:length(BS_fixmw_out_ncp_param)) {
 ```
 
 # 1 Changepoint REH Data (inertia only)
+
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_1cp_param <- readRDS("Window_Parameters\fixmw_send_1cp_param.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_1cp_param <- readRDS("Window_Parameters\fixmw_diff_1cp_param.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_1cp_param <- readRDS("Window_Parameters\fixmw_ine_1cp_param.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_1cp_param <- readRDS("Window_Parameters\fixmw_out_1cp_param.RDS")
+```
 
 **Test CPs of the Fixed MW parameters**
 
@@ -553,6 +597,28 @@ for (i in 1:length(BS_fixmw_out_1cp_param)) {
 
 # 1 Changepoint REH Data (all social interaction drivers at same locations)
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_send_1cp_param_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_diff_1cp_param_same.all.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_ine_1cp_param_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_out_1cp_param_same.all.RDS")
+```
+
 **Test CPs of the Fixed MW parameters**
 
 1. BOCD: Exact CPs Detection Method
@@ -823,6 +889,28 @@ for (i in 1:length(BS_fixmw_out_1cp_param_same.all)) {
 ```
 
 # 1 Changepoint REH Data (all social interaction driver at different locations)
+
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_send_1cp_param_diff.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_diff_1cp_param_diff.all.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_ine_1cp_param_diff.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_out_1cp_param_diff.all.RDS")
+```
 
 **Test CPs of the Fixed MW parameters**
 
@@ -1095,6 +1183,28 @@ for (i in 1:length(BS_fixmw_out_1cp_param_diff.all)) {
 
 # 2 Changepoints REH Data (inertia only)
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_2cp_param <- readRDS("Window_Parameters\fixmw_send_2cp_param.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_2cp_param <- readRDS("Window_Parameters\fixmw_diff_2cp_param.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_2cp_param <- readRDS("Window_Parameters\fixmw_ine_2cp_param.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_2cp_param <- readRDS("Window_Parameters\fixmw_out_2cp_param.RDS")
+```
+
 **Test CPs of the Fixed MW parameters**
 
 1. BOCD: Exact CPs Detection Method
@@ -1366,6 +1476,26 @@ for (i in 1:length(BS_fixmw_out_2cp_param)) {
 
 # 2 Changepoints REH Data (all social interaction drivers at same locations)
 
+Sender Effect:
+```{r}
+fixmw_send_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_send_2cp_param_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_diff_2cp_param_same.all.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_ine_2cp_param_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_out_2cp_param_same.all.RDS")
+```
+
 **Test CPs of the Fixed MW parameters**
 
 1. BOCD: Exact CPs Detection Method
@@ -1636,6 +1766,28 @@ for (i in 1:length(BS_fixmw_out_2cp_param_same.all)) {
 ```
 
 # 2 Changepoints REH Data (all social interaction driver at different locations)
+
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_send_2cp_param_diff.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_diff_2cp_param_diff.all.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_ine_2cp_param_diff.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_out_2cp_param_diff.all.RDS")
+```
 
 **Test CPs of the Fixed MW parameters**
 

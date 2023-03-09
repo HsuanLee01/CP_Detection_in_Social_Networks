@@ -68,7 +68,7 @@ for (i in 1:length(REH_NCP)) {
 # specify the length of the window
 windows_ncp <- list()
 for (i in 1:length(REH_NCP)) {
-  windows_ncp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/3)
+  windows_ncp[[i]] <- REHdynamics::createwindows(2000, tau[i], overlap = 2/3)
 }
 
 # fit to the REM model
@@ -124,6 +124,24 @@ for (i in 1:length(REH_NCP)) {
       model_fixwin_ncp[[i]][[win]][["coefficients"]][["outdegreeSender"]]
   }
 }
+```
+
+**Save the Given Parameters as RDS**
+
+```{r}
+saveRDS(object = fixmw_send_ncp_param, file = "fixmw_send_ncp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_diff_ncp_param, file = "fixmw_diff_ncp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_ine_ncp_param, file = "fixmw_ine_ncp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_out_ncp_param, file = "fixmw_out_ncp_param.RDS")
 ```
 
 # 1 Changepoint REH Data (inertia only)
@@ -219,6 +237,24 @@ for (i in 1:length(REH_1CP)) {
 }
 ```
 
+**Save the Given Parameters as RDS**
+
+```{r}
+saveRDS(object = fixmw_send_1cp_param, file = "fixmw_send_1cp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_diff_1cp_param, file = "fixmw_diff_1cp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_ine_1cp_param, file = "fixmw_ine_1cp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_out_1cp_param, file = "fixmw_out_1cp_param.RDS")
+```
+
 # 1 Changepoint REH Data (all social interaction drivers at same locations)
 
 **Read the Data**
@@ -310,6 +346,24 @@ for (i in 1:length(REH_1CP_same.all)) {
       model_fixwin_1cp_same.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
   }
 }
+```
+
+**Save the Given Parameters as RDS**
+
+```{r}
+saveRDS(object = fixmw_send_1cp_param_same.all, file = "fixmw_send_1cp_param_same.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_diff_1cp_param_same.all, file = "fixmw_diff_1cp_param_same.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_ine_1cp_param_same.all, file = "fixmw_ine_1cp_param_same.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_out_1cp_param_same.all, file = "fixmw_out_1cp_param_same.all.RDS")
 ```
 
 # 1 Changepoint REH Data (all social interaction driver at different locations)
@@ -405,6 +459,24 @@ for (i in 1:length(REH_1CP_diff.all)) {
 }
 ```
 
+**Save the Given Parameters as RDS**
+
+```{r}
+saveRDS(object = fixmw_send_1cp_param_diff.all, file = "fixmw_send_1cp_param_diff.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_diff_1cp_param_diff.all, file = "fixmw_diff_1cp_param_diff.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_ine_1cp_param_diff.all, file = "fixmw_ine_1cp_param_diff.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_out_1cp_param_diff.all, file = "fixmw_out_1cp_param_diff.all.RDS")
+```
+
 # 2 Changepoints REH Data (inertia only)
 
 **Read the Data**
@@ -440,7 +512,7 @@ for (i in 1:length(REH_2CP)) {
 # specify the length of the window
 windows_2cp <- list()
 for (i in 1:length(REH_2CP)) {
-  windows_2cp[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+  windows_2cp[[i]] <- REHdynamics::createwindows(2000, tau[i], overlap = 2/3)
 }
 
 # fit to the REM model
@@ -498,6 +570,24 @@ for (i in 1:length(REH_2CP)) {
 }
 ```
 
+**Save the Given Parameters as RDS**
+
+```{r}
+saveRDS(object = fixmw_send_2cp_param, file = "fixmw_send_2cp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_diff_2cp_param, file = "fixmw_diff_2cp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_ine_2cp_param, file = "fixmw_ine_2cp_param.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_out_2cp_param, file = "fixmw_out_2cp_param.RDS")
+```
+
 # 2 Changepoints REH Data (all social interaction drivers at same locations)
 
 **Read the Data**
@@ -533,7 +623,7 @@ for (i in 1:length(REH_2CP_same.all)) {
 # specify the length of the window
 windows_2cp_same.all <- list()
 for (i in 1:length(REH_2CP_same.all)) {
-  windows_2cp_same.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+  windows_2cp_same.all[[i]] <- REHdynamics::createwindows(2000, tau[i], overlap = 2/3)
 }
 
 # fit to the REM model
@@ -591,6 +681,24 @@ for (i in 1:length(REH_2CP_same.all)) {
 }
 ```
 
+**Save the Given Parameters as RDS**
+
+```{r}
+saveRDS(object = fixmw_send_2cp_param_same.all, file = "fixmw_send_2cp_param_same.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_diff_2cp_param_same.all, file = "fixmw_diff_2cp_param_same.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_ine_2cp_param_same.all, file = "fixmw_ine_2cp_param_same.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_out_2cp_param_same.all, file = "fixmw_out_2cp_param_same.all.RDS")
+```
+
 # 2 Changepoints REH Data (all social interaction driver at different locations)
 
 **Read the Data**
@@ -626,7 +734,7 @@ for (i in 1:length(REH_2CP_diff.all)) {
 # specify the length of the window
 windows_2cp_diff.all <- list()
 for (i in 1:length(REH_2CP_diff.all)) {
-  windows_2cp_diff.all[[i]] <- REHdynamics::createwindows(1000, tau[i], overlap = 1/2)
+  windows_2cp_diff.all[[i]] <- REHdynamics::createwindows(2000, tau[i], overlap = 2/3)
 }
 
 # fit to the REM model
@@ -682,6 +790,24 @@ for (i in 1:length(REH_2CP_diff.all)) {
       model_fixwin_2cp_diff.all[[i]][[win]][["coefficients"]][["outdegreeSender"]]
   }
 }
+```
+
+**Save the Given Parameters as RDS**
+
+```{r}
+saveRDS(object = fixmw_send_2cp_param_diff.all, file = "fixmw_send_2cp_param_diff.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_diff_2cp_param_diff.all, file = "fixmw_diff_2cp_param_diff.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_ine_2cp_param_diff.all, file = "fixmw_ine_2cp_param_diff.all.RDS")
+```
+
+```{r}
+saveRDS(object = fixmw_out_2cp_param_diff.all, file = "fixmw_out_2cp_param_diff.all.RDS")
 ```
 
 
