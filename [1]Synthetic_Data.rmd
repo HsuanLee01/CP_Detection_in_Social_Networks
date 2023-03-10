@@ -338,14 +338,14 @@ param.2cp_same.all <- list(
     } else
       
       if(t < 53900) { #7519
-          0.04
+          0.02
           } else {0.17}
     },
   
   "z_difference" = function(t) {
     # set the location of CP
     if(t < 16750) { #8366
-      -0.05
+      -0.01
     } else
       
       if(t < 53900) { #7519
@@ -367,12 +367,12 @@ param.2cp_same.all <- list(
   "outdegreeSender" = function(t) {
     # set the location of CP
     if(t < 16750) { #8366
-      0.02
+      -0.01
       } else
         
         if(t < 53900) { #7519
           0.14
-          } else {0.04}
+          } else {0.01}
     }
 )
 

@@ -9,28 +9,34 @@ library(ocp) # package for BOCD
 library(changepoint) # package for PELT, BS
 ```
 
+```{r}
+setwd(paste("C:/Users/HsuanLee/Desktop/Methodology and Statistics/",
+"Changepoints Inference in Relational Event Data of a Social Network/",
+"CP-Inference-in-REH-of-Social-Network", sep = ""))
+```
+
 # No Changepoint REH Data
 
 **Read the Parameters given by windows**
 
 Sender Effect:
 ```{r}
-fixmw_send_ncp_param <- readRDS("Window_Parameters\fixmw_send_ncp_param.RDS")
+fixmw_send_ncp_param <- readRDS("Window_Parameters/fixmw_send_ncp_param.RDS")
 ```
 
 Difference Effect: 
 ```{r}
-fixmw_diff_ncp_param <- readRDS("Window_Parameters\fixmw_diff_ncp_param.RDS")
+fixmw_diff_ncp_param <- readRDS("Window_Parameters/fixmw_diff_ncp_param.RDS")
 ```
 
 Inertia:
 ```{r}
-fixmw_ine_ncp_param <- readRDS("Window_Parameters\fixmw_ine_ncp_param.RDS")
+fixmw_ine_ncp_param <- readRDS("Window_Parameters/fixmw_ine_ncp_param.RDS")
 ```
 
 Out Degree Sender Effect:
 ```{r}
-fixmw_out_ncp_param <- readRDS("Window_Parameters\fixmw_out_ncp_param.RDS")
+fixmw_out_ncp_param <- readRDS("Window_Parameters/fixmw_out_ncp_param.RDS")
 ```
 
 **Test CPs of the Fixed MW parameters**
@@ -308,22 +314,22 @@ for (i in 1:length(BS_fixmw_out_ncp_param)) {
 
 Sender Effect:
 ```{r}
-fixmw_send_1cp_param <- readRDS("Window_Parameters\fixmw_send_1cp_param.RDS")
+fixmw_send_1cp_param <- readRDS("Window_Parameters/fixmw_send_1cp_param.RDS")
 ```
 
 Difference Effect: 
 ```{r}
-fixmw_diff_1cp_param <- readRDS("Window_Parameters\fixmw_diff_1cp_param.RDS")
+fixmw_diff_1cp_param <- readRDS("Window_Parameters/fixmw_diff_1cp_param.RDS")
 ```
 
 Inertia:
 ```{r}
-fixmw_ine_1cp_param <- readRDS("Window_Parameters\fixmw_ine_1cp_param.RDS")
+fixmw_ine_1cp_param <- readRDS("Window_Parameters/fixmw_ine_1cp_param.RDS")
 ```
 
 Out Degree Sender Effect:
 ```{r}
-fixmw_out_1cp_param <- readRDS("Window_Parameters\fixmw_out_1cp_param.RDS")
+fixmw_out_1cp_param <- readRDS("Window_Parameters/fixmw_out_1cp_param.RDS")
 ```
 
 **Test CPs of the Fixed MW parameters**
@@ -601,22 +607,22 @@ for (i in 1:length(BS_fixmw_out_1cp_param)) {
 
 Sender Effect:
 ```{r}
-fixmw_send_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_send_1cp_param_same.all.RDS")
+fixmw_send_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_send_1cp_param_same.all.RDS")
 ```
 
 Difference Effect: 
 ```{r}
-fixmw_diff_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_diff_1cp_param_same.all.RDS")
+fixmw_diff_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_diff_1cp_param_same.all.RDS")
 ```
 
 Inertia:
 ```{r}
-fixmw_ine_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_ine_1cp_param_same.all.RDS")
+fixmw_ine_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_ine_1cp_param_same.all.RDS")
 ```
 
 Out Degree Sender Effect:
 ```{r}
-fixmw_out_1cp_param_same.all <- readRDS("Window_Parameters\fixmw_out_1cp_param_same.all.RDS")
+fixmw_out_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_out_1cp_param_same.all.RDS")
 ```
 
 **Test CPs of the Fixed MW parameters**
@@ -894,22 +900,22 @@ for (i in 1:length(BS_fixmw_out_1cp_param_same.all)) {
 
 Sender Effect:
 ```{r}
-fixmw_send_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_send_1cp_param_diff.all.RDS")
+fixmw_send_1cp_param_diff.all <- readRDS("Window_Parameters/fixmw_send_1cp_param_diff.all.RDS")
 ```
 
 Difference Effect: 
 ```{r}
-fixmw_diff_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_diff_1cp_param_diff.all.RDS")
+fixmw_diff_1cp_param_diff.all <- readRDS("Window_Parameters/fixmw_diff_1cp_param_diff.all.RDS")
 ```
 
 Inertia:
 ```{r}
-fixmw_ine_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_ine_1cp_param_diff.all.RDS")
+fixmw_ine_1cp_param_diff.all <- readRDS("Window_Parameters/fixmw_ine_1cp_param_diff.all.RDS")
 ```
 
 Out Degree Sender Effect:
 ```{r}
-fixmw_out_1cp_param_diff.all <- readRDS("Window_Parameters\fixmw_out_1cp_param_diff.all.RDS")
+fixmw_out_1cp_param_diff.all <- readRDS("Window_Parameters/fixmw_out_1cp_param_diff.all.RDS")
 ```
 
 **Test CPs of the Fixed MW parameters**
@@ -1187,22 +1193,22 @@ for (i in 1:length(BS_fixmw_out_1cp_param_diff.all)) {
 
 Sender Effect:
 ```{r}
-fixmw_send_2cp_param <- readRDS("Window_Parameters\fixmw_send_2cp_param.RDS")
+fixmw_send_2cp_param <- readRDS("Window_Parameters/fixmw_send_2cp_param.RDS")
 ```
 
 Difference Effect: 
 ```{r}
-fixmw_diff_2cp_param <- readRDS("Window_Parameters\fixmw_diff_2cp_param.RDS")
+fixmw_diff_2cp_param <- readRDS("Window_Parameters/fixmw_diff_2cp_param.RDS")
 ```
 
 Inertia:
 ```{r}
-fixmw_ine_2cp_param <- readRDS("Window_Parameters\fixmw_ine_2cp_param.RDS")
+fixmw_ine_2cp_param <- readRDS("Window_Parameters/fixmw_ine_2cp_param.RDS")
 ```
 
 Out Degree Sender Effect:
 ```{r}
-fixmw_out_2cp_param <- readRDS("Window_Parameters\fixmw_out_2cp_param.RDS")
+fixmw_out_2cp_param <- readRDS("Window_Parameters/fixmw_out_2cp_param.RDS")
 ```
 
 **Test CPs of the Fixed MW parameters**
@@ -1478,22 +1484,22 @@ for (i in 1:length(BS_fixmw_out_2cp_param)) {
 
 Sender Effect:
 ```{r}
-fixmw_send_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_send_2cp_param_same.all.RDS")
+fixmw_send_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_send_2cp_param_same.all.RDS")
 ```
 
 Difference Effect: 
 ```{r}
-fixmw_diff_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_diff_2cp_param_same.all.RDS")
+fixmw_diff_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_diff_2cp_param_same.all.RDS")
 ```
 
 Inertia:
 ```{r}
-fixmw_ine_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_ine_2cp_param_same.all.RDS")
+fixmw_ine_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_ine_2cp_param_same.all.RDS")
 ```
 
 Out Degree Sender Effect:
 ```{r}
-fixmw_out_2cp_param_same.all <- readRDS("Window_Parameters\fixmw_out_2cp_param_same.all.RDS")
+fixmw_out_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_out_2cp_param_same.all.RDS")
 ```
 
 **Test CPs of the Fixed MW parameters**
@@ -1771,22 +1777,22 @@ for (i in 1:length(BS_fixmw_out_2cp_param_same.all)) {
 
 Sender Effect:
 ```{r}
-fixmw_send_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_send_2cp_param_diff.all.RDS")
+fixmw_send_2cp_param_diff.all <- readRDS("Window_Parameters/fixmw_send_2cp_param_diff.all.RDS")
 ```
 
 Difference Effect: 
 ```{r}
-fixmw_diff_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_diff_2cp_param_diff.all.RDS")
+fixmw_diff_2cp_param_diff.all <- readRDS("Window_Parameters/fixmw_diff_2cp_param_diff.all.RDS")
 ```
 
 Inertia:
 ```{r}
-fixmw_ine_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_ine_2cp_param_diff.all.RDS")
+fixmw_ine_2cp_param_diff.all <- readRDS("Window_Parameters/fixmw_ine_2cp_param_diff.all.RDS")
 ```
 
 Out Degree Sender Effect:
 ```{r}
-fixmw_out_2cp_param_diff.all <- readRDS("Window_Parameters\fixmw_out_2cp_param_diff.all.RDS")
+fixmw_out_2cp_param_diff.all <- readRDS("Window_Parameters/fixmw_out_2cp_param_diff.all.RDS")
 ```
 
 **Test CPs of the Fixed MW parameters**
