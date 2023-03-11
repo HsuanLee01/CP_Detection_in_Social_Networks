@@ -334,12 +334,12 @@ param.2cp_same.all <- list(
   "z_send"= function(t) {
     # set the location of CP
     if(t < 16750) { #8366
-      0.18
+      0.2
     } else
       
       if(t < 53900) { #7519
-          0.02
-          } else {0.17}
+          -0.01
+          } else {0.19}
     },
   
   "z_difference" = function(t) {
@@ -414,45 +414,45 @@ param.2cp_diff.all <- list(
   "z_send"= function(t) {
     # set the location of CP
     if(t < 21880) { #8366
-      0.19
+      0.2
     } else
       
       if(t < 44260) { #7519
-          0.01
+          -0.01
           } else {0.19}
     },
   
   "z_difference" = function(t) {
     # set the location of CP
     if(t < 18250) { #8366
-      -0.042
+      -0.01
     } else
       
       if(t < 40710) { #7519
           -0.12
-          } else {0.01}
+          } else {0.03}
     },
   
   "inertia" = function(t) {
     # set the location of CP
     if(t < 16750) { #2574
-      0.05
+      0.01
       } else
         
         if(t < 53900) { #7519
           0.14
-          } else {0.03}
+          } else {0.01}
     },
   
   "outdegreeSender" = function(t) {
     # set the location of CP
     if(t < 36370) { #8366
-      0.035
+      -0.01
       } else
         
         if(t < 64000) { #7519
-          0.15
-          } else {0.03}
+          0.14
+          } else {0.01}
     }
 )
 
