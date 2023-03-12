@@ -3,7 +3,60 @@ title: "Comparison of CPDs"
 author: "Hsuan Lee"
 output: pdf_document
 ---
-# Correspondence Matrix, and F1 score
+```{r}
+# install.packages('caret')
+library(caret) # for confusion matrix
+```
+
+# Confusion Matrix, and F1 score
+
+```{r}
+# rep = number of datasets we have
+rep <- 15
+```
+
+**For the datasets with no changepoints**
+
+Reference:
+```{r}
+length_ncp <- list()
+for (i in 1:rep) {
+  length_ncp[[i]] <- length(fixmw_send_ncp_param[[i]])
+}
+```
+
+```{r}
+# the total windows of the 15 datasets
+length_ncp <- unlist(fixmw_send_ncp_param)
+
+# create the true changepoints locations 
+ref_ncp <- rep(0, length(length_ncp))
+```
+
+Prediction:
+
+1. BOCPD
+```{r}
+for (i in 1:rep) {
+  locat_BOCD_ncp_send
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Create the function for MSE

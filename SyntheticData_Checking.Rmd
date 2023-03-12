@@ -3,16 +3,58 @@ title: "Synthetic Data Checking"
 author: "Hsuan Lee"
 output: pdf_document
 ---
-
-**Extract the statistics and replace half of sender effect's statistics as 0**
 ```{r}
-stat_check <- stat.ncp[[7]]
+library(relevent)
+```
+
+**Extract the statistics and replace second half of sender effect's statistics as 0**
+```{r}
+stat_check_p1 <- stat.1cp[[7]]
 #stat_check[5001:10000, 1:870, 1] <- 0
-stat_check[5001:10000, 1:870, 2] <- 0
+stat_check_p1[5001:10000, 1:870, 2] <- 0
 #stat_check[5001:10000, 1:870, 3] <- 0
 #stat_check[5001:10000, 1:870, 4] <- 0
 #stat_check[5001:10000, 1:870, 5] <- 0
 ```
+
+**Fit the REM on the REH with second half 0 statistics**
+```{r}
+rem_check_p1 <- rem(eventlist = out.1cp[[7]]$evls, 
+                 statslist = stat_check_p1, 
+                 timing = "interval", estimator = "MLE")
+
+summary(rem_check_p1)
+```
+
+**Extract the statistics and replace first half of sender effect's statistics as 0**
+```{r}
+stat_check_p2 <- stat.1cp[[7]]
+#stat_check[1:5000, 1:870, 1] <- 0
+stat_check_p2[1:5000, 1:870, 2] <- 0
+#stat_check[1:5000, 1:870, 3] <- 0
+#stat_check[1:5000, 1:870, 4] <- 0
+#stat_check[1:5000, 1:870, 5] <- 0
+```
+
+**Fit the REM on the REH with first half 0 statistics**
+```{r}
+rem_check_p2 <- rem(eventlist = out.1cp[[7]]$evls, 
+                    statslist = stat_check_p2, 
+                    timing = "interval", estimator = "MLE")
+
+summary(rem_check_p2)
+```
+
+
+
+
+
+## Don't use MW approach for checking data
+---------------------
+
+
+
+
 
 **Maximum time of REH and specify the fixed window size** 
 ```{r}
@@ -37,24 +79,3 @@ for (win in 1:length(model_fixwin_check)) {
   fixmw_send_param_check[win] <- model_fixwin_check[[win]][["coefficients"]][["send.z"]]
   }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
