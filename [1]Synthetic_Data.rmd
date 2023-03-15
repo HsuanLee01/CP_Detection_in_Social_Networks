@@ -58,14 +58,15 @@ param.ncp <- list(
   "baseline" = -8.8,
   "z_send"= 0.1, 
   "z_difference" = -0.1,
-  "inertia" = 0.18,
-  "outdegreeSender" = 0.12)
+  "inertia" = 0.18, # change it to 0.1
+  "outdegreeSender" = 0.12) # change it to 0.1
 
 # create REH with 1 CP
 reh_ncp <- list()
 
 rep <- 15 # replication times (number of datasets you wanna get)
 
+# try parallel here
 for (i in 1: rep){
   reh_ncp[[i]] <- generate(formula = formula, param = param.ncp, M = 10000, covar = covar)
   print(i)

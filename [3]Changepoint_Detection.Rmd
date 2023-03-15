@@ -56,6 +56,8 @@ for (i in 1:length(fixmw_send_ncp_param)) {
 locat_BOCD_ncp_send <- list()
 for (i in 1:length(BOCD_fixmw_send_ncp_param)) {
   locat_BOCD_ncp_send[[i]] <- BOCD_fixmw_send_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_ncp_send[[i]] <- locat_BOCD_ncp_send[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -78,6 +80,8 @@ for (i in 1:length(fixmw_diff_ncp_param)) {
 locat_BOCD_ncp_diff <- list()
 for (i in 1:length(BOCD_fixmw_diff_ncp_param)) {
   locat_BOCD_ncp_diff[[i]] <- BOCD_fixmw_diff_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_ncp_diff[[i]] <- locat_BOCD_ncp_diff[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -100,6 +104,8 @@ for (i in 1:length(fixmw_ine_ncp_param)) {
 locat_BOCD_ncp_ine <- list()
 for (i in 1:length(BOCD_fixmw_ine_ncp_param)) {
   locat_BOCD_ncp_ine[[i]] <- BOCD_fixmw_ine_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_ncp_ine[[i]] <- locat_BOCD_ncp_ine[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -122,6 +128,8 @@ for (i in 1:length(fixmw_out_ncp_param)) {
 locat_BOCD_ncp_out <- list()
 for (i in 1:length(BOCD_fixmw_out_ncp_param)) {
   locat_BOCD_ncp_out[[i]] <- BOCD_fixmw_out_ncp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_ncp_out[[i]] <- locat_BOCD_ncp_out[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -349,6 +357,8 @@ for (i in 1:length(fixmw_send_1cp_param)) {
 locat_BOCD_1cp_send <- list()
 for (i in 1:length(BOCD_fixmw_send_1cp_param)) {
   locat_BOCD_1cp_send[[i]] <- BOCD_fixmw_send_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_send[[i]] <- locat_BOCD_1cp_send[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -371,6 +381,8 @@ for (i in 1:length(fixmw_diff_1cp_param)) {
 locat_BOCD_1cp_diff <- list()
 for (i in 1:length(BOCD_fixmw_diff_1cp_param)) {
   locat_BOCD_1cp_diff[[i]] <- BOCD_fixmw_diff_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_diff[[i]] <- locat_BOCD_1cp_diff[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -393,6 +405,8 @@ for (i in 1:length(fixmw_ine_1cp_param)) {
 locat_BOCD_1cp_ine <- list()
 for (i in 1:length(BOCD_fixmw_ine_1cp_param)) {
   locat_BOCD_1cp_ine[[i]] <- BOCD_fixmw_ine_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_ine[[i]] <- locat_BOCD_1cp_ine[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -415,6 +429,8 @@ for (i in 1:length(fixmw_out_1cp_param)) {
 locat_BOCD_1cp_out <- list()
 for (i in 1:length(BOCD_fixmw_out_1cp_param)) {
   locat_BOCD_1cp_out[[i]] <- BOCD_fixmw_out_1cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_out[[i]] <- locat_BOCD_1cp_out[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -642,6 +658,8 @@ for (i in 1:length(fixmw_send_1cp_param_same.all)) {
 locat_BOCD_1cp_send_same.all <- list()
 for (i in 1:length(BOCD_fixmw_send_1cp_param_same.all)) {
   locat_BOCD_1cp_send_same.all[[i]] <- BOCD_fixmw_send_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_send_same.all[[i]] <- locat_BOCD_1cp_send_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -664,6 +682,8 @@ for (i in 1:length(fixmw_diff_1cp_param_same.all)) {
 locat_BOCD_1cp_diff_same.all <- list()
 for (i in 1:length(BOCD_fixmw_diff_1cp_param_same.all)) {
   locat_BOCD_1cp_diff_same.all[[i]] <- BOCD_fixmw_diff_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_diff_same.all[[i]] <- locat_BOCD_1cp_diff_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -686,6 +706,8 @@ for (i in 1:length(fixmw_ine_1cp_param_same.all)) {
 locat_BOCD_1cp_ine_same.all <- list()
 for (i in 1:length(BOCD_fixmw_ine_1cp_param_same.all)) {
   locat_BOCD_1cp_ine_same.all[[i]] <- BOCD_fixmw_ine_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_ine_same.all[[i]] <- locat_BOCD_1cp_ine_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -708,6 +730,8 @@ for (i in 1:length(fixmw_out_1cp_param_same.all)) {
 locat_BOCD_1cp_out_same.all <- list()
 for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
   locat_BOCD_1cp_out_same.all[[i]] <- BOCD_fixmw_out_1cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_out_same.all[[i]] <- locat_BOCD_1cp_out_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -935,6 +959,8 @@ for (i in 1:length(fixmw_send_1cp_param_diff.all)) {
 locat_BOCD_1cp_send_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_send_1cp_param_diff.all)) {
   locat_BOCD_1cp_send_diff.all[[i]] <- BOCD_fixmw_send_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_send_diff.all[[i]] <- locat_BOCD_1cp_send_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -957,6 +983,8 @@ for (i in 1:length(fixmw_diff_1cp_param_diff.all)) {
 locat_BOCD_1cp_diff_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_diff_1cp_param_diff.all)) {
   locat_BOCD_1cp_diff_diff.all[[i]] <- BOCD_fixmw_diff_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_diff_diff.all[[i]] <- locat_BOCD_1cp_diff_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -979,6 +1007,8 @@ for (i in 1:length(fixmw_ine_1cp_param_diff.all)) {
 locat_BOCD_1cp_ine_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_ine_1cp_param_diff.all)) {
   locat_BOCD_1cp_ine_diff.all[[i]] <- BOCD_fixmw_ine_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_ine_diff.all[[i]] <- locat_BOCD_1cp_ine_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1001,6 +1031,8 @@ for (i in 1:length(fixmw_out_1cp_param_diff.all)) {
 locat_BOCD_1cp_out_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_out_1cp_param_diff.all)) {
   locat_BOCD_1cp_out_diff.all[[i]] <- BOCD_fixmw_out_1cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_1cp_out_diff.all[[i]] <- locat_BOCD_1cp_out_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1228,6 +1260,8 @@ for (i in 1:length(fixmw_send_2cp_param)) {
 locat_BOCD_2cp_send <- list()
 for (i in 1:length(BOCD_fixmw_send_2cp_param)) {
   locat_BOCD_2cp_send[[i]] <- BOCD_fixmw_send_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_send[[i]] <- locat_BOCD_2cp_send[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1250,6 +1284,8 @@ for (i in 1:length(fixmw_diff_2cp_param)) {
 locat_BOCD_2cp_diff <- list()
 for (i in 1:length(BOCD_fixmw_diff_2cp_param)) {
   locat_BOCD_2cp_diff[[i]] <- BOCD_fixmw_diff_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_diff[[i]] <- locat_BOCD_2cp_diff[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1272,6 +1308,8 @@ for (i in 1:length(fixmw_ine_2cp_param)) {
 locat_BOCD_2cp_ine <- list()
 for (i in 1:length(BOCD_fixmw_ine_2cp_param)) {
   locat_BOCD_2cp_ine[[i]] <- BOCD_fixmw_ine_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_ine[[i]] <- locat_BOCD_2cp_ine[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1294,6 +1332,8 @@ for (i in 1:length(fixmw_out_2cp_param)) {
 locat_BOCD_2cp_out <- list()
 for (i in 1:length(BOCD_fixmw_out_2cp_param)) {
   locat_BOCD_2cp_out[[i]] <- BOCD_fixmw_out_2cp_param[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_out[[i]] <- locat_BOCD_2cp_out[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1519,6 +1559,8 @@ for (i in 1:length(fixmw_send_2cp_param_same.all)) {
 locat_BOCD_2cp_send_same.all <- list()
 for (i in 1:length(BOCD_fixmw_send_2cp_param_same.all)) {
   locat_BOCD_2cp_send_same.all[[i]] <- BOCD_fixmw_send_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_send_same.all[[i]] <- locat_BOCD_2cp_send_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1541,6 +1583,8 @@ for (i in 1:length(fixmw_diff_2cp_param_same.all)) {
 locat_BOCD_2cp_diff_same.all <- list()
 for (i in 1:length(BOCD_fixmw_diff_2cp_param_same.all)) {
   locat_BOCD_2cp_diff_same.all[[i]] <- BOCD_fixmw_diff_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_diff_same.all[[i]] <- locat_BOCD_2cp_diff_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1563,6 +1607,8 @@ for (i in 1:length(fixmw_ine_2cp_param_same.all)) {
 locat_BOCD_2cp_ine_same.all <- list()
 for (i in 1:length(BOCD_fixmw_ine_2cp_param_same.all)) {
   locat_BOCD_2cp_ine_same.all[[i]] <- BOCD_fixmw_ine_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_ine_same.all[[i]] <- locat_BOCD_2cp_ine_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1585,6 +1631,8 @@ for (i in 1:length(fixmw_out_2cp_param_same.all)) {
 locat_BOCD_2cp_out_same.all <- list()
 for (i in 1:length(BOCD_fixmw_out_2cp_param_same.all)) {
   locat_BOCD_2cp_out_same.all[[i]] <- BOCD_fixmw_out_2cp_param_same.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_out_same.all[[i]] <- locat_BOCD_2cp_out_same.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1812,6 +1860,8 @@ for (i in 1:length(fixmw_send_2cp_param_diff.all)) {
 locat_BOCD_2cp_send_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_send_2cp_param_diff.all)) {
   locat_BOCD_2cp_send_diff.all[[i]] <- BOCD_fixmw_send_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_send_diff.all[[i]] <- locat_BOCD_2cp_send_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1834,6 +1884,8 @@ for (i in 1:length(fixmw_diff_2cp_param_diff.all)) {
 locat_BOCD_2cp_diff_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_diff_2cp_param_diff.all)) {
   locat_BOCD_2cp_diff_diff.all[[i]] <- BOCD_fixmw_diff_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_diff_diff.all[[i]] <- locat_BOCD_2cp_diff_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1856,6 +1908,8 @@ for (i in 1:length(fixmw_ine_2cp_param_diff.all)) {
 locat_BOCD_2cp_ine_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_ine_2cp_param_diff.all)) {
   locat_BOCD_2cp_ine_diff.all[[i]] <- BOCD_fixmw_ine_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_ine_diff.all[[i]] <- locat_BOCD_2cp_ine_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
@@ -1878,6 +1932,8 @@ for (i in 1:length(fixmw_out_2cp_param_diff.all)) {
 locat_BOCD_2cp_out_diff.all <- list()
 for (i in 1:length(BOCD_fixmw_out_2cp_param_diff.all)) {
   locat_BOCD_2cp_out_diff.all[[i]] <- BOCD_fixmw_out_2cp_param_diff.all[[i]][["changepoint_lists"]][["maxCPs"]][[1]]
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_BOCD_2cp_out_diff.all[[i]] <- locat_BOCD_2cp_out_diff.all[[i]][-1]
 }
 
 # plot the CPs for each iteration
