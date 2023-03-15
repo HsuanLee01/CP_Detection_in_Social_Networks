@@ -11,272 +11,6 @@ output: pdf_document
 # Confusion Matrix
 
 ```{r}
-# rep = number of datasets we have
-rep <- 15
-```
-
-**For the datasets with no changepoints**
-
-Reference:
-```{r}
-ref_ncp <- 0
-```
-
-Prediction:
-
-1. BOCPD
-
-- Sender Effect
-```{r}
-pred_send_BOCD_ncp <- 0
-
-for (i in 1:15) {
-  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
-  locat_cp <- locat_BOCD_ncp_send[[i]][-1]
-  pred_send_BOCD_ncp[i] <- length(locat_cp)
-  print(pred_send_BOCD_ncp)
-}
-```
-
-
-
-
-
-
-
-```{r}
-conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
-                        true_CPs, # a vector
-                        threshold = 5, # range that still can be recognized as correct CP identification
-                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
-                        ){
-  
-  true_CPs_locate <- list()
-  for (i in 1:length(pred_CPs)) {
-    # assign 0 to the no CP windows, 1 to CP windows
-    true_CPs_locate[[i]] <- rep(0, length(window_parameters[[i]]))
-    true_CPs_locate[[i]][true_CPs] <- 1
-  }
-
-  pred_CPs_locate <- list()
-  for (i in 1::length(pred_CPs)) {
-    # assign 0 to the no CP windows, 1 to CP windows
-    pred_CPs_locate[[i]] <- rep(0, length(window_parameters[[i]]))
-    # assign the predicted changepoint as 1
-    pred_CPs_locate[[i]][pred_CPs[[i]]] <- 1
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-pred_CPs_locate <- list()
-  for (i in 1:15) {
-    # assign 0 to the no CP windows, 1 to CP windows
-    pred_CPs_locate[[i]] <- rep(0, length(fixmw_send_1cp_param[[i]]))
-    # assign the predicted changepoint as 1
-    pred_CPs_locate[[i]][locat_BOCD_1cp_out[[i]]] <- 1
-  }
-
-
-```
-
-
-
-
-
-
-
-
-
-
-
-```{r}
-# number of windows of each dataset
-length_ncp <- list()
-for (i in 1:rep) {
-  length_ncp[[i]] <- length(fixmw_send_ncp_param[[i]])
-}
-
-# create the true changepoints locations
-ref_ncp <- list()
-for (i in 1:rep) {
-  ref_ncp[[i]] <- rep(0, length_ncp[[i]])
-}
-```
-
-Prediction:
-
-1. BOCPD
-
-- Sender Effect
-```{r}
-pred_send_BOCD_ncp <- list()
-for (i in 1:rep) {
-  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
-  locat_cp <- locat_BOCD_ncp_send[[i]][-1]
-  pred_send_BOCD_ncp[[i]] <- rep(0, length_ncp[[i]])
-  
-  # assign the predicted changepoint as 1
-  pred_send_BOCD_ncp[[i]][locat_cp] <- 1
-}
-```
-
-
-
-
-
-
-```{r}
-locat_BOCD_ncp_send[[5]][-1][1]
-```
-
-
-
-
-```{r}
-# true_CPs has to be a matrix
-conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
-                        true_CPs, # a matrix / vector
-                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
-                        ){
-  confusionmatrix <- vector(mode='list', length = length(window_parameters))
-  
-  for (i in 1:length(pred_CPs)) {
-    
-    confusionmatrix[[i]] <- 
-      for (detet_cp in 0:length(pred_CPs[[i]])) {
-        if(pred_CPs[[i]][detet_cp] == true_CPs[1] | true_CPs[2] | true_CPs[3]
-           | true_CPs[4] | true_CPs[5] | true_CPs[6] | true_CPs[7] 
-           | true_CPs[8] | true_CPs[9] | true_CPs[10] | true_CPs[11]
-           | true_CPs[12] | true_CPs[13] | true_CPs[14] | true_CPs[15]
-           | true_CPs[16] | true_CPs[17] | true_CPs[18] | true_CPs[19]
-           | true_CPs[20] | true_CPs[21] | true_CPs[22]){
-        "TP"
-      } else("FP")
-      }
-      
-      
-      
-
-    #confusionmatrix[[i]] <- true_CPs[,i]
-    
-  }
-  return(confusionmatrix)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
-                        true_CPs, # a matrix / vector
-                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
-){
-  
-  positive <- vector(mode='list', length = length(window_parameters))
-  negative <- vector(mode='list', length = length(window_parameters))
-  
-  for (i in 1:length(pred_CPs)) {
-    
-    for (detet_cp in 0:length(pred_CPs[[i]])) {
-      
-      positive[[i]][detect_cp] <- 
-        if (length(pred_CPs[[i]][detect_cp]) > 0 && pred_CPs[[i]][detect_cp] %in% true_CPs) {
-          "TP"
-        } else {
-          "FP"
-        }
-      
-      negative[[i]][detect_cp] <- 
-        if (!(pred_CPs[[i]][detet_cp] %in% true_CPs)) {
-          "FN"
-        }
-      
-      }
-      
-    #confusionmatrix[[i]] <- true_CPs[,i]
-    
-  }
-  return(positive, negative)
-}
-
-
-
-
-
-
-
-conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
-                        true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
-                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
-){
-  
-  positive <- vector(mode='list', length = length(window_parameters))
-  negative <- vector(mode='list', length = length(window_parameters))
-  
-  for (i in 1:length(pred_CPs)) {
-    
-    for (detect_cp in 0:length(pred_CPs[[i]])) {
-      
-      positive[[i]][detect_cp] <- 
-        if (length(pred_CPs[[i]][detect_cp]) > 0 && pred_CPs[[i]][detect_cp] %in% true_CPs) {
-          "TP"
-        } else {
-          "FP"
-        }
-    }
-    
-    FN <- list()
-    FN[[i]] <- ncol(true_CPs) - sum(positive[[i]] == "TP")
-    
-    negative[[]]
-    
-    
-    
-    
-    
-    
-    
-  }
-  return(positive)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
                         true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
                         window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
@@ -343,6 +77,66 @@ a <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_cp, window_param
 
 length(locat_BOCD_1cp_ine)
 ```
+
+**For the datasets with no changepoints**
+
+Reference:
+```{r}
+ref_ncp <- 0
+```
+
+Prediction:
+
+1. BOCPD
+
+- Sender Effect
+```{r}
+pred_send_BOCD_ncp <- 0
+
+for (i in 1:15) {
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_cp <- locat_BOCD_ncp_send[[i]][-1]
+  pred_send_BOCD_ncp[i] <- length(locat_cp)
+  print(pred_send_BOCD_ncp)
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Prediction:
+
+1. BOCPD
+
+- Sender Effect
+```{r}
+pred_send_BOCD_ncp <- list()
+for (i in 1:rep) {
+  # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+  locat_cp <- locat_BOCD_ncp_send[[i]][-1]
+  pred_send_BOCD_ncp[[i]] <- rep(0, length_ncp[[i]])
+  
+  # assign the predicted changepoint as 1
+  pred_send_BOCD_ncp[[i]][locat_cp] <- 1
+}
+```
+
+
+
 
 
 
