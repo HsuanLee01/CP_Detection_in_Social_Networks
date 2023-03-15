@@ -5,7 +5,7 @@ output: pdf_document
 ---
 ```{r}
 # install.packages('caret')
-library(caret) # for confusion matrix
+#library(caret) # for confusion matrix
 ```
 
 # Confusion Matrix
@@ -282,15 +282,15 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
                         window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
 ){
   
-  confusionmatrix <- vector(mode='list', length = length(window_parameters))
+  confusion_assign <- vector(mode='list', length = length(window_parameters))
   leveling <- list()
-  table <- list()
+  confusionmatrix <- list()
   
   for (i in 1:length(pred_CPs)) {
     
     for (detect_cp in 0:length(pred_CPs[[i]])) {
       
-      confusionmatrix[[i]][detect_cp] <- 
+      confusion_assign[[i]][detect_cp] <- 
         if (length(pred_CPs[[i]][detect_cp]) > 0 && pred_CPs[[i]][detect_cp] %in% true_CPs) {
           "TP"
         } else {
@@ -299,17 +299,18 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
     }
     
     FN <- list()
-    FN[[i]] <- ncol(true_CPs) - sum(confusionmatrix[[i]] == "TP")
+    FN[[i]] <- ncol(true_CPs) - sum(confusion_assign[[i]] == "TP")
     
-    confusionmatrix[[i]] <- c(confusionmatrix[[i]], rep("FN", FN[[i]]))
+    confusion_assign[[i]] <- c(confusion_assign[[i]], rep("FN", FN[[i]]))
     
     level <- c("TP", "FP", "FN", "TN")
-    leveling[[i]] <- factor(confusionmatrix[[i]], level)
-    table[[i]] <- table(leveling[[i]])
+    leveling[[i]] <- factor(confusion_assign[[i]], level)
+    confusionmatrix[[i]] <- table(leveling[[i]])
+    
+    
     
   }
-  return(list(confusionmatrix = confusionmatrix, 
-              table = table))
+  return(list(confusionmatrix = confusionmatrix))
 }
 
 
@@ -319,8 +320,8 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
 level <- c("TP", "FP", "FN", "TN")
 b <- c("TP", "FN")
 table <- factor(b, level)
-table(table)
-
+t <- t(data.frame(table(table)))
+t
 
 
 
