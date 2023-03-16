@@ -10,89 +10,7 @@ output: pdf_document
 
 # Create a function for Confusion Matrix
 
-```{r}
-conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
-                        true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
-                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
-){
-  
-  confusion_assign <- vector(mode='list', length = length(window_parameters))
-  leveling <- list()
-  confusionmatrix <- list()
-  
-  for (i in 1:length(pred_CPs)) {
-    
-    for (detect_cp in 0:length(pred_CPs[[i]])) {
-      
-      confusion_assign[[i]][detect_cp] <- 
-        if (length(pred_CPs[[i]][detect_cp]) > 0 && pred_CPs[[i]][detect_cp] %in% true_CPs) {
-          "TP"
-        } else {
-          "FP"
-        }
-    }
-    
-    FN <- list()
-    FN[[i]] <- ncol(true_CPs) - sum(confusion_assign[[i]] == "TP")
-    
-    confusion_assign[[i]] <- c(confusion_assign[[i]], rep("FN", FN[[i]]))
-    
-    level <- c("TP", "FP", "FN", "TN")
-    leveling[[i]] <- factor(confusion_assign[[i]], level)
-    confusionmatrix[[i]] <- table(leveling[[i]])
-  }
-  
-  # combine all the confusion assignments from each dataset together
-  total_confusion <- unlist(confusion_assign)
-  total_leveling <- factor(total_confusion, level)
-  total_confusionmatrix <- table(total_leveling)
-  
-  # True Positive Rate 
-  # -> In all positive observations, what is the probability that the model correctly predicts the true positive
-  TPR <- total_confusionmatrix[["TP"]] / 
-    (total_confusionmatrix[["TP"]] + total_confusionmatrix[["FN"]])
-  
-  
-  
-  
-  return(list(confusionmatrix = confusionmatrix,
-              total_confusionmatrix = total_confusionmatrix,
-              TPR = TPR))
-}
-
-
-
-
-
-level <- c("TP", "FP", "FN", "TN")
-b <- c("TP", "FN")
-table <- factor(b, level)
-t <- t(data.frame(table(table)))
-t
-
-
-
-
-if(pred_CPs[[i]][i] == true_CPs[1,i] | true_CPs[2,i] | true_CPs[3,i]
-           | true_CPs[4,i] | true_CPs[5,i] | true_CPs[6,i] | true_CPs[7,i] 
-           | true_CPs[8,i] | true_CPs[9,i] | true_CPs[10,i]){
-        "TP"
-      } else("FP")
-
-locat_BOCD_1cp_ine[[1]][1]
-
-true_cp <- matrix(data = c(58, 59, 60, 61, 62, 63, 57, 56, 55, 54, 53), ncol = 1)
-  
-  
-  
-
-a <- conf_matrix(pred_CPs = locat_BS_1cp_ine, true_CPs = true_cp, window_parameters = fixmw_ine_1cp_param)
-
-length(locat_BOCD_1cp_ine)
-```
-
-
-
+**Confusion Matrix Function for the data with changepoints**
 ```{r}
 conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
                         true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
@@ -151,6 +69,125 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
               PPV = PPV))
 }
 ```
+
+```{r}
+true_cp <- matrix(data = c(58, 59, 60, 61, 62, 63, 57, 56, 55, 54, 53), ncol = 1)
+a <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_cp, window_parameters = fixmw_ine_1cp_param)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+confusion_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
+                             true_CPs, 
+                             window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
+                             ){
+  
+  library(caret)
+  
+  true_CPs_locate <- list()
+  pred_CPs_locate <- list()
+  
+  confusionmatrix <- list() # initialize list to store confusion matrices
+  
+  for (i in 1:length(pred_CPs)) {
+    
+    # assign 0 to the no CP windows, 1 to CP windows
+    true_CPs_locate[[i]] <- rep(0, length(window_parameters[[i]]))
+    true_CPs_locate[[i]][true_CPs] <- 1
+    true_CPs_locate[[i]] <- factor(true_CPs_locate[[i]], levels = c(0, 1))
+
+    # assign 0 to the no CP windows, 1 to CP windows
+    pred_CPs_locate[[i]] <- rep(0, length(window_parameters[[i]]))
+    # assign the predicted changepoint as 1
+    pred_CPs_locate[[i]][pred_CPs[[i]]] <- 1
+    pred_CPs_locate[[i]] <- factor(pred_CPs_locate[[i]], levels = c(0, 1))
+    
+    confusionmatrix[[i]] <- 
+      confusionMatrix(data = pred_CPs_locate[[i]], reference = true_CPs_locate[[i]])
+  }
+
+  return(list(confusionmatrix = confusionmatrix))
+}
+
+
+
+
+
+
+
+
+
+confusion_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
+                             true_CPs, 
+                             window_parameters, # the window given parameters, e.g. fixmw_send_1cp_param
+                             range # the range that can still be recognized as TP
+                             ){
+  
+  library(caret)
+  
+  true_CPs_locate <- list()
+  pred_CPs_locate <- list()
+  
+  confusionmatrix <- list() # initialize list to store confusion matrices
+  
+  for (i in 1:length(pred_CPs)) {
+    
+    # assign 0 to the no CP windows, 1 to CP windows
+    pred_CPs_locate[[i]] <- rep(0, length(window_parameters[[i]]))
+    # assign the predicted changepoint as 1
+    pred_CPs_locate[[i]][pred_CPs[[i]]] <- 1
+    pred_CPs_locate[[i]] <- factor(pred_CPs_locate[[i]], levels = c(0, 1))
+    
+    # assign 0 to the no CP windows, 1 to CP windows
+    true_CPs_locate[[i]] <- rep(0, length(window_parameters[[i]]))
+    if (pred_CPs[[i]] %in% true_CPs + range | true_CPs - range)
+    
+    
+    true_CPs_locate[[i]][true_CPs[true_CPs >= pred_CPs[[i]] - range & true_CPs <= pred_CPs[[i]] + range]] <- 1
+    
+    
+    
+    true_CPs_locate[[i]][true_CPs] <- 1
+    true_CPs_locate[[i]] <- factor(true_CPs_locate[[i]], levels = c(0, 1))
+    
+    confusionmatrix[[i]] <- 
+      confusionMatrix(data = pred_CPs_locate[[i]], reference = true_CPs_locate[[i]])
+  }
+
+  return(list(confusionmatrix = confusionmatrix))
+}
+
+confusion_matrix(pred_CPs = locat_BOCD_ncp_out, true_CPs = 0, window_parameters = fixmw_out_ncp_param)
+b <- confusion_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = 57, window_parameters = fixmw_ine_1cp_param, distance_threshold = 10)
+
+```
+
+
+
+
+
+
 
 
 
