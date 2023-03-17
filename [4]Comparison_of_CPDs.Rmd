@@ -222,9 +222,9 @@ Suppose we have the vector x <- c(5, 2, 7, 1, 9). The min() function will return
 
 Now, suppose we also want to know the index of the smallest value in the vector. We can use the which.min() function for that. In this case, which.min(x) will return the index 4, since 1 is the smallest value and it occurs in the 4th position in the vector.
 
+----------------------
 
-
-
+# Start Comparison
 
 
 
