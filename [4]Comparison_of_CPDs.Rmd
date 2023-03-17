@@ -10,7 +10,6 @@ output: pdf_document
 
 # Create a function for Confusion Matrix
 
-**Confusion Matrix Function for the data with changepoints**
 ```{r}
 conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
                         true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
@@ -88,6 +87,158 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
 }
 ```
 
+# Create a function for MSE
+
+```{r}
+MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
+                    true_CPs, # a vector, the location of true CPs
+                    range # the range that the detected CP inside that range with true CP can still recognized as TP
+                    ){
+  
+  # create a blank list for square error with the same length as number of datasets
+  initial_SE <- lapply(seq_along(pred_CPs), function(x) list())
+  
+  # create a blank list to store mean square error of each dataset
+  MSE <- lapply(seq_along(pred_CPs), function(x) list())
+  
+  # for each dataset
+  for (i in 1:length(pred_CPs)) {
+    
+    if(length(pred_CPs[[i]]) > 0){ # if the length of detected CPs larger than 0
+      
+      # Define dimensions of detected_SE matrix: row = number of detected CPs, col = number of true CPs
+      detected_SE <- matrix(0, nrow = length(pred_CPs[[i]]), ncol = length(true_CPs))
+      
+      # for row, i.e., number of detected CPs
+      for (cp_det in 1:length(pred_CPs[[i]])) {
+        
+        # for column, i.e., number of true CPs
+        for (cp_true in 1: length(true_CPs)) {
+          
+          # store the square error of all the detected CPs with all the true CP into the matrix
+          detected_SE[cp_det,cp_true] <- (true_CPs[cp_true] - pred_CPs[[i]][cp_det])^2
+        }
+      }
+      
+      # Find minimum SE for each true CP, as only the minimum one is the real detected CP for that true CP
+      initial_SE[[i]] <- apply(detected_SE, 2, function(x) {
+        
+        min_val <- min(x)
+        
+        # the range that the detected CP inside that range with true CP can still recognized as TP
+        if (min_val <= range^2) {
+          min_val
+        } else {
+          NA # if the detected CP is not inside the range, we assign it a NA (FP)
+        }
+      })
+      
+      # Remove NAs from initial_SE, so that we can obtain the real length of each set
+      initial_SE[[i]] <- na.omit(initial_SE[[i]])
+    }
+    
+    # extract values from initial_SE and sum the square error of each CP
+    MSE[[i]] <- sum(unlist(initial_SE[[i]]), na.rm = T) / length(initial_SE[[i]])
+    
+  }
+  # the average MSE of all datasets
+  total_MSE <- mean(unlist(MSE), na.rm = T)
+  
+  return(list(MSE = MSE, 
+              Averade_MSE = total_MSE))
+}
+```
+
+# Create a function for MSD
+
+```{r}
+MSD_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
+                    true_CPs, # a vector, the location of true CPs
+                    range # the range that the detected CP inside that range with true CP can still recognized as TP
+) {
+  
+  # create a blank list for sign difference with the same length as number of datasets
+  initial_SD <- lapply(seq_along(pred_CPs), function(x) list())
+  
+  # create a blank list to store mean sign difference of each dataset
+  MSD <- lapply(seq_along(pred_CPs), function(x) list())
+  
+  # for each dataset
+  for (i in 1:length(pred_CPs)) {
+    
+    if(length(pred_CPs[[i]]) > 0){ # if the length of detected CPs larger than 0
+      
+      # Define dimensions of detected_SD matrix: row = number of detected CPs, col = number of true CPs
+      detected_SD <- matrix(0, nrow = length(pred_CPs[[i]]), ncol = length(true_CPs))
+      
+      # for row, i.e., number of detected CPs
+      for (cp_det in 1:length(pred_CPs[[i]])) {
+        
+        # for column, i.e., number of true CPs
+        for (cp_true in 1:length(true_CPs)) {
+          
+          # store the sign difference of all the detected CPs with all the true CP into the matrix
+          detected_SD[cp_det,cp_true] <- pred_CPs[[i]][cp_det] - true_CPs[cp_true]
+        }
+      }
+      
+      # Find minimum SD for each true CP, as only the minimum one is the real detected CP for that true CP
+      initial_SD[[i]] <- apply(detected_SD, 2, function(x) {
+        
+        # calculate the minimum absolute distance and multiply it by the sign of the corresponding element
+        # in order to maintain the original sign (positive/negative) of the distance
+        # sign(x) returns the sign of a real number x, which is either -1, 0, or 1, 
+        # depending on whether x is negative, zero, or positive, respectively.
+        # which.min(abs(x)) is used to find the index of the element with the smallest absolute value in the vector x
+        min_val <- sign(x[which.min(abs(x))]) * min(abs(x))
+        
+        # the range that the detected CP inside that range with true CP can still recognized as TP
+        if (abs(min_val) <= range) {
+          min_val
+          } else {
+            NA # if the detected CP is not inside the range, we assign it a NA (FP)
+            }
+        })
+      
+      # Remove NAs from initial_SD, so that we can obtain the real length of each set
+      initial_SD[[i]] <- na.omit(initial_SD[[i]])
+    }
+    
+    # extract values from initial_SD and sum the SD of each CP
+    MSD[[i]] <- sum(unlist(initial_SD[[i]]), na.rm = TRUE) / length(initial_SD[[i]])
+    
+  }
+  # the average MSD of all datasets
+  total_MSD <- mean(unlist(MSD), na.rm = TRUE)
+  
+  return(list(MSD = MSD, 
+              Average_MSD = total_MSD))
+}
+```
+
+Difference between `min()` and `which.min()`
+
+Suppose we have the vector x <- c(5, 2, 7, 1, 9). The min() function will return the smallest value in the vector, which is 1.
+
+Now, suppose we also want to know the index of the smallest value in the vector. We can use the which.min() function for that. In this case, which.min(x) will return the index 4, since 1 is the smallest value and it occurs in the 4th position in the vector.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+confusion matrix
+
 ```{r}
 true_cp <- matrix(data = c(58, 59, 60, 61, 62, 63, 57, 56, 55, 54, 53), ncol = 1)
 true_cp <- matrix(, nrow = 1, ncol = 0)
@@ -95,120 +246,21 @@ a <- conf_matrix(pred_CPs = locat_BOCD_ncp_ine, true_CPs = true_cp, window_param
 ```
 
 
+MSE
 
-
-
-# Create a function for MSE
 ```{r}
-MSE_CPD <- function(pred_CPs, true_CPs, range){
-  initial_MSE <- lapply(seq_along(pred_CPs), function(x) list())
-  MSE <- lapply(seq_along(pred_CPs), function(x) list())
-  
-  for (i in 1:length(pred_CPs)) {
-    
-    if(length(pred_CPs[[i]]) > 0){
-      
-      # Define dimensions of detected_MSE matrix
-      detected_MSE <- matrix(0, nrow = length(pred_CPs[[i]]), ncol = length(true_CPs))
-      
-      for (cp_det in 1:length(pred_CPs[[i]])) {
-        
-        for (cp_true in 1: length(true_CPs)) {
-          detected_MSE[cp_det,cp_true] <- (true_CPs[cp_true] - pred_CPs[[i]][cp_det])^2
-        }
-      }
-      
-      # Find minimum MSE for each true CP
-      initial_MSE[[i]] <- apply(detected_MSE, 2, function(x) {
-        
-        min_val <- min(x)
-        
-        if (min_val <= range^2) {
-          min_val
-        } else {
-          NA
-        }
-      })
-      
-      # Remove NAs from initial_MSE
-      initial_MSE[[i]] <- na.omit(initial_MSE[[i]])
-    }
-    
-    # extract values from initial_MSE and sum the square error of each CP
-    MSE[[i]] <- sum(unlist(initial_MSE[[i]]), na.rm = T) / length(initial_MSE[[i]])
-    
-  }
-  
-  total_MSE <- mean(unlist(MSE), na.rm = T)
-  
-  return(list(initial_MSE, MSE, total_MSE))
-}
-
-
-
 c <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine, true_CPs = 57, range = 5)
 
 c <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine, true_CPs = c(24, 77), range = 5)
-
 ```
 
+MSD
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Create a function for MSD
 ```{r}
-MSD_CPD <- function(pred_CPs, actu_CPs){
-  
-  single_MSD <- 0 # create an blank vector for storing
-  
-  for (CP in 1:length(pred_CPs)) {
-    # MSD of each CP
-    single_MSD[CP] <- pred_CPs[CP] - actu_CPs[CP]
-    }
-  
-  # sum the MSD from each CP
-  sum_MSD <- sum(single_MSD)
-  
-  # MSD
-  MSD <- sum_MSD / length(pred_CPs)
-  
-  return(MSD)
-}
+d <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine, true_CPs = 57, range = 5)
+
+d <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine, true_CPs = c(24, 77), range = 5)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
