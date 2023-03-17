@@ -129,27 +129,69 @@ MSE_CPD <- function(pred_CPs, actu_CPs){
 
 
 MSE_CPD <- function(pred_CPs,# e.g. locat_BOCD_1cp_out_same.all
-                    true_CPs, # a vector
-                    range # the acceptable range of detexted CPs
+                    true_CPs # a vector
+                    #range # the acceptable range of detexted CPs
                     ){
   
   single_MSE <- 0 # create an blank vector for storing
+  initial_MSE <- list()
+  
+  
+  for (i in 1:length(pred_CPs)) {
+    
+    for (cp_det in 1:length(pred_CPs[[i]])) {
+      
+      for (cp_true in 1: length(true_CPs)) {
+        
+        if(length(pred_CPs[[i]]) > 0){
+          
+          detected_MSE[cp_det,cp_true] <- (true_CPs[cp_true] - pred_CPs[[i]][cp_det])^2
+          
+          initial_MSE[[i]] <- min(detected_MSE[,cp_true])
+        }
+      }
+    }
+  }
+  return(initial_MSE = initial_MSE)
+}
+  
+  
+  
+c <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine, true_CPs = 57)
+  
+  
+  
+
+
+MSE_CPD <- function(pred_CPs, true_CPs){
+  
+  initial_MSE <- list()
   
   for (i in 1:length(pred_CPs)) {
     
     if(length(pred_CPs[[i]]) > 0){
-      true_CPs[i] - 
+      
+      # Define dimensions of detected_MSE matrix
+      detected_MSE <- matrix(0, nrow = length(pred_CPs[[i]]), ncol = length(true_CPs))
+      
+      for (cp_det in 1:length(pred_CPs[[i]])) {
+        
+        for (cp_true in 1: length(true_CPs)) {
+          
+          detected_MSE[cp_det,cp_true] <- (true_CPs[cp_true] - pred_CPs[[i]][cp_det])^2
+        }
+      }
+      
+      # Find minimum MSE for each true CP
+      initial_MSE[[i]] <- apply(detected_MSE, 2, min)
+    } else {
+      initial_MSE[[i]] <- numeric(length(true_CPs))
     }
-    
   }
   
-  
-  
-  
-  
-  
-  
-  
+  return(initial_MSE)
+}
+
   
   
   
@@ -175,6 +217,8 @@ MSE_CPD <- function(pred_CPs,# e.g. locat_BOCD_1cp_out_same.all
   
   return(MSE)
 }
+
+
 ```
 
 
