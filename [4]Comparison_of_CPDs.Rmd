@@ -100,61 +100,9 @@ a <- conf_matrix(pred_CPs = locat_BOCD_ncp_ine, true_CPs = true_cp, window_param
 
 # Create a function for MSE
 ```{r}
-MSE_CPD <- function(pred_CPs,# e.g. locat_BOCD_1cp_out_same.all
-                    true_CPs, # a vector
-                    range # the acceptable range of detexted CPs
-                    ){
-  
-  initial_MSE <- list()
-  sum_se <- list()
-  
-  for (i in 1:length(pred_CPs)) {
-    
-    if(length(pred_CPs[[i]]) > 0){
-      
-      # Define dimensions of detected_MSE matrix
-      detected_MSE <- matrix(0, nrow = length(pred_CPs[[i]]), ncol = length(true_CPs))
-      
-      for (cp_det in 1:length(pred_CPs[[i]])) {
-        
-        for (cp_true in 1: length(true_CPs)) {
-          detected_MSE[cp_det,cp_true] <- (true_CPs[cp_true] - pred_CPs[[i]][cp_det])^2
-        }
-      }
-      
-      # Find minimum MSE for each true CP
-      initial_MSE[[i]] <- apply(detected_MSE, 2, function(x) {
-        
-        min_val <- min(x)
-        
-        if (min_val <= range^2) {
-          min_val
-          } else {
-            "NA"
-            }
-        })
-    }
-    
-    # sum the square error of each CP
-    sum_se[[i]] <- sum(initial_MSE[[i]], na.rm = TRUE)
-    
-  }
-  
-  return(list(initial_MSE,
-              sum_se))
-}
-
-
-
-
-
-
-
-
-
 MSE_CPD <- function(pred_CPs, true_CPs, range){
   initial_MSE <- lapply(seq_along(pred_CPs), function(x) list())
-  sum_se <- lapply(seq_along(pred_CPs), function(x) list())
+  MSE <- lapply(seq_along(pred_CPs), function(x) list())
   
   for (i in 1:length(pred_CPs)) {
     
@@ -181,19 +129,20 @@ MSE_CPD <- function(pred_CPs, true_CPs, range){
           NA
         }
       })
+      
+      # Remove NAs from initial_MSE
+      initial_MSE[[i]] <- na.omit(initial_MSE[[i]])
     }
     
     # extract values from initial_MSE and sum the square error of each CP
-    sum_se[[i]] <- sum(unlist(initial_MSE[[i]]), na.rm = T)
+    MSE[[i]] <- sum(unlist(initial_MSE[[i]]), na.rm = T) / length(initial_MSE[[i]])
     
   }
   
-  return(list(initial_MSE, sum_se))
+  total_MSE <- mean(unlist(MSE), na.rm = T)
+  
+  return(list(initial_MSE, MSE, total_MSE))
 }
-
-
-
-
 
 
 
