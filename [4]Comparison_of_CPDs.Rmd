@@ -93,7 +93,7 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
 MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
                     true_CPs, # a vector, the location of true CPs
                     range # the range that the detected CP inside that range with true CP can still recognized as TP
-                    ){
+){
   
   # create a blank list for square error with the same length as number of datasets
   initial_SE <- lapply(seq_along(pred_CPs), function(x) list())
@@ -125,6 +125,11 @@ MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
         
         min_val <- min(x)
         
+        # if min_val equals 1, change it to 0, as one true CPs can be in three windows
+        #if (min_val == 1) {
+        #  min_val <- 0
+        #}
+        
         # the range that the detected CP inside that range with true CP can still recognized as TP
         if (min_val <= range^2) {
           min_val
@@ -145,9 +150,25 @@ MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
   total_MSE <- mean(unlist(MSE), na.rm = T)
   
   return(list(MSE = MSE, 
-              Averade_MSE = total_MSE))
+              Averade_MSE = total_MSE,
+              initial_SE))
 }
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Create a function for MSD
 
@@ -222,11 +243,19 @@ Suppose we have the vector x <- c(5, 2, 7, 1, 9). The min() function will return
 
 Now, suppose we also want to know the index of the smallest value in the vector. We can use the which.min() function for that. In this case, which.min(x) will return the index 4, since 1 is the smallest value and it occurs in the 4th position in the vector.
 
-----------------------
+-----------------------
 
 # Start Comparison
 
+## Confusion Matrix
 
+**The REH without CPs**
+```{r}
+# assign the true CP for no changepoint
+true_ncp <- matrix(, nrow = 1, ncol = 0)
+Conf_Mat_send_ncp <- conf_matrix(pred_CPs = locat_BOCD_ncp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_ncp_param)
+```
 
 
 
