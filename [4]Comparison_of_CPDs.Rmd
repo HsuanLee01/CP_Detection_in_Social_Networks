@@ -150,25 +150,9 @@ MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
   total_MSE <- mean(unlist(MSE), na.rm = T)
   
   return(list(MSE = MSE, 
-              Averade_MSE = total_MSE,
-              initial_SE))
+              Averade_MSE = total_MSE))
 }
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Create a function for MSD
 
@@ -213,13 +197,18 @@ MSD_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
         # which.min(abs(x)) is used to find the index of the element with the smallest absolute value in the vector x
         min_val <- sign(x[which.min(abs(x))]) * min(abs(x))
         
+        # if the minimum absolute distance is 1, change it to 0, as one true CP can be in three windows
+        #if (abs(min_val) == 1) {
+        #  min_val <- 0
+        #}
+        
         # the range that the detected CP inside that range with true CP can still recognized as TP
         if (abs(min_val) <= range) {
           min_val
-          } else {
-            NA # if the detected CP is not inside the range, we assign it a NA (FP)
-            }
-        })
+        } else {
+          NA # if the detected CP is not inside the range, we assign it a NA (FP)
+        }
+      })
       
       # Remove NAs from initial_SD, so that we can obtain the real length of each set
       initial_SD[[i]] <- na.omit(initial_SD[[i]])
