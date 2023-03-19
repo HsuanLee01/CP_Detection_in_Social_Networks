@@ -10,8 +10,9 @@ output: pdf_document
 
 # Create a function for Confusion Matrix
 
+**Confusion Matrix for the effects with CPs**
 ```{r}
-conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
+conf_matrix_cp <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
                         true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
                         window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
 ){
@@ -72,6 +73,7 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
   
   # True Positive Rate 
   # In all positive observations, what is the probability that the model correctly predicts the true positive
+  # The probability that a CPD correctly detect CPs
   TPR <- total_confusionmatrix[["TP"]] / 
     (total_confusionmatrix[["TP"]] + total_confusionmatrix[["FN"]])
   
@@ -80,10 +82,117 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
   PPV <- total_confusionmatrix[["TP"]] /
     (total_confusionmatrix[["TP"]] + total_confusionmatrix[["FP"]])
   
+  # False Positive Rate
+  # In all positive observations, what is the probability that the model wrongly predicts the positive
+  # The probability that a CPD detect CPs when there is no CP
+  #FPR <- total_confusionmatrix[["FP"]] / 
+  #  (total_confusionmatrix[["FP"]] + total_confusionmatrix[["TN"]])
+  
+  # Negative Predictive Value
+  # The CPD predicts a window as not a CP, what is the actual prob. it is not a CP.
+  #NPV <- total_confusionmatrix[["TN"]] / 
+  #  (total_confusionmatrix[["TN"]] + total_confusionmatrix[["FN"]])
+  
   return(list(confusionmatrix = confusionmatrix,
               total_confusionmatrix = total_confusionmatrix,
               TPR = TPR,
-              PPV = PPV))
+              PPV = PPV
+              #FPR = FPR,
+              #NPV = NPV
+              ))
+}
+```
+
+**Confusion Matrix for the effects without CPs**
+```{r}
+conf_matrix_ncp <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
+                        true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
+                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
+){
+  
+  confusion_assign <- vector(mode='list', length = length(window_parameters))
+  leveling <- list()
+  confusionmatrix <- list()
+  
+  for (i in 1:length(pred_CPs)) {
+    
+    if (ncol(true_CPs) > 0) {
+      for (detect_cp in 0:length(pred_CPs[[i]])) {
+        
+        if (sum(confusion_assign[[i]] == "TP") < ncol(true_CPs)) { # add restriction here
+          confusion_assign[[i]][detect_cp] <- 
+            if (length(pred_CPs[[i]][detect_cp]) > 0 && pred_CPs[[i]][detect_cp] %in% true_CPs) {
+              "TP"
+            } else {
+              "NA"
+            }
+        } else {
+          confusion_assign[[i]][detect_cp] <- "FP"
+        }
+        
+      }
+      
+      FN <- list()
+      FN[[i]] <- ncol(true_CPs) - sum(confusion_assign[[i]] == "TP")
+      
+      confusion_assign[[i]] <- c(confusion_assign[[i]], rep("FN", FN[[i]]))
+      
+      #confusion_assign[[i]] <- c(confusion_assign[[i]], 
+      #                           rep("TN", 
+      #                               length(window_parameters[[i]]) - length(confusion_assign[[i]])))
+      
+      level <- c("TP", "FP", "FN", "TN")
+      leveling[[i]] <- factor(confusion_assign[[i]], level)
+      confusionmatrix[[i]] <- table(leveling[[i]])
+    } else { 
+      # if no true_CPs are present
+      confusion_assign[[i]] <- rep("FP", length(pred_CPs[[i]]))
+      
+      confusion_assign[[i]] <- c(confusion_assign[[i]], 
+                                 rep("TN", 
+                                     length(window_parameters[[i]]) - length(confusion_assign[[i]])))
+      
+      level <- c("TP", "FP", "FN", "TN")
+      leveling[[i]] <- factor(confusion_assign[[i]], level)
+      confusionmatrix[[i]] <- table(leveling[[i]])
+    }
+    
+  }
+  
+  # combine all the confusion assignments from each dataset together
+  total_confusion <- unlist(confusion_assign)
+  total_leveling <- factor(total_confusion, level)
+  total_confusionmatrix <- table(total_leveling)
+  
+  # True Positive Rate 
+  # In all positive observations, what is the probability that the model correctly predicts the true positive
+  # The probability that a CPD correctly detect CPs
+  #TPR <- total_confusionmatrix[["TP"]] / 
+  #  (total_confusionmatrix[["TP"]] + total_confusionmatrix[["FN"]])
+  
+  # Positive Predictive Value
+  # The CPD predicts a CP, what is the actual prob. it is a CP.
+  #PPV <- total_confusionmatrix[["TP"]] /
+  #  (total_confusionmatrix[["TP"]] + total_confusionmatrix[["FP"]])
+  
+  # False Positive Rate
+  # In all positive observations, what is the probability that the model wrongly predicts the positive
+  # The probability that a CPD detect CPs when there is no CP
+  FPR <- total_confusionmatrix[["FP"]] / 
+    (total_confusionmatrix[["FP"]] + total_confusionmatrix[["TN"]])
+  
+  # Negative Predictive Value
+  # The CPD predicts a window as not a CP, what is the actual prob. it is not a CP.
+  NPV <- total_confusionmatrix[["TN"]] / 
+    (total_confusionmatrix[["TN"]] + total_confusionmatrix[["FN"]])
+  
+  return(list(confusionmatrix = confusionmatrix,
+              total_confusionmatrix = total_confusionmatrix,
+              #TPR = TPR,
+              #PPV = PPV,
+              FPR = FPR,
+              NPV = NPV
+              ))
 }
 ```
 
@@ -239,12 +348,187 @@ Now, suppose we also want to know the index of the smallest value in the vector.
 ## Confusion Matrix
 
 **The REH without CPs**
+
+Assign the true CP for no changepoint
 ```{r}
-# assign the true CP for no changepoint
 true_ncp <- matrix(, nrow = 1, ncol = 0)
-Conf_Mat_send_ncp <- conf_matrix(pred_CPs = locat_BOCD_ncp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_ncp_param)
 ```
+
+### BOCPD
+
+- Sender Effect
+```{r}
+(Conf_Mat_BOCD_send_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_ncp_param))
+```
+
+- Diference
+```{r}
+(Conf_Mat_BOCD_diff_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_ncp_param))
+```
+
+- Inertia
+```{r}
+(Conf_Mat_BOCD_ine_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_ine, true_CPs = true_ncp, 
+                        window_parameters = fixmw_ine_ncp_param))
+```
+
+- Outdegree Sender
+```{r}
+(Conf_Mat_BOCD_out_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_ncp_param))
+```
+
+### PELT
+
+- Sender Effect
+```{r}
+(Conf_Mat_PELT_send_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_ncp_param))
+```
+
+- Diference
+```{r}
+(Conf_Mat_PELT_diff_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_ncp_param))
+```
+
+- Inertia
+```{r}
+(Conf_Mat_PELT_ine_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_ine, true_CPs = true_ncp, 
+                        window_parameters = fixmw_ine_ncp_param))
+```
+
+- Outdegree Sender
+```{r}
+(Conf_Mat_PELT_out_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_ncp_param))
+```
+
+### BS
+
+- Sender Effect
+```{r}
+(Conf_Mat_BS_send_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_ncp_param))
+```
+
+- Diference
+```{r}
+(Conf_Mat_BS_diff_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_ncp_param))
+```
+
+- Inertia
+```{r}
+(Conf_Mat_BS_ine_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_ine, true_CPs = true_ncp, 
+                        window_parameters = fixmw_ine_ncp_param))
+```
+
+- Outdegree Sender
+```{r}
+(Conf_Mat_BS_out_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_ncp_param))
+```
+
+**The REH with 1 CPs in inertia**
+
+Assign the true CP for one changepoint in `inertia`
+```{r}
+# windowss contain the CPs time point 56, 57, 58 in inertia
+true_1cp <- matrix(47:67, nrow = 21, ncol = 1)
+```
+
+### BOCPD
+
+- Sender Effect
+```{r}
+(Conf_Mat_send_1cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_1cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_1cp_param))
+```
+
+- Diference
+```{r}
+(Conf_Mat_diff_1cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_1cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_1cp_param))
+```
+
+- Inertia
+```{r}
+(Conf_Mat_ine_1cp <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp, 
+                        window_parameters = fixmw_ine_1cp_param))
+```
+
+- Outdegree Sender
+```{r}
+(Conf_Mat_out_1cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_1cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_1cp_param))
+```
+
+### PELT
+
+- Sender Effect
+```{r}
+(Conf_Mat_PELT_send_1cp <- conf_matrix_ncp(pred_CPs = locat_PELT_1cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_1cp_param))
+```
+
+- Diference
+```{r}
+(Conf_Mat_PELT_diff_1cp <- conf_matrix_ncp(pred_CPs = locat_PELT_1cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_1cp_param))
+```
+
+- Inertia
+```{r}
+(Conf_Mat_PELT_ine_1cp <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_ine, true_CPs = true_1cp, 
+                        window_parameters = fixmw_ine_1cp_param))
+```
+
+- Outdegree Sender
+```{r}
+(Conf_Mat_PELT_out_1cp <- conf_matrix_ncp(pred_CPs = locat_PELT_1cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_1cp_param))
+```
+
+### BS
+
+- Sender Effect
+```{r}
+(Conf_Mat_BS_send_1cp <- conf_matrix_ncp(pred_CPs = locat_BS_1cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_1cp_param))
+```
+
+- Diference
+```{r}
+(Conf_Mat_BS_diff_1cp <- conf_matrix_ncp(pred_CPs = locat_BS_1cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_1cp_param))
+```
+
+- Inertia
+```{r}
+(Conf_Mat_BS_ine_1cp <- conf_matrix_cp(pred_CPs = locat_BS_1cp_ine, true_CPs = true_1cp, 
+                        window_parameters = fixmw_ine_1cp_param))
+```
+
+- Outdegree Sender
+```{r}
+(Conf_Mat_BS_out_1cp <- conf_matrix_ncp(pred_CPs = locat_BS_1cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_1cp_param))
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

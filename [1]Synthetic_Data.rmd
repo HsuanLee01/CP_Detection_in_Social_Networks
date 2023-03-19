@@ -101,7 +101,7 @@ param.1cp <- list(
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t < 38200) { #5955
+    if(t < 38200) { # window 56, 57, 58
       0.15
     } else  {
       0.06}
@@ -147,7 +147,7 @@ param.1cp_same.all <- list(
   
   "z_send"= function(t) {
     # set the location of CP
-    if(t < 38200) { #8366
+    if(t < 38200) { # window 56, 57, 58
       0.18
     } else  {
       0.04}
@@ -155,7 +155,7 @@ param.1cp_same.all <- list(
   
   "z_difference" = function(t) {
     # set the location of CP
-    if(t < 38200) { #8366
+    if(t < 38200) { # window 56, 57, 58
       -0.05
     } else  {
       -0.15}
@@ -163,7 +163,7 @@ param.1cp_same.all <- list(
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t < 38200) { #8366
+    if(t < 38200) { # window 56, 57, 58
       0.13
     } else  {
       0.06}
@@ -171,7 +171,7 @@ param.1cp_same.all <- list(
   
   "outdegreeSender" = function(t) {
     # set the location of CP
-    if(t < 38200) { #8366
+    if(t < 38200) { # window 56, 57, 58
       0.13
     } else  {
       0.07}
@@ -215,7 +215,7 @@ param.1cp_diff.all <- list(
   
   "z_send"= function(t) {
     # set the location of CP
-    if(t < 21500) { # 4077
+    if(t < 21500) { # window 31, 32, 33
       0.18
     } else  {
       0.04}
@@ -223,7 +223,7 @@ param.1cp_diff.all <- list(
   
   "z_difference" = function(t) {
     # set the location of CP
-    if(t < 31525) { # 5578
+    if(t < 31525) { # window 46, 47, 48
       -0.01
     } else  {
       -0.14}
@@ -231,7 +231,7 @@ param.1cp_diff.all <- list(
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t < 13000) { # 2791
+    if(t < 13000) { # window 18, 19, 20
       0.15
     } else  {
       0.03}
@@ -239,7 +239,7 @@ param.1cp_diff.all <- list(
   
   "outdegreeSender" = function(t) {
     # set the location of CP
-    if(t < 38200) { # 6585
+    if(t < 38200) { # 56, 57, 58
       0.15
     } else  {
       0.03}
@@ -285,11 +285,11 @@ param.2cp <- list(
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t < 16750) { #2574
+    if(t < 16750) { # window 24, 25, 26
       0.01
       } else
         
-        if(t < 53900) { #7519
+        if(t < 53900) { # window 79, 80, 81
           0.12
           } else {-0.01}
   },
@@ -334,44 +334,44 @@ param.2cp_same.all <- list(
   
   "z_send"= function(t) {
     # set the location of CP
-    if(t < 16750) { #8366
+    if(t < 16750) { # window 24, 25, 26
       0.2
     } else
       
-      if(t < 53900) { #7519
+      if(t < 53900) { # window 79, 80, 81
           -0.01
           } else {0.19}
     },
   
   "z_difference" = function(t) {
     # set the location of CP
-    if(t < 16750) { #8366
+    if(t < 16750) { # window 24, 25, 26
       -0.01
     } else
       
-      if(t < 53900) { #7519
+      if(t < 53900) { # window 79, 80, 81
           -0.12
           } else {0.03}
     },
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t < 16750) { #2574
+    if(t < 16750) { # window 24, 25, 26
       0.02
       } else
         
-        if(t < 53900) { #7519
+        if(t < 53900) { # window 79, 80, 81
           0.14
           } else {0.03}
     },
   
   "outdegreeSender" = function(t) {
     # set the location of CP
-    if(t < 16750) { #8366
+    if(t < 16750) { # window 24, 25, 26
       -0.01
       } else
         
-        if(t < 53900) { #7519
+        if(t < 53900) { # window 79, 80, 81
           0.14
           } else {0.01}
     }
@@ -414,44 +414,44 @@ param.2cp_diff.all <- list(
   
   "z_send"= function(t) {
     # set the location of CP
-    if(t < 21880) { #8366
+    if(t < 21880) { # window 31, 32, 33
       0.2
     } else
       
-      if(t < 44260) { #7519
+      if(t < 44260) { # window 65, 66, 67
           -0.02
           } else {0.19}
     },
   
   "z_difference" = function(t) {
     # set the location of CP
-    if(t < 18250) { #8366
+    if(t < 18250) { # window 27, 28, 29
       -0.01
     } else
       
-      if(t < 40710) { #7519
+      if(t < 40710) { # window 60, 61, 62
           -0.13
           } else {0.03}
     },
   
   "inertia" = function(t) {
     # set the location of CP
-    if(t < 16750) { #2574
+    if(t < 16750) { # window 24, 25, 26
       0.01
       } else
         
-        if(t < 53900) { #7519
+        if(t < 53900) { # window 79, 80, 81
           0.14
           } else {0.01}
     },
   
   "outdegreeSender" = function(t) {
     # set the location of CP
-    if(t < 26370) { #8366
+    if(t < 26370) { # window 38, 39, 40
       -0.01
       } else
         
-        if(t < 54000) { #7519
+        if(t < 54000) { # window 80, 81, 82
           0.15
           } else {-0.01}
     }
