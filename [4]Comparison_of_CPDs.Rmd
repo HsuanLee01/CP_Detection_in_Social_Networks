@@ -1878,113 +1878,279 @@ true_2cp_out_diff.all <- matrix(c(28:50,
                                     range = 11))
 ```
 
+# Total Comparison between CPDs
 
+We combined all of the confusion matrices of REH that contain the changepoint to compare overall performance and determine which CPD performed the best.
 
+## Confusion Matrix
 
-
-
-
-
-
-
+### BOCPD
 
 ```{r}
-(c <- unlist(MSD_BS_out_2cp_diff.all$MSD))
+BOCD_conf_mat <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_diff_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_diff_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_diff_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_1cp$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_2cp$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_out_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_out_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_out_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_out_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_send_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_send_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_send_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_send_2cp_same.all$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_tot <- apply(BOCD_conf_mat, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BOCD_TPR_tot <- BOCD_conf_mat_tot["TP"] / 
+  (BOCD_conf_mat_tot["TP"] + BOCD_conf_mat_tot["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BOCD_PPV_tot <- BOCD_conf_mat_tot["TP"] /
+  (BOCD_conf_mat_tot["TP"] + BOCD_conf_mat_tot["FP"]))
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### PELT
 
 ```{r}
-a <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_diff_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BOCD_diff_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_diff_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_BOCD_ine_1cp$total_confusionmatrix,
-      Conf_Mat_BOCD_ine_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_ine_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BOCD_ine_2cp$total_confusionmatrix,
-      Conf_Mat_BOCD_ine_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_ine_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_BOCD_out_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_out_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BOCD_out_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_out_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_BOCD_send_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_send_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BOCD_send_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BOCD_send_2cp_same.all$total_confusionmatrix)
+PELT_conf_mat <- rbind(Conf_Mat_PELT_diff_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_diff_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_diff_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_diff_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_1cp$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_2cp$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_out_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_out_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_out_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_out_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_send_1cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_send_1cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_send_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_send_2cp_same.all$total_confusionmatrix)
 
-(b <- apply(a, 2, sum))
+# the combined Confusion Matrix
+(PELT_conf_mat_tot <- apply(PELT_conf_mat, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(PELT_TPR_tot <- PELT_conf_mat_tot["TP"] / 
+  (PELT_conf_mat_tot["TP"] + PELT_conf_mat_tot["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(PELT_PPV_tot <- PELT_conf_mat_tot["TP"] /
+  (PELT_conf_mat_tot["TP"] + PELT_conf_mat_tot["FP"]))
 ```
+
+### BS
 
 ```{r}
-a <- rbind(Conf_Mat_PELT_diff_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_diff_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_PELT_diff_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_diff_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_PELT_ine_1cp$total_confusionmatrix,
-      Conf_Mat_PELT_ine_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_ine_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_PELT_ine_2cp$total_confusionmatrix,
-      Conf_Mat_PELT_ine_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_ine_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_PELT_out_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_out_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_PELT_out_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_out_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_PELT_send_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_send_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_PELT_send_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_PELT_send_2cp_same.all$total_confusionmatrix)
+BS_conf_mat <- rbind(Conf_Mat_BS_diff_1cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_diff_1cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_diff_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_diff_2cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_ine_1cp$total_confusionmatrix,
+                     Conf_Mat_BS_ine_1cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_ine_1cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_ine_2cp$total_confusionmatrix,
+                     Conf_Mat_BS_ine_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_ine_2cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_out_1cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_out_1cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_out_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_out_2cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_send_1cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_send_1cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_send_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_send_2cp_same.all$total_confusionmatrix)
 
-(b <- apply(a, 2, sum))
+# the combined Confusion Matrix
+(BS_conf_mat_tot <- apply(a, 2, sum))
 
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BS_TPR_tot <- BS_conf_mat_tot["TP"] / 
+  (BS_conf_mat_tot["TP"] + BS_conf_mat_tot["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BS_PPV_tot <- BS_conf_mat_tot["TP"] /
+  (BS_conf_mat_tot["TP"] + BS_conf_mat_tot["FP"]))
 ```
+
+## Mean Square Error (MSE)
+
+### BOCPD
 
 ```{r}
-a <- rbind(Conf_Mat_BS_diff_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_diff_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BS_diff_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_diff_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_BS_ine_1cp$total_confusionmatrix,
-      Conf_Mat_BS_ine_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_ine_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BS_ine_2cp$total_confusionmatrix,
-      Conf_Mat_BS_ine_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_ine_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_BS_out_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_out_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BS_out_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_out_2cp_same.all$total_confusionmatrix,
-      Conf_Mat_BS_send_1cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_send_1cp_same.all$total_confusionmatrix,
-      Conf_Mat_BS_send_2cp_diff.all$total_confusionmatrix,
-      Conf_Mat_BS_send_2cp_same.all$total_confusionmatrix)
+BOCD_MSE <- c(unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
+              unlist(MSE_BOCD_diff_1cp_same.all$MSE),
+              unlist(MSE_BOCD_diff_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_diff_2cp_same.all$MSE),
+              unlist(MSE_BOCD_ine_1cp$MSE),
+              unlist(MSE_BOCD_ine_1cp_diff.all$MSE),
+              unlist(MSE_BOCD_ine_1cp_same.all$MSE),
+              unlist(MSE_BOCD_ine_2cp$MSE),
+              unlist(MSE_BOCD_ine_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_ine_2cp_same.all$MSE),
+              unlist(MSE_BOCD_out_1cp_diff.all$MSE),
+              unlist(MSE_BOCD_out_1cp_same.all$MSE),
+              unlist(MSE_BOCD_out_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_out_2cp_same.all$MSE),
+              unlist(MSE_BOCD_send_1cp_diff.all$MSE),
+              unlist(MSE_BOCD_send_1cp_same.all$MSE),
+              unlist(MSE_BOCD_send_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_send_2cp_same.all$MSE))
 
-(b <- apply(a, 2, sum))
+# the average MSE cross the scenarios
+(BOCD_MSE_tot <- mean(BOCD_MSE, na.rm = T))
 ```
 
+### PELT
 
+```{r}
+PELT_MSE <- c(unlist(MSE_PELT_diff_1cp_diff.all$MSE),
+              unlist(MSE_PELT_diff_1cp_same.all$MSE),
+              unlist(MSE_PELT_diff_2cp_diff.all$MSE),
+              unlist(MSE_PELT_diff_2cp_same.all$MSE),
+              unlist(MSE_PELT_ine_1cp$MSE),
+              unlist(MSE_PELT_ine_1cp_diff.all$MSE),
+              unlist(MSE_PELT_ine_1cp_same.all$MSE),
+              unlist(MSE_PELT_ine_2cp$MSE),
+              unlist(MSE_PELT_ine_2cp_diff.all$MSE),
+              unlist(MSE_PELT_ine_2cp_same.all$MSE),
+              unlist(MSE_PELT_out_1cp_diff.all$MSE),
+              unlist(MSE_PELT_out_1cp_same.all$MSE),
+              unlist(MSE_PELT_out_2cp_diff.all$MSE),
+              unlist(MSE_PELT_out_2cp_same.all$MSE),
+              unlist(MSE_PELT_send_1cp_diff.all$MSE),
+              unlist(MSE_PELT_send_1cp_same.all$MSE),
+              unlist(MSE_PELT_send_2cp_diff.all$MSE),
+              unlist(MSE_PELT_send_2cp_same.all$MSE))
 
+# the average MSE cross the scenarios
+(PELT_MSE_tot <- mean(PELT_MSE, na.rm = T))
+```
 
+### BS
 
+```{r}
+BS_MSE <- c(unlist(MSE_BS_diff_1cp_diff.all$MSE),
+              unlist(MSE_BS_diff_1cp_same.all$MSE),
+              unlist(MSE_BS_diff_2cp_diff.all$MSE),
+              unlist(MSE_BS_diff_2cp_same.all$MSE),
+              unlist(MSE_BS_ine_1cp$MSE),
+              unlist(MSE_BS_ine_1cp_diff.all$MSE),
+              unlist(MSE_BS_ine_1cp_same.all$MSE),
+              unlist(MSE_BS_ine_2cp$MSE),
+              unlist(MSE_BS_ine_2cp_diff.all$MSE),
+              unlist(MSE_BS_ine_2cp_same.all$MSE),
+              unlist(MSE_BS_out_1cp_diff.all$MSE),
+              unlist(MSE_BS_out_1cp_same.all$MSE),
+              unlist(MSE_BS_out_2cp_diff.all$MSE),
+              unlist(MSE_BS_out_2cp_same.all$MSE),
+              unlist(MSE_BS_send_1cp_diff.all$MSE),
+              unlist(MSE_BS_send_1cp_same.all$MSE),
+              unlist(MSE_BS_send_2cp_diff.all$MSE),
+              unlist(MSE_BS_send_2cp_same.all$MSE))
 
+# the average MSE cross the scenarios
+(BS_MSE_tot <- mean(BS_MSE, na.rm = T))
+```
+
+## Mean Sign Difference (MSD)
+
+### BOCPD
+
+```{r}
+BOCD_MSD <- c(unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
+              unlist(MSD_BOCD_diff_1cp_same.all$MSD),
+              unlist(MSD_BOCD_diff_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_diff_2cp_same.all$MSD),
+              unlist(MSD_BOCD_ine_1cp$MSD),
+              unlist(MSD_BOCD_ine_1cp_diff.all$MSD),
+              unlist(MSD_BOCD_ine_1cp_same.all$MSD),
+              unlist(MSD_BOCD_ine_2cp$MSD),
+              unlist(MSD_BOCD_ine_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_ine_2cp_same.all$MSD),
+              unlist(MSD_BOCD_out_1cp_diff.all$MSD),
+              unlist(MSD_BOCD_out_1cp_same.all$MSD),
+              unlist(MSD_BOCD_out_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_out_2cp_same.all$MSD),
+              unlist(MSD_BOCD_send_1cp_diff.all$MSD),
+              unlist(MSD_BOCD_send_1cp_same.all$MSD),
+              unlist(MSD_BOCD_send_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_send_2cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(BOCD_MSD_tot <- mean(BOCD_MSD, na.rm = T))
+```
+
+### PELT
+
+```{r}
+PELT_MSD <- c(unlist(MSD_PELT_diff_1cp_diff.all$MSD),
+              unlist(MSD_PELT_diff_1cp_same.all$MSD),
+              unlist(MSD_PELT_diff_2cp_diff.all$MSD),
+              unlist(MSD_PELT_diff_2cp_same.all$MSD),
+              unlist(MSD_PELT_ine_1cp$MSD),
+              unlist(MSD_PELT_ine_1cp_diff.all$MSD),
+              unlist(MSD_PELT_ine_1cp_same.all$MSD),
+              unlist(MSD_PELT_ine_2cp$MSD),
+              unlist(MSD_PELT_ine_2cp_diff.all$MSD),
+              unlist(MSD_PELT_ine_2cp_same.all$MSD),
+              unlist(MSD_PELT_out_1cp_diff.all$MSD),
+              unlist(MSD_PELT_out_1cp_same.all$MSD),
+              unlist(MSD_PELT_out_2cp_diff.all$MSD),
+              unlist(MSD_PELT_out_2cp_same.all$MSD),
+              unlist(MSD_PELT_send_1cp_diff.all$MSD),
+              unlist(MSD_PELT_send_1cp_same.all$MSD),
+              unlist(MSD_PELT_send_2cp_diff.all$MSD),
+              unlist(MSD_PELT_send_2cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(PELT_MSD_tot <- mean(PELT_MSD, na.rm = T))
+```
+
+### BS
+
+```{r}
+BS_MSD <- c(unlist(MSD_BS_diff_1cp_diff.all$MSD),
+            unlist(MSD_BS_diff_1cp_same.all$MSD),
+            unlist(MSD_BS_diff_2cp_diff.all$MSD),
+            unlist(MSD_BS_diff_2cp_same.all$MSD),
+            unlist(MSD_BS_ine_1cp$MSD),
+            unlist(MSD_BS_ine_1cp_diff.all$MSD),
+            unlist(MSD_BS_ine_1cp_same.all$MSD),
+            unlist(MSD_BS_ine_2cp$MSD),
+            unlist(MSD_BS_ine_2cp_diff.all$MSD),
+            unlist(MSD_BS_ine_2cp_same.all$MSD),
+            unlist(MSD_BS_out_1cp_diff.all$MSD),
+            unlist(MSD_BS_out_1cp_same.all$MSD),
+            unlist(MSD_BS_out_2cp_diff.all$MSD),
+            unlist(MSD_BS_out_2cp_same.all$MSD),
+            unlist(MSD_BS_send_1cp_diff.all$MSD),
+            unlist(MSD_BS_send_1cp_same.all$MSD),
+            unlist(MSD_BS_send_2cp_diff.all$MSD),
+            unlist(MSD_BS_send_2cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(BS_MSD_tot <- mean(BS_MSD, na.rm = T))
+```
