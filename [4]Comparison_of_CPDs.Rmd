@@ -8,9 +8,9 @@ output: pdf_document
 
 **Confusion Matrix for the effects with CPs**
 ```{r}
-conf_matrix_cp <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
-                        true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
-                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
+conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
+                           true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
+                           window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
 ){
   
   confusion_assign <- vector(mode='list', length = length(window_parameters))
@@ -95,99 +95,6 @@ conf_matrix_cp <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
               PPV = PPV
               #FPR = FPR,
               #NPV = NPV
-              ))
-}
-```
-
-**Confusion Matrix for the effects without CPs**
-```{r}
-conf_matrix_ncp <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
-                        true_CPs, # a matrix, no. of col = no. of cp; row = acceptable detected cp
-                        window_parameters # the window given parameters, e.g. fixmw_send_1cp_param
-){
-  
-  confusion_assign <- vector(mode='list', length = length(window_parameters))
-  leveling <- list()
-  confusionmatrix <- list()
-  
-  for (i in 1:length(pred_CPs)) {
-    
-    if (ncol(true_CPs) > 0) {
-      for (detect_cp in 0:length(pred_CPs[[i]])) {
-        
-        if (sum(confusion_assign[[i]] == "TP") < ncol(true_CPs)) { # add restriction here
-          confusion_assign[[i]][detect_cp] <- 
-            if (length(pred_CPs[[i]][detect_cp]) > 0 && pred_CPs[[i]][detect_cp] %in% true_CPs) {
-              "TP"
-            } else {
-              "NA"
-            }
-        } else {
-          confusion_assign[[i]][detect_cp] <- "FP"
-        }
-        
-      }
-      
-      FN <- list()
-      FN[[i]] <- ncol(true_CPs) - sum(confusion_assign[[i]] == "TP")
-      
-      confusion_assign[[i]] <- c(confusion_assign[[i]], rep("FN", FN[[i]]))
-      
-      #confusion_assign[[i]] <- c(confusion_assign[[i]], 
-      #                           rep("TN", 
-      #                               length(window_parameters[[i]]) - length(confusion_assign[[i]])))
-      
-      level <- c("TP", "FP", "FN", "TN")
-      leveling[[i]] <- factor(confusion_assign[[i]], level)
-      confusionmatrix[[i]] <- table(leveling[[i]])
-    } else { 
-      # if no true_CPs are present
-      confusion_assign[[i]] <- rep("FP", length(pred_CPs[[i]]))
-      
-      confusion_assign[[i]] <- c(confusion_assign[[i]], 
-                                 rep("TN", 
-                                     length(window_parameters[[i]]) - length(confusion_assign[[i]])))
-      
-      level <- c("TP", "FP", "FN", "TN")
-      leveling[[i]] <- factor(confusion_assign[[i]], level)
-      confusionmatrix[[i]] <- table(leveling[[i]])
-    }
-    
-  }
-  
-  # combine all the confusion assignments from each dataset together
-  total_confusion <- unlist(confusion_assign)
-  total_leveling <- factor(total_confusion, level)
-  total_confusionmatrix <- table(total_leveling)
-  
-  # True Positive Rate 
-  # In all positive observations, what is the probability that the model correctly predicts the true positive
-  # The probability that a CPD correctly detect CPs
-  #TPR <- total_confusionmatrix[["TP"]] / 
-  #  (total_confusionmatrix[["TP"]] + total_confusionmatrix[["FN"]])
-  
-  # Positive Predictive Value
-  # The CPD predicts a CP, what is the actual prob. it is a CP.
-  #PPV <- total_confusionmatrix[["TP"]] /
-  #  (total_confusionmatrix[["TP"]] + total_confusionmatrix[["FP"]])
-  
-  # False Positive Rate
-  # In all positive observations, what is the probability that the model wrongly predicts the positive
-  # The probability that a CPD detect CPs when there is no CP
-  FPR <- total_confusionmatrix[["FP"]] / 
-    (total_confusionmatrix[["FP"]] + total_confusionmatrix[["TN"]])
-  
-  # Negative Predictive Value
-  # The CPD predicts a window as not a CP, what is the actual prob. it is not a CP.
-  NPV <- total_confusionmatrix[["TN"]] / 
-    (total_confusionmatrix[["TN"]] + total_confusionmatrix[["FN"]])
-  
-  return(list(confusionmatrix = confusionmatrix,
-              total_confusionmatrix = total_confusionmatrix,
-              #TPR = TPR,
-              #PPV = PPV,
-              FPR = FPR,
-              NPV = NPV
               ))
 }
 ```
@@ -307,7 +214,7 @@ MSD_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
           min_val <- 0
         }
         
-        # the range that the detected CP inside that range with true CP can still recognized as TP
+        # the range that the detected CP inside that range with true CP can still recognized as TP, at least = 2
         if (abs(min_val) <= range) {
           min_val
         } else {
@@ -354,78 +261,78 @@ true_ncp <- matrix(, nrow = 1, ncol = 0)
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BOCD_send_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_ncp_param))
+Conf_Mat_BOCD_send_ncp <- conf_matrix(pred_CPs = locat_BOCD_ncp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_ncp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BOCD_diff_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_ncp_param))
+Conf_Mat_BOCD_diff_ncp <- conf_matrix(pred_CPs = locat_BOCD_ncp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_ncp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BOCD_ine_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_ine, true_CPs = true_ncp, 
-                        window_parameters = fixmw_ine_ncp_param))
+Conf_Mat_BOCD_ine_ncp <- conf_matrix(pred_CPs = locat_BOCD_ncp_ine, true_CPs = true_ncp, 
+                        window_parameters = fixmw_ine_ncp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BOCD_out_ncp <- conf_matrix_ncp(pred_CPs = locat_BOCD_ncp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_ncp_param))
+Conf_Mat_BOCD_out_ncp <- conf_matrix(pred_CPs = locat_BOCD_ncp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_ncp_param)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(Conf_Mat_PELT_send_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_ncp_param))
+Conf_Mat_PELT_send_ncp <- conf_matrix(pred_CPs = locat_PELT_ncp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_ncp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_PELT_diff_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_ncp_param))
+Conf_Mat_PELT_diff_ncp <- conf_matrix(pred_CPs = locat_PELT_ncp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_ncp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_PELT_ine_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_ine, true_CPs = true_ncp, 
-                        window_parameters = fixmw_ine_ncp_param))
+Conf_Mat_PELT_ine_ncp <- conf_matrix(pred_CPs = locat_PELT_ncp_ine, true_CPs = true_ncp, 
+                        window_parameters = fixmw_ine_ncp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_PELT_out_ncp <- conf_matrix_ncp(pred_CPs = locat_PELT_ncp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_ncp_param))
+Conf_Mat_PELT_out_ncp <- conf_matrix(pred_CPs = locat_PELT_ncp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_ncp_param)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BS_send_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_ncp_param))
+Conf_Mat_BS_send_ncp <- conf_matrix(pred_CPs = locat_BS_ncp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_ncp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BS_diff_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_ncp_param))
+Conf_Mat_BS_diff_ncp <- conf_matrix(pred_CPs = locat_BS_ncp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_ncp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BS_ine_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_ine, true_CPs = true_ncp, 
-                        window_parameters = fixmw_ine_ncp_param))
+Conf_Mat_BS_ine_ncp <- conf_matrix(pred_CPs = locat_BS_ncp_ine, true_CPs = true_ncp, 
+                        window_parameters = fixmw_ine_ncp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BS_out_ncp <- conf_matrix_ncp(pred_CPs = locat_BS_ncp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_ncp_param))
+Conf_Mat_BS_out_ncp <- conf_matrix(pred_CPs = locat_BS_ncp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_ncp_param)
 ```
 
 **The REH with 1 CPs in inertia**
@@ -433,85 +340,154 @@ true_ncp <- matrix(, nrow = 1, ncol = 0)
 Assign the true CP for one changepoint in `inertia`
 ```{r}
 # windowss contain the CPs time point 56, 57, 58 in inertia
-true_1cp <- matrix(46:68, nrow = 23, ncol = 1)
+true_1cp_1win <- matrix(55:59, nrow = 5, ncol = 1)
+
+true_1cp_2win <- matrix(54:60, nrow = 7, ncol = 1)
+
+true_1cp_3win <- matrix(53:61, nrow = 9, ncol = 1)
+
+true_1cp_4win <- matrix(52:62, nrow = 11, ncol = 1)
+
+true_1cp_5win <- matrix(51:63, nrow = 13, ncol = 1)
+
+#true_1cp_6win <- matrix(50:64, nrow = 15, ncol = 1)
+
+#true_1cp_7win <- matrix(49:65, nrow = 17, ncol = 1)
+
+#true_1cp_8win <- matrix(48:66, nrow = 19, ncol = 1)
+
+#true_1cp_9win <- matrix(47:67, nrow = 21, ncol = 1)
+
+#true_1cp_10win <- matrix(46:68, nrow = 23, ncol = 1)
 ```
 
 ### BOCPD
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BOCD_send_1cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_1cp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_1cp_param))
+Conf_Mat_BOCD_send_1cp <- conf_matrix(pred_CPs = locat_BOCD_1cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_1cp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BOCD_diff_1cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_1cp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_1cp_param))
+Conf_Mat_BOCD_diff_1cp <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_1cp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BOCD_ine_1cp <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp, 
-                        window_parameters = fixmw_ine_1cp_param))
+Conf_Mat_BOCD_ine_1cp_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_1win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BOCD_ine_1cp_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_2win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BOCD_ine_1cp_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_3win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BOCD_ine_1cp_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_4win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BOCD_ine_1cp_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_5win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+#Conf_Mat_BOCD_ine_1cp_6win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_6win, 
+#                        window_parameters = fixmw_ine_1cp_param)
+
+#Conf_Mat_BOCD_ine_1cp_7win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_7win, 
+#                        window_parameters = fixmw_ine_1cp_param)
+
+#Conf_Mat_BOCD_ine_1cp_8win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_8win, 
+#                        window_parameters = fixmw_ine_1cp_param)
+
+#Conf_Mat_BOCD_ine_1cp_9win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_9win, 
+#                        window_parameters = fixmw_ine_1cp_param)
+
+#Conf_Mat_BOCD_ine_1cp_10win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine, true_CPs = true_1cp_10win, 
+#                        window_parameters = fixmw_ine_1cp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BOCD_out_1cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_1cp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_1cp_param))
+Conf_Mat_BOCD_out_1cp <- conf_matrix(pred_CPs = locat_BOCD_1cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_1cp_param)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(Conf_Mat_PELT_send_1cp <- conf_matrix_ncp(pred_CPs = locat_PELT_1cp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_1cp_param))
+Conf_Mat_PELT_send_1cp <- conf_matrix(pred_CPs = locat_PELT_1cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_1cp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_PELT_diff_1cp <- conf_matrix_ncp(pred_CPs = locat_PELT_1cp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_1cp_param))
+Conf_Mat_PELT_diff_1cp <- conf_matrix(pred_CPs = locat_PELT_1cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_1cp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_PELT_ine_1cp <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_ine, true_CPs = true_1cp, 
-                        window_parameters = fixmw_ine_1cp_param))
+Conf_Mat_PELT_ine_1cp_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine, true_CPs = true_1cp_1win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_PELT_ine_1cp_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine, true_CPs = true_1cp_2win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_PELT_ine_1cp_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine, true_CPs = true_1cp_3win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_PELT_ine_1cp_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine, true_CPs = true_1cp_4win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_PELT_ine_1cp_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine, true_CPs = true_1cp_5win, 
+                        window_parameters = fixmw_ine_1cp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_PELT_out_1cp <- conf_matrix_ncp(pred_CPs = locat_PELT_1cp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_1cp_param))
+Conf_Mat_PELT_out_1cp <- conf_matrix(pred_CPs = locat_PELT_1cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_1cp_param)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BS_send_1cp <- conf_matrix_ncp(pred_CPs = locat_BS_1cp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_1cp_param))
+Conf_Mat_BS_send_1cp <- conf_matrix(pred_CPs = locat_BS_1cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_1cp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BS_diff_1cp <- conf_matrix_ncp(pred_CPs = locat_BS_1cp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_1cp_param))
+Conf_Mat_BS_diff_1cp <- conf_matrix(pred_CPs = locat_BS_1cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_1cp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BS_ine_1cp <- conf_matrix_cp(pred_CPs = locat_BS_1cp_ine, true_CPs = true_1cp, 
-                        window_parameters = fixmw_ine_1cp_param))
+Conf_Mat_BS_ine_1cp_1win <- conf_matrix(pred_CPs = locat_BS_1cp_ine, true_CPs = true_1cp_1win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BS_ine_1cp_2win <- conf_matrix(pred_CPs = locat_BS_1cp_ine, true_CPs = true_1cp_2win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BS_ine_1cp_3win <- conf_matrix(pred_CPs = locat_BS_1cp_ine, true_CPs = true_1cp_3win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BS_ine_1cp_4win <- conf_matrix(pred_CPs = locat_BS_1cp_ine, true_CPs = true_1cp_4win, 
+                        window_parameters = fixmw_ine_1cp_param)
+
+Conf_Mat_BS_ine_1cp_5win <- conf_matrix(pred_CPs = locat_BS_1cp_ine, true_CPs = true_1cp_5win, 
+                        window_parameters = fixmw_ine_1cp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BS_out_1cp <- conf_matrix_ncp(pred_CPs = locat_BS_1cp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_1cp_param))
+Conf_Mat_BS_out_1cp <- conf_matrix(pred_CPs = locat_BS_1cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_1cp_param)
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -519,97 +495,297 @@ true_1cp <- matrix(46:68, nrow = 23, ncol = 1)
 Assign the true CP for one changepoint in effects at same window
 ```{r}
 # windowss contain the CPs time point 56, 57, 58 in inertia
-true_1cp_same.all <- matrix(46:68, nrow = 23, ncol = 1)
+true_1cp_same.all_1win <- matrix(55:59, nrow = 5, ncol = 1)
+
+true_1cp_same.all_2win <- matrix(54:60, nrow = 7, ncol = 1)
+
+true_1cp_same.all_3win <- matrix(53:61, nrow = 9, ncol = 1)
+
+true_1cp_same.all_4win <- matrix(52:62, nrow = 11, ncol = 1)
+
+true_1cp_same.all_5win <- matrix(51:63, nrow = 13, ncol = 1)
 ```
 
 ### BOCPD
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BOCD_send_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_send_same.all, 
-                                               true_CPs = true_1cp_same.all, 
-                                               window_parameters = fixmw_send_1cp_param_same.all))
+Conf_Mat_BOCD_send_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_same.all, 
+                                               true_CPs = true_1cp_same.all_1win, 
+                                               window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BOCD_send_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_same.all, 
+                                               true_CPs = true_1cp_same.all_2win, 
+                                               window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BOCD_send_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_same.all, 
+                                               true_CPs = true_1cp_same.all_3win, 
+                                               window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BOCD_send_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_same.all, 
+                                               true_CPs = true_1cp_same.all_4win, 
+                                               window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BOCD_send_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_same.all, 
+                                               true_CPs = true_1cp_same.all_5win, 
+                                               window_parameters = fixmw_send_1cp_param_same.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BOCD_diff_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_diff_same.all, 
-                                              true_CPs = true_1cp_same.all, 
-                                              window_parameters = fixmw_diff_1cp_param_same.all))
+Conf_Mat_BOCD_diff_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_same.all, 
+                                              true_CPs = true_1cp_same.all_1win, 
+                                              window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BOCD_diff_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_same.all, 
+                                              true_CPs = true_1cp_same.all_2win, 
+                                              window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BOCD_diff_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_same.all, 
+                                              true_CPs = true_1cp_same.all_3win, 
+                                              window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BOCD_diff_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_same.all, 
+                                              true_CPs = true_1cp_same.all_4win, 
+                                              window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BOCD_diff_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_same.all, 
+                                              true_CPs = true_1cp_same.all_5win, 
+                                              window_parameters = fixmw_diff_1cp_param_same.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BOCD_ine_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_ine_same.all, 
-                                             true_CPs = true_1cp_same.all, 
-                                             window_parameters = fixmw_ine_1cp_param_same.all))
+Conf_Mat_BOCD_ine_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_same.all, 
+                                             true_CPs = true_1cp_same.all_1win, 
+                                             window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BOCD_ine_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_same.all, 
+                                             true_CPs = true_1cp_same.all_2win, 
+                                             window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BOCD_ine_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_same.all, 
+                                             true_CPs = true_1cp_same.all_3win, 
+                                             window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BOCD_ine_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_same.all, 
+                                             true_CPs = true_1cp_same.all_4win, 
+                                             window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BOCD_ine_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_same.all, 
+                                             true_CPs = true_1cp_same.all_5win, 
+                                             window_parameters = fixmw_ine_1cp_param_same.all)
 ```
 
 - Outdegree Sender *should discuss with Mahdi and Javier*
 ```{r}
-(Conf_Mat_BOCD_out_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_out_same.all, 
-                                             true_CPs = true_1cp_same.all, 
-                                             window_parameters = fixmw_out_1cp_param_same.all))
+Conf_Mat_BOCD_out_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_same.all, 
+                                             true_CPs = true_1cp_same.all_1win, 
+                                             window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BOCD_out_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_same.all, 
+                                             true_CPs = true_1cp_same.all_2win, 
+                                             window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BOCD_out_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_same.all, 
+                                             true_CPs = true_1cp_same.all_3win, 
+                                             window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BOCD_out_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_same.all, 
+                                             true_CPs = true_1cp_same.all_4win, 
+                                             window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BOCD_out_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_same.all, 
+                                             true_CPs = true_1cp_same.all_5win, 
+                                             window_parameters = fixmw_out_1cp_param_same.all)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(Conf_Mat_PELT_send_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_send_same.all, 
-                                                   true_CPs = true_1cp_same.all,
-                                                   window_parameters = fixmw_send_1cp_param_same.all))
+Conf_Mat_PELT_send_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_same.all, 
+                                                   true_CPs = true_1cp_same.all_1win,
+                                                   window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_PELT_send_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_same.all, 
+                                                   true_CPs = true_1cp_same.all_2win,
+                                                   window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_PELT_send_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_same.all, 
+                                                   true_CPs = true_1cp_same.all_3win,
+                                                   window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_PELT_send_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_same.all, 
+                                                   true_CPs = true_1cp_same.all_4win,
+                                                   window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_PELT_send_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_same.all, 
+                                                   true_CPs = true_1cp_same.all_5win,
+                                                   window_parameters = fixmw_send_1cp_param_same.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_PELT_diff_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_diff_same.all, 
-                                                   true_CPs = true_1cp_same.all, 
-                                                   window_parameters = fixmw_diff_1cp_param_same.all))
+Conf_Mat_PELT_diff_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_same.all, 
+                                                   true_CPs = true_1cp_same.all_1win, 
+                                                   window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_PELT_diff_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_same.all, 
+                                                   true_CPs = true_1cp_same.all_2win, 
+                                                   window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_PELT_diff_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_same.all, 
+                                                   true_CPs = true_1cp_same.all_3win, 
+                                                   window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_PELT_diff_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_same.all, 
+                                                   true_CPs = true_1cp_same.all_4win, 
+                                                   window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_PELT_diff_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_same.all, 
+                                                   true_CPs = true_1cp_same.all_5win, 
+                                                   window_parameters = fixmw_diff_1cp_param_same.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_PELT_ine_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_ine_same.all, 
-                                                  true_CPs = true_1cp_same.all, 
-                                                  window_parameters = fixmw_ine_1cp_param_same.all))
+Conf_Mat_PELT_ine_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_same.all, 
+                                                  true_CPs = true_1cp_same.all_1win, 
+                                                  window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_PELT_ine_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_same.all, 
+                                                  true_CPs = true_1cp_same.all_2win, 
+                                                  window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_PELT_ine_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_same.all, 
+                                                  true_CPs = true_1cp_same.all_3win, 
+                                                  window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_PELT_ine_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_same.all, 
+                                                  true_CPs = true_1cp_same.all_4win, 
+                                                  window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_PELT_ine_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_same.all, 
+                                                  true_CPs = true_1cp_same.all_5win, 
+                                                  window_parameters = fixmw_ine_1cp_param_same.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_PELT_out_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_out_same.all, 
-                                                  true_CPs = true_1cp_same.all, 
-                                                  window_parameters = fixmw_out_1cp_param_same.all))
+Conf_Mat_PELT_out_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_same.all, 
+                                                  true_CPs = true_1cp_same.all_1win, 
+                                                  window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_PELT_out_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_same.all, 
+                                                  true_CPs = true_1cp_same.all_2win, 
+                                                  window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_PELT_out_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_same.all, 
+                                                  true_CPs = true_1cp_same.all_3win, 
+                                                  window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_PELT_out_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_same.all, 
+                                                  true_CPs = true_1cp_same.all_4win, 
+                                                  window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_PELT_out_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_same.all, 
+                                                  true_CPs = true_1cp_same.all_5win, 
+                                                  window_parameters = fixmw_out_1cp_param_same.all)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BS_send_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_send_same.all, 
-                                                 true_CPs = true_1cp_same.all, 
-                                                 window_parameters = fixmw_send_1cp_param_same.all))
+Conf_Mat_BS_send_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_send_same.all, 
+                                                 true_CPs = true_1cp_same.all_1win, 
+                                                 window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BS_send_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_send_same.all, 
+                                                 true_CPs = true_1cp_same.all_2win, 
+                                                 window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BS_send_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_send_same.all, 
+                                                 true_CPs = true_1cp_same.all_3win, 
+                                                 window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BS_send_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_send_same.all, 
+                                                 true_CPs = true_1cp_same.all_4win, 
+                                                 window_parameters = fixmw_send_1cp_param_same.all)
+
+Conf_Mat_BS_send_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_send_same.all, 
+                                                 true_CPs = true_1cp_same.all_5win, 
+                                                 window_parameters = fixmw_send_1cp_param_same.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BS_diff_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_diff_same.all, 
-                                                 true_CPs = true_1cp_same.all, 
-                                                 window_parameters = fixmw_diff_1cp_param_same.all))
+Conf_Mat_BS_diff_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_same.all, 
+                                                 true_CPs = true_1cp_same.all_1win, 
+                                                 window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BS_diff_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_same.all, 
+                                                 true_CPs = true_1cp_same.all_2win, 
+                                                 window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BS_diff_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_same.all, 
+                                                 true_CPs = true_1cp_same.all_3win, 
+                                                 window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BS_diff_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_same.all, 
+                                                 true_CPs = true_1cp_same.all_4win, 
+                                                 window_parameters = fixmw_diff_1cp_param_same.all)
+
+Conf_Mat_BS_diff_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_same.all, 
+                                                 true_CPs = true_1cp_same.all_5win, 
+                                                 window_parameters = fixmw_diff_1cp_param_same.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BS_ine_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_ine_same.all, 
-                                                true_CPs = true_1cp_same.all,
-                                                window_parameters = fixmw_ine_1cp_param_same.all))
+Conf_Mat_BS_ine_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_same.all, 
+                                                true_CPs = true_1cp_same.all_1win,
+                                                window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BS_ine_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_same.all, 
+                                                true_CPs = true_1cp_same.all_2win,
+                                                window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BS_ine_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_same.all, 
+                                                true_CPs = true_1cp_same.all_3win,
+                                                window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BS_ine_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_same.all, 
+                                                true_CPs = true_1cp_same.all_4win,
+                                                window_parameters = fixmw_ine_1cp_param_same.all)
+
+Conf_Mat_BS_ine_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_same.all, 
+                                                true_CPs = true_1cp_same.all_5win,
+                                                window_parameters = fixmw_ine_1cp_param_same.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BS_out_1cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_out_same.all, 
-                                                true_CPs = true_1cp_same.all,
-                                                window_parameters = fixmw_out_1cp_param_same.all))
+Conf_Mat_BS_out_1cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_out_same.all, 
+                                                true_CPs = true_1cp_same.all_1win,
+                                                window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BS_out_1cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_out_same.all, 
+                                                true_CPs = true_1cp_same.all_2win,
+                                                window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BS_out_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_out_same.all, 
+                                                true_CPs = true_1cp_same.all_3win,
+                                                window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BS_out_1cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_out_same.all, 
+                                                true_CPs = true_1cp_same.all_4win,
+                                                window_parameters = fixmw_out_1cp_param_same.all)
+
+Conf_Mat_BS_out_1cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_out_same.all, 
+                                                true_CPs = true_1cp_same.all_5win,
+                                                window_parameters = fixmw_out_1cp_param_same.all)
 ```
 
 **The REH with 1 CPs in all effects at different locations**
@@ -617,106 +793,336 @@ true_1cp_same.all <- matrix(46:68, nrow = 23, ncol = 1)
 Assign the true CP for one changepoint in each effect at different windows
 ```{r}
 # windowss contain the CPs time point 31, 32, 33 in sender effect
-true_1cp_send_diff.all <- matrix(21:43, nrow = 23, ncol = 1)
+true_1cp_send_diff.all_1win <- matrix(30:34, nrow = 5, ncol = 1)
 
+true_1cp_send_diff.all_2win <- matrix(29:35, nrow = 7, ncol = 1)
+
+true_1cp_send_diff.all_3win <- matrix(28:36, nrow = 9, ncol = 1)
+
+true_1cp_send_diff.all_4win <- matrix(27:37, nrow = 11, ncol = 1)
+
+true_1cp_send_diff.all_5win <- matrix(26:38, nrow = 13, ncol = 1)
+```
+
+```{r}
 # windowss contain the CPs time point 46, 47, 48 in difference
-true_1cp_diff_diff.all <- matrix(36:58, nrow = 23, ncol = 1)
+true_1cp_diff_diff.all_1win <- matrix(45:49, nrow = 5, ncol = 1)
 
+true_1cp_diff_diff.all_2win <- matrix(44:50, nrow = 7, ncol = 1)
+
+true_1cp_diff_diff.all_3win <- matrix(43:51, nrow = 9, ncol = 1)
+
+true_1cp_diff_diff.all_4win <- matrix(42:52, nrow = 11, ncol = 1)
+
+true_1cp_diff_diff.all_5win <- matrix(41:53, nrow = 13, ncol = 1)
+```
+
+```{r}
 # windowss contain the CPs time point 18, 19, 20 in inertia
-true_1cp_ine_diff.all <- matrix(8:30, nrow = 23, ncol = 1)
+true_1cp_ine_diff.all_1win <- matrix(17:21, nrow = 5, ncol = 1)
 
+true_1cp_ine_diff.all_2win <- matrix(16:22, nrow = 7, ncol = 1)
+
+true_1cp_ine_diff.all_3win <- matrix(15:23, nrow = 9, ncol = 1)
+
+true_1cp_ine_diff.all_4win <- matrix(14:24, nrow = 11, ncol = 1)
+
+true_1cp_ine_diff.all_5win <- matrix(13:25, nrow = 13, ncol = 1)
+```
+
+```{r}
 # windowss contain the CPs time point 56, 57, 58 in outdegree sender
-true_1cp_out_diff.all <- matrix(46:68, nrow = 23, ncol = 1)
+true_1cp_out_diff.all_1win <- matrix(55:59, nrow = 5, ncol = 1)
+
+true_1cp_out_diff.all_2win <- matrix(54:60, nrow = 7, ncol = 1)
+
+true_1cp_out_diff.all_3win <- matrix(53:61, nrow = 9, ncol = 1)
+
+true_1cp_out_diff.all_4win <- matrix(52:62, nrow = 11, ncol = 1)
+
+true_1cp_out_diff.all_5win <- matrix(51:63, nrow = 13, ncol = 1)
 ```
 
 ### BOCPD
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BOCD_send_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_send_diff.all, 
-                                               true_CPs = true_1cp_send_diff.all, 
-                                               window_parameters = fixmw_send_1cp_param_diff.all))
+Conf_Mat_BOCD_send_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_diff.all, 
+                                               true_CPs = true_1cp_send_diff.all_1win, 
+                                               window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BOCD_send_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_diff.all, 
+                                               true_CPs = true_1cp_send_diff.all_2win, 
+                                               window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BOCD_send_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_diff.all, 
+                                               true_CPs = true_1cp_send_diff.all_3win, 
+                                               window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BOCD_send_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_diff.all, 
+                                               true_CPs = true_1cp_send_diff.all_4win, 
+                                               window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BOCD_send_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_send_diff.all, 
+                                               true_CPs = true_1cp_send_diff.all_5win, 
+                                               window_parameters = fixmw_send_1cp_param_diff.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BOCD_diff_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_diff_diff.all, 
-                                              true_CPs = true_1cp_diff_diff.all, 
-                                              window_parameters = fixmw_diff_1cp_param_diff.all))
+Conf_Mat_BOCD_diff_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_diff.all, 
+                                              true_CPs = true_1cp_diff_diff.all_1win, 
+                                              window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_diff.all, 
+                                              true_CPs = true_1cp_diff_diff.all_2win, 
+                                              window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_diff.all, 
+                                              true_CPs = true_1cp_diff_diff.all_3win, 
+                                              window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_diff.all, 
+                                              true_CPs = true_1cp_diff_diff.all_4win, 
+                                              window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_diff_diff.all, 
+                                              true_CPs = true_1cp_diff_diff.all_5win, 
+                                              window_parameters = fixmw_diff_1cp_param_diff.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BOCD_ine_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
-                                             true_CPs = true_1cp_ine_diff.all, 
-                                             window_parameters = fixmw_ine_1cp_param_diff.all))
+Conf_Mat_BOCD_ine_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
+                                             true_CPs = true_1cp_ine_diff.all_1win, 
+                                             window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
+                                             true_CPs = true_1cp_ine_diff.all_2win, 
+                                             window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
+                                             true_CPs = true_1cp_ine_diff.all_3win, 
+                                             window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
+                                             true_CPs = true_1cp_ine_diff.all_4win, 
+                                             window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
+                                             true_CPs = true_1cp_ine_diff.all_5win, 
+                                             window_parameters = fixmw_ine_1cp_param_diff.all)
 ```
 
 - Outdegree Sender *should discuss with Mahdi and Javier*
 ```{r}
-(Conf_Mat_BOCD_out_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_1cp_out_diff.all, 
-                                             true_CPs = true_1cp_out_diff.all, 
-                                             window_parameters = fixmw_out_1cp_param_diff.all))
+Conf_Mat_BOCD_out_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_diff.all, 
+                                             true_CPs = true_1cp_out_diff.all_1win, 
+                                             window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BOCD_out_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_diff.all, 
+                                             true_CPs = true_1cp_out_diff.all_2win, 
+                                             window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BOCD_out_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_diff.all, 
+                                             true_CPs = true_1cp_out_diff.all_3win, 
+                                             window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BOCD_out_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_diff.all, 
+                                             true_CPs = true_1cp_out_diff.all_4win, 
+                                             window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BOCD_out_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out_diff.all, 
+                                             true_CPs = true_1cp_out_diff.all_5win, 
+                                             window_parameters = fixmw_out_1cp_param_diff.all)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(Conf_Mat_PELT_send_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_send_diff.all, 
-                                                   true_CPs = true_1cp_send_diff.all,
-                                                   window_parameters = fixmw_send_1cp_param_diff.all))
+Conf_Mat_PELT_send_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_diff.all, 
+                                                   true_CPs = true_1cp_send_diff.all_1win,
+                                                   window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_PELT_send_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_diff.all, 
+                                                   true_CPs = true_1cp_send_diff.all_2win,
+                                                   window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_PELT_send_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_diff.all, 
+                                                   true_CPs = true_1cp_send_diff.all_3win,
+                                                   window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_PELT_send_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_diff.all, 
+                                                   true_CPs = true_1cp_send_diff.all_4win,
+                                                   window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_PELT_send_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_diff.all, 
+                                                   true_CPs = true_1cp_send_diff.all_5win,
+                                                   window_parameters = fixmw_send_1cp_param_diff.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_PELT_diff_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_diff_diff.all, 
-                                                   true_CPs = true_1cp_diff_diff.all, 
-                                                   window_parameters = fixmw_diff_1cp_param_diff.all))
+Conf_Mat_PELT_diff_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_diff.all, 
+                                                   true_CPs = true_1cp_diff_diff.all_1win, 
+                                                   window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_PELT_diff_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_diff.all, 
+                                                   true_CPs = true_1cp_diff_diff.all_2win, 
+                                                   window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_PELT_diff_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_diff.all, 
+                                                   true_CPs = true_1cp_diff_diff.all_3win, 
+                                                   window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_PELT_diff_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_diff.all, 
+                                                   true_CPs = true_1cp_diff_diff.all_4win, 
+                                                   window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_PELT_diff_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_diff_diff.all, 
+                                                   true_CPs = true_1cp_diff_diff.all_5win, 
+                                                   window_parameters = fixmw_diff_1cp_param_diff.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_PELT_ine_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_ine_diff.all, 
-                                                  true_CPs = true_1cp_ine_diff.all, 
-                                                  window_parameters = fixmw_ine_1cp_param_diff.all))
+Conf_Mat_PELT_ine_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_diff.all, 
+                                                  true_CPs = true_1cp_ine_diff.all_1win, 
+                                                  window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_PELT_ine_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_diff.all, 
+                                                  true_CPs = true_1cp_ine_diff.all_2win, 
+                                                  window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_PELT_ine_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_diff.all, 
+                                                  true_CPs = true_1cp_ine_diff.all_3win, 
+                                                  window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_PELT_ine_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_diff.all, 
+                                                  true_CPs = true_1cp_ine_diff.all_4win, 
+                                                  window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_PELT_ine_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_ine_diff.all, 
+                                                  true_CPs = true_1cp_ine_diff.all_5win, 
+                                                  window_parameters = fixmw_ine_1cp_param_diff.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_PELT_out_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_1cp_out_diff.all, 
-                                                  true_CPs = true_1cp_out_diff.all, 
-                                                  window_parameters = fixmw_out_1cp_param_diff.all))
+Conf_Mat_PELT_out_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_diff.all, 
+                                                  true_CPs = true_1cp_out_diff.all_1win, 
+                                                  window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_PELT_out_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_diff.all, 
+                                                  true_CPs = true_1cp_out_diff.all_2win, 
+                                                  window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_PELT_out_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_diff.all, 
+                                                  true_CPs = true_1cp_out_diff.all_3win, 
+                                                  window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_PELT_out_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_diff.all, 
+                                                  true_CPs = true_1cp_out_diff.all_4win, 
+                                                  window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_PELT_out_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_1cp_out_diff.all, 
+                                                  true_CPs = true_1cp_out_diff.all_5win, 
+                                                  window_parameters = fixmw_out_1cp_param_diff.all)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BS_send_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_send_diff.all, 
-                                                 true_CPs = true_1cp_send_diff.all, 
-                                                 window_parameters = fixmw_send_1cp_param_diff.all))
+Conf_Mat_BS_send_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_send_diff.all, 
+                                                 true_CPs = true_1cp_send_diff.all_1win, 
+                                                 window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BS_send_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_send_diff.all, 
+                                                 true_CPs = true_1cp_send_diff.all_2win, 
+                                                 window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BS_send_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_send_diff.all, 
+                                                 true_CPs = true_1cp_send_diff.all_3win, 
+                                                 window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BS_send_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_send_diff.all, 
+                                                 true_CPs = true_1cp_send_diff.all_4win, 
+                                                 window_parameters = fixmw_send_1cp_param_diff.all)
+
+Conf_Mat_BS_send_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_send_diff.all, 
+                                                 true_CPs = true_1cp_send_diff.all_5win, 
+                                                 window_parameters = fixmw_send_1cp_param_diff.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BS_diff_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_diff_diff.all, 
-                                                 true_CPs = true_1cp_diff_diff.all, 
-                                                 window_parameters = fixmw_diff_1cp_param_diff.all))
+Conf_Mat_BS_diff_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_diff.all, 
+                                                 true_CPs = true_1cp_diff_diff.all_1win, 
+                                                 window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BS_diff_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_diff.all, 
+                                                 true_CPs = true_1cp_diff_diff.all_2win, 
+                                                 window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BS_diff_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_diff.all, 
+                                                 true_CPs = true_1cp_diff_diff.all_3win, 
+                                                 window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BS_diff_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_diff.all, 
+                                                 true_CPs = true_1cp_diff_diff.all_4win, 
+                                                 window_parameters = fixmw_diff_1cp_param_diff.all)
+
+Conf_Mat_BS_diff_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_diff_diff.all, 
+                                                 true_CPs = true_1cp_diff_diff.all_5win, 
+                                                 window_parameters = fixmw_diff_1cp_param_diff.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BS_ine_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_ine_diff.all, 
-                                                true_CPs = true_1cp_ine_diff.all,
-                                                window_parameters = fixmw_ine_1cp_param_diff.all))
+Conf_Mat_BS_ine_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_diff.all, 
+                                                true_CPs = true_1cp_ine_diff.all_1win,
+                                                window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BS_ine_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_diff.all, 
+                                                true_CPs = true_1cp_ine_diff.all_2win,
+                                                window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BS_ine_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_diff.all, 
+                                                true_CPs = true_1cp_ine_diff.all_3win,
+                                                window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BS_ine_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_diff.all, 
+                                                true_CPs = true_1cp_ine_diff.all_4win,
+                                                window_parameters = fixmw_ine_1cp_param_diff.all)
+
+Conf_Mat_BS_ine_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_ine_diff.all, 
+                                                true_CPs = true_1cp_ine_diff.all_5win,
+                                                window_parameters = fixmw_ine_1cp_param_diff.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BS_out_1cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_1cp_out_diff.all, 
-                                                true_CPs = true_1cp_out_diff.all,
-                                                window_parameters = fixmw_out_1cp_param_diff.all))
+Conf_Mat_BS_out_1cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_1cp_out_diff.all, 
+                                                true_CPs = true_1cp_out_diff.all_1win,
+                                                window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BS_out_1cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_1cp_out_diff.all, 
+                                                true_CPs = true_1cp_out_diff.all_2win,
+                                                window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BS_out_1cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_out_diff.all, 
+                                                true_CPs = true_1cp_out_diff.all_3win,
+                                                window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BS_out_1cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_1cp_out_diff.all, 
+                                                true_CPs = true_1cp_out_diff.all_4win,
+                                                window_parameters = fixmw_out_1cp_param_diff.all)
+
+Conf_Mat_BS_out_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_out_diff.all, 
+                                                true_CPs = true_1cp_out_diff.all_5win,
+                                                window_parameters = fixmw_out_1cp_param_diff.all)
 ```
 
 **The REH with 2 CPs in inertia**
@@ -724,87 +1130,139 @@ true_1cp_out_diff.all <- matrix(46:68, nrow = 23, ncol = 1)
 Assign the true CPs for one changepoint in `inertia`
 ```{r}
 # windowss contain the CPs time point "24, 25, 26", and "79, 80, 81" in inertia
-true_2cp <- matrix(c(14:36, 
-                     69:91),
-                   nrow = 23, ncol = 2)
+true_2cp_1win <- matrix(c(23:27, 
+                          78:82),
+                        nrow = 5, ncol = 2)
+
+true_2cp_2win <- matrix(c(22:28, 
+                          77:83),
+                        nrow = 7, ncol = 2)
+
+true_2cp_3win <- matrix(c(21:29, 
+                          76:84),
+                        nrow = 9, ncol = 2)
+
+true_2cp_4win <- matrix(c(20:30, 
+                          75:85),
+                        nrow = 11, ncol = 2)
+
+true_2cp_5win <- matrix(c(19:31, 
+                          74:86),
+                        nrow = 13, ncol = 2)
 ```
 
 ### BOCPD
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BOCD_send_2cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_2cp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_2cp_param))
+Conf_Mat_BOCD_send_2cp <- conf_matrix(pred_CPs = locat_BOCD_2cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_2cp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BOCD_diff_2cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_2cp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_2cp_param))
+Conf_Mat_BOCD_diff_2cp <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_2cp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BOCD_ine_2cp <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_ine, true_CPs = true_2cp, 
-                        window_parameters = fixmw_ine_2cp_param))
+Conf_Mat_BOCD_ine_2cp_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine, true_CPs = true_2cp_1win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BOCD_ine_2cp_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine, true_CPs = true_2cp_2win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BOCD_ine_2cp_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine, true_CPs = true_2cp_3win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BOCD_ine_2cp_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine, true_CPs = true_2cp_4win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BOCD_ine_2cp_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine, true_CPs = true_2cp_5win, 
+                        window_parameters = fixmw_ine_2cp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BOCD_out_2cp <- conf_matrix_ncp(pred_CPs = locat_BOCD_2cp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_2cp_param))
+Conf_Mat_BOCD_out_2cp <- conf_matrix(pred_CPs = locat_BOCD_2cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_2cp_param)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(Conf_Mat_PELT_send_2cp <- conf_matrix_ncp(pred_CPs = locat_PELT_2cp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_2cp_param))
+Conf_Mat_PELT_send_2cp <- conf_matrix(pred_CPs = locat_PELT_2cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_2cp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_PELT_diff_2cp <- conf_matrix_ncp(pred_CPs = locat_PELT_2cp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_2cp_param))
+Conf_Mat_PELT_diff_2cp <- conf_matrix(pred_CPs = locat_PELT_2cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_2cp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_PELT_ine_2cp <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_ine, true_CPs = true_2cp, 
-                        window_parameters = fixmw_ine_2cp_param))
+Conf_Mat_PELT_ine_2cp_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine, true_CPs = true_2cp_1win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_PELT_ine_2cp_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine, true_CPs = true_2cp_2win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_PELT_ine_2cp_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine, true_CPs = true_2cp_3win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_PELT_ine_2cp_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine, true_CPs = true_2cp_4win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_PELT_ine_2cp_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine, true_CPs = true_2cp_5win, 
+                        window_parameters = fixmw_ine_2cp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_PELT_out_2cp <- conf_matrix_ncp(pred_CPs = locat_PELT_2cp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_2cp_param))
+Conf_Mat_PELT_out_2cp <- conf_matrix(pred_CPs = locat_PELT_2cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_2cp_param)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BS_send_2cp <- conf_matrix_ncp(pred_CPs = locat_BS_2cp_send, true_CPs = true_ncp, 
-                        window_parameters = fixmw_send_2cp_param))
+Conf_Mat_BS_send_2cp <- conf_matrix(pred_CPs = locat_BS_2cp_send, true_CPs = true_ncp, 
+                        window_parameters = fixmw_send_2cp_param)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BS_diff_2cp <- conf_matrix_ncp(pred_CPs = locat_BS_2cp_diff, true_CPs = true_ncp, 
-                        window_parameters = fixmw_diff_2cp_param))
+Conf_Mat_BS_diff_2cp <- conf_matrix(pred_CPs = locat_BS_2cp_diff, true_CPs = true_ncp, 
+                        window_parameters = fixmw_diff_2cp_param)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BS_ine_2cp <- conf_matrix_cp(pred_CPs = locat_BS_2cp_ine, true_CPs = true_2cp, 
-                        window_parameters = fixmw_ine_2cp_param))
+Conf_Mat_BS_ine_2cp_1win <- conf_matrix(pred_CPs = locat_BS_2cp_ine, true_CPs = true_2cp_1win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BS_ine_2cp_2win <- conf_matrix(pred_CPs = locat_BS_2cp_ine, true_CPs = true_2cp_2win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BS_ine_2cp_3win <- conf_matrix(pred_CPs = locat_BS_2cp_ine, true_CPs = true_2cp_3win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BS_ine_2cp_4win <- conf_matrix(pred_CPs = locat_BS_2cp_ine, true_CPs = true_2cp_4win, 
+                        window_parameters = fixmw_ine_2cp_param)
+
+Conf_Mat_BS_ine_2cp_5win <- conf_matrix(pred_CPs = locat_BS_2cp_ine, true_CPs = true_2cp_5win, 
+                        window_parameters = fixmw_ine_2cp_param)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BS_out_2cp <- conf_matrix_ncp(pred_CPs = locat_BS_2cp_out, true_CPs = true_ncp, 
-                        window_parameters = fixmw_out_2cp_param))
+Conf_Mat_BS_out_2cp <- conf_matrix(pred_CPs = locat_BS_2cp_out, true_CPs = true_ncp, 
+                        window_parameters = fixmw_out_2cp_param)
 ```
 
 **The REH with 2 CPs in all effects at same location**
@@ -812,99 +1270,307 @@ true_2cp <- matrix(c(14:36,
 Assign the true CP for two changepoints in effects at same window
 ```{r}
 # windows contain the CPs time point "24, 25, 26", "79, 80, 81" in inertia
-true_2cp_same.all <- matrix(c(14:36, 
-                              69:91),
-                            nrow = 23, ncol = 2)
+true_2cp_same.all_1win <- matrix(c(23:27, 
+                                   78:82),
+                                 nrow = 5, ncol = 2)
+
+true_2cp_same.all_2win <- matrix(c(22:28, 
+                                   77:83),
+                                 nrow = 7, ncol = 2)
+
+true_2cp_same.all_3win <- matrix(c(21:29, 
+                                   76:84),
+                                 nrow = 9, ncol = 2)
+
+true_2cp_same.all_4win <- matrix(c(20:30, 
+                                   75:85),
+                                 nrow = 11, ncol = 2)
+
+true_2cp_same.all_5win <- matrix(c(19:31, 
+                                   74:86),
+                                 nrow = 13, ncol = 2)
 ```
 
 ### BOCPD
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BOCD_send_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_send_same.all, 
-                                               true_CPs = true_2cp_same.all, 
-                                               window_parameters = fixmw_send_2cp_param_same.all))
+Conf_Mat_BOCD_send_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_same.all, 
+                                               true_CPs = true_2cp_same.all_1win, 
+                                               window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BOCD_send_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_same.all, 
+                                               true_CPs = true_2cp_same.all_2win, 
+                                               window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BOCD_send_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_same.all, 
+                                               true_CPs = true_2cp_same.all_3win, 
+                                               window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BOCD_send_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_same.all, 
+                                               true_CPs = true_2cp_same.all_4win, 
+                                               window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BOCD_send_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_same.all, 
+                                               true_CPs = true_2cp_same.all_5win, 
+                                               window_parameters = fixmw_send_2cp_param_same.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BOCD_diff_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_diff_same.all, 
-                                              true_CPs = true_2cp_same.all, 
-                                              window_parameters = fixmw_diff_2cp_param_same.all))
+Conf_Mat_BOCD_diff_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_same.all, 
+                                              true_CPs = true_2cp_same.all_1win, 
+                                              window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BOCD_diff_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_same.all, 
+                                              true_CPs = true_2cp_same.all_2win, 
+                                              window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BOCD_diff_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_same.all, 
+                                              true_CPs = true_2cp_same.all_3win, 
+                                              window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BOCD_diff_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_same.all, 
+                                              true_CPs = true_2cp_same.all_4win, 
+                                              window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BOCD_diff_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_same.all, 
+                                              true_CPs = true_2cp_same.all_5win, 
+                                              window_parameters = fixmw_diff_2cp_param_same.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BOCD_ine_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_ine_same.all, 
-                                             true_CPs = true_2cp_same.all, 
-                                             window_parameters = fixmw_ine_2cp_param_same.all))
+Conf_Mat_BOCD_ine_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_same.all, 
+                                             true_CPs = true_2cp_same.all_1win, 
+                                             window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BOCD_ine_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_same.all, 
+                                             true_CPs = true_2cp_same.all_2win, 
+                                             window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BOCD_ine_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_same.all, 
+                                             true_CPs = true_2cp_same.all_3win, 
+                                             window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BOCD_ine_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_same.all, 
+                                             true_CPs = true_2cp_same.all_4win, 
+                                             window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BOCD_ine_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_same.all, 
+                                             true_CPs = true_2cp_same.all_5win, 
+                                             window_parameters = fixmw_ine_2cp_param_same.all)
 ```
 
 - Outdegree Sender *should discuss with Mahdi and Javier*
 ```{r}
-(Conf_Mat_BOCD_out_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_out_same.all, 
-                                             true_CPs = true_2cp_same.all, 
-                                             window_parameters = fixmw_out_2cp_param_same.all))
+Conf_Mat_BOCD_out_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_same.all, 
+                                             true_CPs = true_2cp_same.all_1win, 
+                                             window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BOCD_out_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_same.all, 
+                                             true_CPs = true_2cp_same.all_2win, 
+                                             window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BOCD_out_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_same.all, 
+                                             true_CPs = true_2cp_same.all_3win, 
+                                             window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BOCD_out_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_same.all, 
+                                             true_CPs = true_2cp_same.all_4win, 
+                                             window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BOCD_out_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_same.all, 
+                                             true_CPs = true_2cp_same.all_5win, 
+                                             window_parameters = fixmw_out_2cp_param_same.all)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(Conf_Mat_PELT_send_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_send_same.all, 
-                                                   true_CPs = true_2cp_same.all,
-                                                   window_parameters = fixmw_send_2cp_param_same.all))
+Conf_Mat_PELT_send_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_same.all, 
+                                                   true_CPs = true_2cp_same.all_1win,
+                                                   window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_PELT_send_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_same.all, 
+                                                   true_CPs = true_2cp_same.all_2win,
+                                                   window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_PELT_send_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_same.all, 
+                                                   true_CPs = true_2cp_same.all_3win,
+                                                   window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_PELT_send_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_same.all, 
+                                                   true_CPs = true_2cp_same.all_4win,
+                                                   window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_PELT_send_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_same.all, 
+                                                   true_CPs = true_2cp_same.all_5win,
+                                                   window_parameters = fixmw_send_2cp_param_same.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_PELT_diff_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_diff_same.all, 
-                                                   true_CPs = true_2cp_same.all, 
-                                                   window_parameters = fixmw_diff_2cp_param_same.all))
+Conf_Mat_PELT_diff_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_same.all, 
+                                                   true_CPs = true_2cp_same.all_1win, 
+                                                   window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_PELT_diff_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_same.all, 
+                                                   true_CPs = true_2cp_same.all_2win, 
+                                                   window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_PELT_diff_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_same.all, 
+                                                   true_CPs = true_2cp_same.all_3win, 
+                                                   window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_PELT_diff_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_same.all, 
+                                                   true_CPs = true_2cp_same.all_4win, 
+                                                   window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_PELT_diff_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_same.all, 
+                                                   true_CPs = true_2cp_same.all_5win, 
+                                                   window_parameters = fixmw_diff_2cp_param_same.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_PELT_ine_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_ine_same.all, 
-                                                  true_CPs = true_2cp_same.all, 
-                                                  window_parameters = fixmw_ine_2cp_param_same.all))
+Conf_Mat_PELT_ine_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_same.all, 
+                                                  true_CPs = true_2cp_same.all_1win, 
+                                                  window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_PELT_ine_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_same.all, 
+                                                  true_CPs = true_2cp_same.all_2win, 
+                                                  window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_PELT_ine_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_same.all, 
+                                                  true_CPs = true_2cp_same.all_3win, 
+                                                  window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_PELT_ine_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_same.all, 
+                                                  true_CPs = true_2cp_same.all_4win, 
+                                                  window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_PELT_ine_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_same.all, 
+                                                  true_CPs = true_2cp_same.all_5win, 
+                                                  window_parameters = fixmw_ine_2cp_param_same.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_PELT_out_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_out_same.all, 
-                                                  true_CPs = true_2cp_same.all, 
-                                                  window_parameters = fixmw_out_2cp_param_same.all))
+Conf_Mat_PELT_out_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_same.all, 
+                                                  true_CPs = true_2cp_same.all_1win, 
+                                                  window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_PELT_out_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_same.all, 
+                                                  true_CPs = true_2cp_same.all_2win, 
+                                                  window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_PELT_out_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_same.all, 
+                                                  true_CPs = true_2cp_same.all_3win, 
+                                                  window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_PELT_out_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_same.all, 
+                                                  true_CPs = true_2cp_same.all_4win, 
+                                                  window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_PELT_out_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_same.all, 
+                                                  true_CPs = true_2cp_same.all_5win, 
+                                                  window_parameters = fixmw_out_2cp_param_same.all)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BS_send_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_send_same.all, 
-                                                 true_CPs = true_2cp_same.all, 
-                                                 window_parameters = fixmw_send_2cp_param_same.all))
+Conf_Mat_BS_send_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_send_same.all, 
+                                                 true_CPs = true_2cp_same.all_1win, 
+                                                 window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BS_send_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_send_same.all, 
+                                                 true_CPs = true_2cp_same.all_2win, 
+                                                 window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BS_send_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_send_same.all, 
+                                                 true_CPs = true_2cp_same.all_3win, 
+                                                 window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BS_send_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_send_same.all, 
+                                                 true_CPs = true_2cp_same.all_4win, 
+                                                 window_parameters = fixmw_send_2cp_param_same.all)
+
+Conf_Mat_BS_send_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_send_same.all, 
+                                                 true_CPs = true_2cp_same.all_5win, 
+                                                 window_parameters = fixmw_send_2cp_param_same.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BS_diff_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_diff_same.all, 
-                                                 true_CPs = true_2cp_same.all, 
-                                                 window_parameters = fixmw_diff_2cp_param_same.all))
+Conf_Mat_BS_diff_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_same.all, 
+                                                 true_CPs = true_2cp_same.all_1win, 
+                                                 window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BS_diff_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_same.all, 
+                                                 true_CPs = true_2cp_same.all_2win, 
+                                                 window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BS_diff_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_same.all, 
+                                                 true_CPs = true_2cp_same.all_3win, 
+                                                 window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BS_diff_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_same.all, 
+                                                 true_CPs = true_2cp_same.all_4win, 
+                                                 window_parameters = fixmw_diff_2cp_param_same.all)
+
+Conf_Mat_BS_diff_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_same.all, 
+                                                 true_CPs = true_2cp_same.all_5win, 
+                                                 window_parameters = fixmw_diff_2cp_param_same.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BS_ine_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_ine_same.all, 
-                                                true_CPs = true_2cp_same.all,
-                                                window_parameters = fixmw_ine_2cp_param_same.all))
+Conf_Mat_BS_ine_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_same.all, 
+                                                true_CPs = true_2cp_same.all_1win,
+                                                window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BS_ine_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_same.all, 
+                                                true_CPs = true_2cp_same.all_2win,
+                                                window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BS_ine_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_same.all, 
+                                                true_CPs = true_2cp_same.all_3win,
+                                                window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BS_ine_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_same.all, 
+                                                true_CPs = true_2cp_same.all_4win,
+                                                window_parameters = fixmw_ine_2cp_param_same.all)
+
+Conf_Mat_BS_ine_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_same.all, 
+                                                true_CPs = true_2cp_same.all_5win,
+                                                window_parameters = fixmw_ine_2cp_param_same.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BS_out_2cp_same.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_out_same.all, 
-                                                true_CPs = true_2cp_same.all,
-                                                window_parameters = fixmw_out_2cp_param_same.all))
+Conf_Mat_BS_out_2cp_same.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_out_same.all, 
+                                                true_CPs = true_2cp_same.all_1win,
+                                                window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BS_out_2cp_same.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_out_same.all, 
+                                                true_CPs = true_2cp_same.all_2win,
+                                                window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BS_out_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_out_same.all, 
+                                                true_CPs = true_2cp_same.all_3win,
+                                                window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BS_out_2cp_same.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_out_same.all, 
+                                                true_CPs = true_2cp_same.all_4win,
+                                                window_parameters = fixmw_out_2cp_param_same.all)
+
+Conf_Mat_BS_out_2cp_same.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_same.all, 
+                                                true_CPs = true_2cp_same.all_5win,
+                                                window_parameters = fixmw_out_2cp_param_same.all)
 ```
 
 **The REH with 2 CPs in all effects at different locations**
@@ -912,114 +1578,376 @@ true_2cp_same.all <- matrix(c(14:36,
 Assign the true CP for two changepoints in each effect at different windows
 ```{r}
 # windowss contain the CPs time point "31, 32, 33", "65, 66, 67" in sender effect
-true_2cp_send_diff.all <- matrix(c(21:43,
-                                   55:77), 
-                                 nrow = 23, ncol = 2)
+true_2cp_send_diff.all_1win <- matrix(c(30:34,
+                                        64:68), 
+                                      nrow = 5, ncol = 2)
 
+true_2cp_send_diff.all_2win <- matrix(c(29:35,
+                                        63:69), 
+                                      nrow = 7, ncol = 2)
+
+true_2cp_send_diff.all_3win <- matrix(c(28:36,
+                                        62:70), 
+                                      nrow = 9, ncol = 2)
+
+true_2cp_send_diff.all_4win <- matrix(c(27:37,
+                                        61:71), 
+                                      nrow = 11, ncol = 2)
+
+true_2cp_send_diff.all_5win <- matrix(c(26:38,
+                                        60:72), 
+                                      nrow = 13, ncol = 2)
+```
+
+```{r}
 # windowss contain the CPs time point "27, 28, 29", "60, 61, 62" in difference
-true_2cp_diff_diff.all <- matrix(c(17:39,
-                                   50:72), 
-                                 nrow = 23, ncol = 2)
+true_2cp_diff_diff.all_1win <- matrix(c(26:30,
+                                        59:63), 
+                                      nrow = 5, ncol = 2)
 
+true_2cp_diff_diff.all_2win <- matrix(c(25:31,
+                                        58:64), 
+                                      nrow = 7, ncol = 2)
+
+true_2cp_diff_diff.all_3win <- matrix(c(24:32,
+                                        57:65), 
+                                      nrow = 9, ncol = 2)
+
+true_2cp_diff_diff.all_4win <- matrix(c(23:33,
+                                        56:66), 
+                                      nrow = 11, ncol = 2)
+
+true_2cp_diff_diff.all_5win <- matrix(c(22:34,
+                                        55:67), 
+                                      nrow = 13, ncol = 2)
+```
+
+```{r}
 # windowss contain the CPs time point "24, 25, 26", "79, 80, 81" in inertia
-true_2cp_ine_diff.all <- matrix(c(14:36,
-                                  69:91), 
-                                nrow = 23, ncol = 2)
+true_2cp_ine_diff.all_1win <- matrix(c(23:27,
+                                       78:82), 
+                                     nrow = 5, ncol = 2)
 
+true_2cp_ine_diff.all_2win <- matrix(c(22:28,
+                                       77:83), 
+                                     nrow = 7, ncol = 2)
+
+true_2cp_ine_diff.all_3win <- matrix(c(21:29,
+                                       76:84), 
+                                     nrow = 9, ncol = 2)
+
+true_2cp_ine_diff.all_4win <- matrix(c(20:30,
+                                       75:85), 
+                                     nrow = 11, ncol = 2)
+
+true_2cp_ine_diff.all_5win <- matrix(c(19:31,
+                                       74:86), 
+                                     nrow = 13, ncol = 2)
+```
+
+```{r}
 # windowss contain the CPs time point "38, 39, 40", "80, 81, 82" in outdegree sender
-true_2cp_out_diff.all <- matrix(c(28:50,
-                                  70:92), 
-                                nrow = 23, ncol = 2)
+true_2cp_out_diff.all_1win <- matrix(c(37:41,
+                                       79:83), 
+                                     nrow = 5, ncol = 2)
+
+true_2cp_out_diff.all_2win <- matrix(c(36:42,
+                                       78:84), 
+                                     nrow = 7, ncol = 2)
+
+true_2cp_out_diff.all_3win <- matrix(c(35:43,
+                                       77:85), 
+                                     nrow = 9, ncol = 2)
+
+true_2cp_out_diff.all_4win <- matrix(c(34:44,
+                                       76:86), 
+                                     nrow = 11, ncol = 2)
+
+true_2cp_out_diff.all_5win <- matrix(c(33:45,
+                                       75:87), 
+                                     nrow = 13, ncol = 2)
 ```
 
 ### BOCPD
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BOCD_send_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_send_diff.all, 
-                                               true_CPs = true_2cp_send_diff.all, 
-                                               window_parameters = fixmw_send_2cp_param_diff.all))
+Conf_Mat_BOCD_send_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_diff.all, 
+                                               true_CPs = true_2cp_send_diff.all_1win, 
+                                               window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BOCD_send_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_diff.all, 
+                                               true_CPs = true_2cp_send_diff.all_2win, 
+                                               window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BOCD_send_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_diff.all, 
+                                               true_CPs = true_2cp_send_diff.all_3win, 
+                                               window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BOCD_send_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_diff.all, 
+                                               true_CPs = true_2cp_send_diff.all_4win, 
+                                               window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BOCD_send_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_send_diff.all, 
+                                               true_CPs = true_2cp_send_diff.all_5win, 
+                                               window_parameters = fixmw_send_2cp_param_diff.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BOCD_diff_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_diff_diff.all, 
-                                              true_CPs = true_2cp_diff_diff.all, 
-                                              window_parameters = fixmw_diff_2cp_param_diff.all))
+Conf_Mat_BOCD_diff_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_diff.all, 
+                                              true_CPs = true_2cp_diff_diff.all_1win, 
+                                              window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_diff.all, 
+                                              true_CPs = true_2cp_diff_diff.all_2win, 
+                                              window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_diff.all, 
+                                              true_CPs = true_2cp_diff_diff.all_3win, 
+                                              window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_diff.all, 
+                                              true_CPs = true_2cp_diff_diff.all_4win, 
+                                              window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BOCD_diff_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_diff_diff.all, 
+                                              true_CPs = true_2cp_diff_diff.all_5win, 
+                                              window_parameters = fixmw_diff_2cp_param_diff.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BOCD_ine_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
-                                             true_CPs = true_2cp_ine_diff.all, 
-                                             window_parameters = fixmw_ine_2cp_param_diff.all))
+Conf_Mat_BOCD_ine_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
+                                             true_CPs = true_2cp_ine_diff.all_1win, 
+                                             window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
+                                             true_CPs = true_2cp_ine_diff.all_2win, 
+                                             window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
+                                             true_CPs = true_2cp_ine_diff.all_3win, 
+                                             window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
+                                             true_CPs = true_2cp_ine_diff.all_4win, 
+                                             window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BOCD_ine_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
+                                             true_CPs = true_2cp_ine_diff.all_5win, 
+                                             window_parameters = fixmw_ine_2cp_param_diff.all)
 ```
 
 - Outdegree Sender *should discuss with Mahdi and Javier*
 ```{r}
-(Conf_Mat_BOCD_out_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BOCD_2cp_out_diff.all, 
-                                             true_CPs = true_2cp_out_diff.all, 
-                                             window_parameters = fixmw_out_2cp_param_diff.all))
+Conf_Mat_BOCD_out_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_diff.all, 
+                                             true_CPs = true_2cp_out_diff.all_1win, 
+                                             window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BOCD_out_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_diff.all, 
+                                             true_CPs = true_2cp_out_diff.all_2win, 
+                                             window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BOCD_out_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_diff.all, 
+                                             true_CPs = true_2cp_out_diff.all_3win, 
+                                             window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BOCD_out_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_diff.all, 
+                                             true_CPs = true_2cp_out_diff.all_4win, 
+                                             window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BOCD_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out_diff.all, 
+                                             true_CPs = true_2cp_out_diff.all_5win, 
+                                             window_parameters = fixmw_out_2cp_param_diff.all)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(Conf_Mat_PELT_send_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_send_diff.all, 
-                                                   true_CPs = true_2cp_send_diff.all,
-                                                   window_parameters = fixmw_send_2cp_param_diff.all))
+Conf_Mat_PELT_send_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_diff.all, 
+                                                   true_CPs = true_2cp_send_diff.all_1win,
+                                                   window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_PELT_send_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_diff.all, 
+                                                   true_CPs = true_2cp_send_diff.all_2win,
+                                                   window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_PELT_send_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_diff.all, 
+                                                   true_CPs = true_2cp_send_diff.all_3win,
+                                                   window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_PELT_send_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_diff.all, 
+                                                   true_CPs = true_2cp_send_diff.all_4win,
+                                                   window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_PELT_send_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_diff.all, 
+                                                   true_CPs = true_2cp_send_diff.all_5win,
+                                                   window_parameters = fixmw_send_2cp_param_diff.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_PELT_diff_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_diff_diff.all, 
-                                                   true_CPs = true_2cp_diff_diff.all, 
-                                                   window_parameters = fixmw_diff_2cp_param_diff.all))
+Conf_Mat_PELT_diff_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_diff.all, 
+                                                   true_CPs = true_2cp_diff_diff.all_1win, 
+                                                   window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_PELT_diff_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_diff.all, 
+                                                   true_CPs = true_2cp_diff_diff.all_2win, 
+                                                   window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_PELT_diff_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_diff.all, 
+                                                   true_CPs = true_2cp_diff_diff.all_3win, 
+                                                   window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_PELT_diff_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_diff.all, 
+                                                   true_CPs = true_2cp_diff_diff.all_4win, 
+                                                   window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_PELT_diff_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_diff_diff.all, 
+                                                   true_CPs = true_2cp_diff_diff.all_5win, 
+                                                   window_parameters = fixmw_diff_2cp_param_diff.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_PELT_ine_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_ine_diff.all, 
-                                                  true_CPs = true_2cp_ine_diff.all, 
-                                                  window_parameters = fixmw_ine_2cp_param_diff.all))
+Conf_Mat_PELT_ine_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_diff.all, 
+                                                  true_CPs = true_2cp_ine_diff.all_1win, 
+                                                  window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_PELT_ine_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_diff.all, 
+                                                  true_CPs = true_2cp_ine_diff.all_2win, 
+                                                  window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_PELT_ine_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_diff.all, 
+                                                  true_CPs = true_2cp_ine_diff.all_3win, 
+                                                  window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_PELT_ine_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_diff.all, 
+                                                  true_CPs = true_2cp_ine_diff.all_4win, 
+                                                  window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_PELT_ine_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_ine_diff.all, 
+                                                  true_CPs = true_2cp_ine_diff.all_5win, 
+                                                  window_parameters = fixmw_ine_2cp_param_diff.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_PELT_out_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_PELT_2cp_out_diff.all, 
-                                                  true_CPs = true_2cp_out_diff.all, 
-                                                  window_parameters = fixmw_out_2cp_param_diff.all))
+Conf_Mat_PELT_out_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_diff.all, 
+                                                  true_CPs = true_2cp_out_diff.all_1win, 
+                                                  window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_PELT_out_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_diff.all, 
+                                                  true_CPs = true_2cp_out_diff.all_2win, 
+                                                  window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_PELT_out_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_diff.all, 
+                                                  true_CPs = true_2cp_out_diff.all_3win, 
+                                                  window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_PELT_out_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_diff.all, 
+                                                  true_CPs = true_2cp_out_diff.all_4win, 
+                                                  window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_PELT_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_PELT_2cp_out_diff.all, 
+                                                  true_CPs = true_2cp_out_diff.all_5win, 
+                                                  window_parameters = fixmw_out_2cp_param_diff.all)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(Conf_Mat_BS_send_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_send_diff.all, 
-                                                 true_CPs = true_2cp_send_diff.all, 
-                                                 window_parameters = fixmw_send_2cp_param_diff.all))
+Conf_Mat_BS_send_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_send_diff.all, 
+                                                 true_CPs = true_2cp_send_diff.all_1win, 
+                                                 window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BS_send_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_send_diff.all, 
+                                                 true_CPs = true_2cp_send_diff.all_2win, 
+                                                 window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BS_send_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_send_diff.all, 
+                                                 true_CPs = true_2cp_send_diff.all_3win, 
+                                                 window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BS_send_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_send_diff.all, 
+                                                 true_CPs = true_2cp_send_diff.all_4win, 
+                                                 window_parameters = fixmw_send_2cp_param_diff.all)
+
+Conf_Mat_BS_send_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_send_diff.all, 
+                                                 true_CPs = true_2cp_send_diff.all_5win, 
+                                                 window_parameters = fixmw_send_2cp_param_diff.all)
 ```
 
 - Difference
 ```{r}
-(Conf_Mat_BS_diff_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_diff_diff.all, 
-                                                 true_CPs = true_2cp_diff_diff.all, 
-                                                 window_parameters = fixmw_diff_2cp_param_diff.all))
+Conf_Mat_BS_diff_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_diff.all, 
+                                                 true_CPs = true_2cp_diff_diff.all_1win, 
+                                                 window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BS_diff_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_diff.all, 
+                                                 true_CPs = true_2cp_diff_diff.all_2win, 
+                                                 window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BS_diff_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_diff.all, 
+                                                 true_CPs = true_2cp_diff_diff.all_3win, 
+                                                 window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BS_diff_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_diff.all, 
+                                                 true_CPs = true_2cp_diff_diff.all_4win, 
+                                                 window_parameters = fixmw_diff_2cp_param_diff.all)
+
+Conf_Mat_BS_diff_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_diff_diff.all, 
+                                                 true_CPs = true_2cp_diff_diff.all_5win, 
+                                                 window_parameters = fixmw_diff_2cp_param_diff.all)
 ```
 
 - Inertia
 ```{r}
-(Conf_Mat_BS_ine_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_ine_diff.all, 
-                                                true_CPs = true_2cp_ine_diff.all,
-                                                window_parameters = fixmw_ine_2cp_param_diff.all))
+Conf_Mat_BS_ine_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_diff.all, 
+                                                true_CPs = true_2cp_ine_diff.all_1win,
+                                                window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BS_ine_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_diff.all, 
+                                                true_CPs = true_2cp_ine_diff.all_2win,
+                                                window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BS_ine_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_diff.all, 
+                                                true_CPs = true_2cp_ine_diff.all_3win,
+                                                window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BS_ine_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_diff.all, 
+                                                true_CPs = true_2cp_ine_diff.all_4win,
+                                                window_parameters = fixmw_ine_2cp_param_diff.all)
+
+Conf_Mat_BS_ine_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_ine_diff.all, 
+                                                true_CPs = true_2cp_ine_diff.all_5win,
+                                                window_parameters = fixmw_ine_2cp_param_diff.all)
 ```
 
 - Outdegree Sender
 ```{r}
-(Conf_Mat_BS_out_2cp_diff.all <- conf_matrix_cp(pred_CPs = locat_BS_2cp_out_diff.all, 
-                                                true_CPs = true_2cp_out_diff.all,
-                                                window_parameters = fixmw_out_2cp_param_diff.all))
+Conf_Mat_BS_out_2cp_diff.all_1win <- conf_matrix(pred_CPs = locat_BS_2cp_out_diff.all, 
+                                                true_CPs = true_2cp_out_diff.all_1win,
+                                                window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BS_out_2cp_diff.all_2win <- conf_matrix(pred_CPs = locat_BS_2cp_out_diff.all, 
+                                                true_CPs = true_2cp_out_diff.all_2win,
+                                                window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BS_out_2cp_diff.all_3win <- conf_matrix(pred_CPs = locat_BS_2cp_out_diff.all, 
+                                                true_CPs = true_2cp_out_diff.all_3win,
+                                                window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BS_out_2cp_diff.all_4win <- conf_matrix(pred_CPs = locat_BS_2cp_out_diff.all, 
+                                                true_CPs = true_2cp_out_diff.all_4win,
+                                                window_parameters = fixmw_out_2cp_param_diff.all)
+
+Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_diff.all, 
+                                                true_CPs = true_2cp_out_diff.all_5win,
+                                                window_parameters = fixmw_out_2cp_param_diff.all)
 ```
 
 ## Mean Square Error
@@ -1032,7 +1960,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BOCD_ine_1cp <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine, 
                              true_CPs = 57, 
-                             range = 11))
+                             range = 3))
 ```
 
 ### PELT
@@ -1041,7 +1969,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_PELT_ine_1cp <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine, 
                              true_CPs = 57, 
-                             range = 11))
+                             range = 3))
 ```
 
 ### BS
@@ -1050,7 +1978,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BS_ine_1cp <- MSE_CPD(pred_CPs = locat_BS_1cp_ine, 
                              true_CPs = 57, 
-                             range = 11))
+                             range = 3))
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -1061,28 +1989,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BOCD_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BOCD_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BOCD_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSE_BOCD_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1091,28 +2019,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_PELT_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_PELT_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_PELT_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_PELT_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1121,28 +2049,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BS_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_send_same.all, 
                                      true_CPs = 57,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BS_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_diff_same.all,
                                      true_CPs = 57,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BS_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_ine_same.all, 
                                     true_CPs = 57, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_BS_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_out_same.all, 
                                     true_CPs = 57, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 **The REH with 1 CPs in all effects at different locations**
@@ -1153,28 +2081,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BOCD_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BOCD_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BOCD_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSE_BOCD_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1183,28 +2111,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_PELT_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_PELT_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_PELT_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_PELT_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1213,28 +2141,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BS_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_send_diff.all, 
                                      true_CPs = 32,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BS_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_diff_diff.all,
                                      true_CPs = 47,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BS_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_ine_diff.all, 
                                     true_CPs = 19, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_BS_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_out_diff.all, 
                                     true_CPs = 57, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 **The REH with two CPs in inertia**
@@ -1245,7 +2173,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BOCD_ine_2cp <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 11))
+                             range = 3))
 ```
 
 ### PELT
@@ -1254,7 +2182,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_PELT_ine_2cp <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 11))
+                             range = 3))
 ```
 
 ### BS
@@ -1263,7 +2191,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BS_ine_2cp <- MSE_CPD(pred_CPs = locat_BS_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 11))
+                             range = 3))
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -1274,28 +2202,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BOCD_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BOCD_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BOCD_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSE_BOCD_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1304,28 +2232,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_PELT_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_PELT_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_PELT_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_PELT_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1334,28 +2262,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BS_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_send_same.all, 
                                      true_CPs = c(25, 80),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BS_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_diff_same.all,
                                      true_CPs = c(25, 80),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BS_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_ine_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_BS_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_out_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 11))
+                                    range = 3))
 ```
 
 **The REH with 2 CPs in all effects at different locations**
@@ -1366,28 +2294,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BOCD_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BOCD_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BOCD_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSE_BOCD_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1396,28 +2324,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_PELT_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_PELT_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_PELT_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_PELT_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1426,28 +2354,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSE_BS_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_send_diff.all, 
                                      true_CPs = c(32, 66),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSE_BS_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_diff_diff.all,
                                      true_CPs = c(28, 61),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSE_BS_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_ine_diff.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSE_BS_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_out_diff.all, 
                                     true_CPs = c(39, 81), 
-                                    range = 11))
+                                    range = 3))
 ```
 
 ## Mean Sign Difference
@@ -1460,7 +2388,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BOCD_ine_1cp <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine, 
                              true_CPs = 57, 
-                             range = 11))
+                             range = 3))
 ```
 
 ### PELT
@@ -1469,7 +2397,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_PELT_ine_1cp <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine, 
                              true_CPs = 57, 
-                             range = 11))
+                             range = 3))
 ```
 
 ### BS
@@ -1478,7 +2406,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BS_ine_1cp <- MSD_CPD(pred_CPs = locat_BS_1cp_ine, 
                              true_CPs = 57, 
-                             range = 11))
+                             range = 3))
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -1489,28 +2417,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BOCD_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BOCD_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BOCD_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSD_BOCD_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1519,28 +2447,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_PELT_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_PELT_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_PELT_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_PELT_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1549,28 +2477,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BS_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_send_same.all, 
                                      true_CPs = 57,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BS_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_diff_same.all,
                                      true_CPs = 57,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BS_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_ine_same.all, 
                                     true_CPs = 57, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_BS_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_out_same.all, 
                                     true_CPs = 57, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 **The REH with 1 CPs in all effects at different locations**
@@ -1581,28 +2509,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BOCD_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BOCD_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BOCD_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSD_BOCD_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1611,28 +2539,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_PELT_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_PELT_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_PELT_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_PELT_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1641,28 +2569,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BS_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_send_diff.all, 
                                      true_CPs = 32,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BS_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_diff_diff.all,
                                      true_CPs = 47,
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BS_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_ine_diff.all, 
                                     true_CPs = 19, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_BS_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_out_diff.all, 
                                     true_CPs = 57, 
-                                    range = 11))
+                                    range = 3))
 ```
 
 **The REH with two CPs in inertia**
@@ -1673,7 +2601,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BOCD_ine_2cp <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 11))
+                             range = 3))
 ```
 
 ### PELT
@@ -1682,7 +2610,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_PELT_ine_2cp <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 11))
+                             range = 3))
 ```
 
 ### BS
@@ -1691,7 +2619,7 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BS_ine_2cp <- MSD_CPD(pred_CPs = locat_BS_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 11))
+                             range = 3))
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -1702,28 +2630,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BOCD_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BOCD_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BOCD_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSD_BOCD_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1732,28 +2660,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_PELT_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_PELT_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_PELT_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_PELT_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1762,28 +2690,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BS_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_send_same.all, 
                                      true_CPs = c(25, 80),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BS_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_diff_same.all,
                                      true_CPs = c(25, 80),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BS_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_ine_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_BS_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_out_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 11))
+                                    range = 3))
 ```
 
 **The REH with 2 CPs in all effects at different locations**
@@ -1794,28 +2722,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BOCD_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BOCD_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BOCD_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender 
 ```{r}
 (MSD_BOCD_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### PELT
@@ -1824,28 +2752,28 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_PELT_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_PELT_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 11))
+                                       range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_PELT_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_PELT_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 11))
+                                      range = 3))
 ```
 
 ### BS
@@ -1854,28 +2782,834 @@ true_2cp_out_diff.all <- matrix(c(28:50,
 ```{r}
 (MSD_BS_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_send_diff.all, 
                                      true_CPs = c(32, 66),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Difference
 ```{r}
 (MSD_BS_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_diff_diff.all,
                                      true_CPs = c(28, 61),
-                                     range = 11))
+                                     range = 3))
 ```
 
 - Inertia
 ```{r}
 (MSD_BS_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_ine_diff.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 11))
+                                    range = 3))
 ```
 
 - Outdegree Sender
 ```{r}
 (MSD_BS_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_out_diff.all, 
                                     true_CPs = c(39, 81), 
-                                    range = 11))
+                                    range = 3))
+```
+
+# Comparison between CPDs for No CP scenarios
+
+We combined all of the confusion matrices of REH that does not contain changepoint to compare overall performance and determine which CPD performed the best in NO CP scenarios by the number of FPs from confusion matirx
+
+## Confusion Matrix
+
+### BOCPD
+
+```{r}
+BOCD_conf_mat_ncp <- rbind(Conf_Mat_BOCD_diff_1cp$total_confusionmatrix,
+                           Conf_Mat_BOCD_diff_2cp$total_confusionmatrix,
+                           Conf_Mat_BOCD_diff_ncp$total_confusionmatrix,
+                           Conf_Mat_BOCD_ine_ncp$total_confusionmatrix,
+                           Conf_Mat_BOCD_out_1cp$total_confusionmatrix,
+                           Conf_Mat_BOCD_out_2cp$total_confusionmatrix,
+                           Conf_Mat_BOCD_out_ncp$total_confusionmatrix,
+                           Conf_Mat_BOCD_send_1cp$total_confusionmatrix,
+                           Conf_Mat_BOCD_send_2cp$total_confusionmatrix,
+                           Conf_Mat_BOCD_send_ncp$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_ncp <- apply(BOCD_conf_mat_ncp, 2, sum))
+```
+
+### PELT
+
+```{r}
+PELT_conf_mat_ncp <- rbind(Conf_Mat_PELT_diff_1cp$total_confusionmatrix,
+                           Conf_Mat_PELT_diff_2cp$total_confusionmatrix,
+                           Conf_Mat_PELT_diff_ncp$total_confusionmatrix,
+                           Conf_Mat_PELT_ine_ncp$total_confusionmatrix,
+                           Conf_Mat_PELT_out_1cp$total_confusionmatrix,
+                           Conf_Mat_PELT_out_2cp$total_confusionmatrix,
+                           Conf_Mat_PELT_out_ncp$total_confusionmatrix,
+                           Conf_Mat_PELT_send_1cp$total_confusionmatrix,
+                           Conf_Mat_PELT_send_2cp$total_confusionmatrix,
+                           Conf_Mat_PELT_send_ncp$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(PELT_conf_mat_ncp <- apply(PELT_conf_mat_ncp, 2, sum))
+```
+
+### BS
+
+```{r}
+BS_conf_mat_ncp <- rbind(Conf_Mat_BS_diff_1cp$total_confusionmatrix,
+                         Conf_Mat_BS_diff_2cp$total_confusionmatrix,
+                         Conf_Mat_BS_diff_ncp$total_confusionmatrix,
+                         Conf_Mat_BS_ine_ncp$total_confusionmatrix,
+                         Conf_Mat_BS_out_1cp$total_confusionmatrix,
+                         Conf_Mat_BS_out_2cp$total_confusionmatrix,
+                         Conf_Mat_BS_out_ncp$total_confusionmatrix,
+                         Conf_Mat_BS_send_1cp$total_confusionmatrix,
+                         Conf_Mat_BS_send_2cp$total_confusionmatrix,
+                         Conf_Mat_BS_send_ncp$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BS_conf_mat_ncp <- apply(BS_conf_mat_ncp, 2, sum))
+```
+
+# Comparison between CPDs for 1 CP scenarios
+
+We combined all of the confusion matrices of REH that contain one changepoint to compare overall performance and determine which CPD performed the best in 1 CP scenarios.
+
+## Confusion Matrix
+
+### BOCPD
+
+**within 1 window difference is considered as TP**
+```{r}
+BOCD_conf_mat_1cp_1win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_diff_1cp_same.all_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_same.all_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_same.all_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_same.all_1win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_1cp_1win <- apply(BOCD_conf_mat_1cp_1win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BOCD_TPR_1cp_1win <- BOCD_conf_mat_1cp_1win["TP"] / 
+  (BOCD_conf_mat_1cp_1win["TP"] + BOCD_conf_mat_1cp_1win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BOCD_PPV_1cp_1win <- BOCD_conf_mat_1cp_1win["TP"] /
+  (BOCD_conf_mat_1cp_1win["TP"] + BOCD_conf_mat_1cp_1win["FP"]))
+```
+
+### PELT
+
+```{r}
+PELT_conf_mat_1cp_1win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_diff_1cp_same.all_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_same.all_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_same.all_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_diff.all_1win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_same.all_1win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(PELT_conf_mat_1cp_1win <- apply(PELT_conf_mat_1cp_1win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(PELT_TPR_1cp_1win <- PELT_conf_mat_1cp_1win["TP"] / 
+  (PELT_conf_mat_1cp_1win["TP"] + PELT_conf_mat_1cp_1win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(PELT_PPV_1cp_1win <- PELT_conf_mat_1cp_1win["TP"] /
+  (PELT_conf_mat_1cp_1win["TP"] + PELT_conf_mat_1cp_1win["FP"]))
+```
+
+### BS
+
+```{r}
+BS_conf_mat_1cp_1win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_1win$total_confusionmatrix,
+                              Conf_Mat_BS_diff_1cp_same.all_1win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_1win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_diff.all_1win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_same.all_1win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_diff.all_1win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_same.all_1win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_diff.all_1win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_same.all_1win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BS_conf_mat_1cp_1win <- apply(BS_conf_mat_1cp_1win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BS_TPR_1cp_1win <- BS_conf_mat_1cp_1win["TP"] / 
+  (BS_conf_mat_1cp_1win["TP"] + BS_conf_mat_1cp_1win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BS_PPV_1cp_1win <- BS_conf_mat_1cp_1win["TP"] /
+  (BS_conf_mat_1cp_1win["TP"] + BS_conf_mat_1cp_1win["FP"]))
+```
+
+**within 3 window difference are considered as TP**
+```{r}
+BOCD_conf_mat_1cp_2win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_diff_1cp_same.all_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_same.all_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_same.all_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_same.all_2win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_1cp_2win <- apply(BOCD_conf_mat_1cp_2win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BOCD_TPR_1cp_2win <- BOCD_conf_mat_1cp_2win["TP"] / 
+  (BOCD_conf_mat_1cp_2win["TP"] + BOCD_conf_mat_1cp_2win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BOCD_PPV_1cp_2win <- BOCD_conf_mat_1cp_2win["TP"] /
+  (BOCD_conf_mat_1cp_2win["TP"] + BOCD_conf_mat_1cp_2win["FP"]))
+```
+
+### PELT
+
+```{r}
+PELT_conf_mat_1cp_2win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_diff_1cp_same.all_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_same.all_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_same.all_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_diff.all_2win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_same.all_2win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(PELT_conf_mat_1cp_2win <- apply(PELT_conf_mat_1cp_2win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(PELT_TPR_1cp_2win <- PELT_conf_mat_1cp_2win["TP"] / 
+  (PELT_conf_mat_1cp_2win["TP"] + PELT_conf_mat_1cp_2win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(PELT_PPV_1cp_2win <- PELT_conf_mat_1cp_2win["TP"] /
+  (PELT_conf_mat_1cp_2win["TP"] + PELT_conf_mat_1cp_2win["FP"]))
+```
+
+### BS
+
+```{r}
+BS_conf_mat_1cp_2win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_2win$total_confusionmatrix,
+                              Conf_Mat_BS_diff_1cp_same.all_2win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_2win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_diff.all_2win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_same.all_2win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_diff.all_2win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_same.all_2win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_diff.all_2win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_same.all_2win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BS_conf_mat_1cp_2win <- apply(BS_conf_mat_1cp_2win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BS_TPR_1cp_2win <- BS_conf_mat_1cp_2win["TP"] / 
+  (BS_conf_mat_1cp_2win["TP"] + BS_conf_mat_1cp_2win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BS_PPV_1cp_2win <- BS_conf_mat_1cp_2win["TP"] /
+  (BS_conf_mat_1cp_2win["TP"] + BS_conf_mat_1cp_2win["FP"]))
+```
+
+**within 3 window differences are considered as TP**
+```{r}
+BOCD_conf_mat_1cp_3win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_diff_1cp_same.all_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_same.all_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_same.all_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_same.all_3win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_1cp_3win <- apply(BOCD_conf_mat_1cp_3win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BOCD_TPR_1cp_3win <- BOCD_conf_mat_1cp_3win["TP"] / 
+  (BOCD_conf_mat_1cp_3win["TP"] + BOCD_conf_mat_1cp_3win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BOCD_PPV_1cp_3win <- BOCD_conf_mat_1cp_3win["TP"] /
+  (BOCD_conf_mat_1cp_3win["TP"] + BOCD_conf_mat_1cp_3win["FP"]))
+```
+
+### PELT
+
+```{r}
+PELT_conf_mat_1cp_3win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_diff_1cp_same.all_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_same.all_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_same.all_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_diff.all_3win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_same.all_3win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(PELT_conf_mat_1cp_3win <- apply(PELT_conf_mat_1cp_3win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(PELT_TPR_1cp_3win <- PELT_conf_mat_1cp_3win["TP"] / 
+  (PELT_conf_mat_1cp_3win["TP"] + PELT_conf_mat_1cp_3win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(PELT_PPV_1cp_3win <- PELT_conf_mat_1cp_3win["TP"] /
+  (PELT_conf_mat_1cp_3win["TP"] + PELT_conf_mat_1cp_3win["FP"]))
+```
+
+### BS
+
+```{r}
+BS_conf_mat_1cp_3win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_3win$total_confusionmatrix,
+                              Conf_Mat_BS_diff_1cp_same.all_3win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_3win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_diff.all_3win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_same.all_3win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_diff.all_3win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_same.all_3win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_diff.all_3win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_same.all_3win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BS_conf_mat_1cp_3win <- apply(BS_conf_mat_1cp_3win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BS_TPR_1cp_3win <- BS_conf_mat_1cp_3win["TP"] / 
+  (BS_conf_mat_1cp_3win["TP"] + BS_conf_mat_1cp_3win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BS_PPV_1cp_3win <- BS_conf_mat_1cp_3win["TP"] /
+  (BS_conf_mat_1cp_3win["TP"] + BS_conf_mat_1cp_3win["FP"]))
+```
+
+**within 4 windows differences are considered as TP**
+```{r}
+BOCD_conf_mat_1cp_4win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_diff_1cp_same.all_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_same.all_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_same.all_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_same.all_4win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_1cp_4win <- apply(BOCD_conf_mat_1cp_4win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BOCD_TPR_1cp_4win <- BOCD_conf_mat_1cp_4win["TP"] / 
+  (BOCD_conf_mat_1cp_4win["TP"] + BOCD_conf_mat_1cp_4win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BOCD_PPV_1cp_4win <- BOCD_conf_mat_1cp_4win["TP"] /
+  (BOCD_conf_mat_1cp_4win["TP"] + BOCD_conf_mat_1cp_4win["FP"]))
+```
+
+### PELT
+
+```{r}
+PELT_conf_mat_1cp_4win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_diff_1cp_same.all_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_same.all_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_same.all_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_diff.all_4win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_same.all_4win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(PELT_conf_mat_1cp_4win <- apply(PELT_conf_mat_1cp_4win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(PELT_TPR_1cp_4win <- PELT_conf_mat_1cp_4win["TP"] / 
+  (PELT_conf_mat_1cp_4win["TP"] + PELT_conf_mat_1cp_4win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(PELT_PPV_1cp_4win <- PELT_conf_mat_1cp_4win["TP"] /
+  (PELT_conf_mat_1cp_4win["TP"] + PELT_conf_mat_1cp_4win["FP"]))
+```
+
+### BS
+
+```{r}
+BS_conf_mat_1cp_4win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_4win$total_confusionmatrix,
+                              Conf_Mat_BS_diff_1cp_same.all_4win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_4win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_diff.all_4win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_same.all_4win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_diff.all_4win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_same.all_4win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_diff.all_4win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_same.all_4win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BS_conf_mat_1cp_4win <- apply(BS_conf_mat_1cp_4win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BS_TPR_1cp_4win <- BS_conf_mat_1cp_4win["TP"] / 
+  (BS_conf_mat_1cp_4win["TP"] + BS_conf_mat_1cp_4win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BS_PPV_1cp_4win <- BS_conf_mat_1cp_4win["TP"] /
+  (BS_conf_mat_1cp_4win["TP"] + BS_conf_mat_1cp_4win["FP"]))
+```
+
+**within 5 windows differences are considered as TP**
+```{r}
+BOCD_conf_mat_1cp_5win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_diff_1cp_same.all_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_ine_1cp_same.all_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_out_1cp_same.all_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_BOCD_send_1cp_same.all_5win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_1cp_5win <- apply(BOCD_conf_mat_1cp_5win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BOCD_TPR_1cp_5win <- BOCD_conf_mat_1cp_5win["TP"] / 
+  (BOCD_conf_mat_1cp_5win["TP"] + BOCD_conf_mat_1cp_5win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BOCD_PPV_1cp_5win <- BOCD_conf_mat_1cp_5win["TP"] /
+  (BOCD_conf_mat_1cp_5win["TP"] + BOCD_conf_mat_1cp_5win["FP"]))
+```
+
+### PELT
+
+```{r}
+PELT_conf_mat_1cp_5win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_diff_1cp_same.all_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_ine_1cp_same.all_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_out_1cp_same.all_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_diff.all_5win$total_confusionmatrix,
+                                Conf_Mat_PELT_send_1cp_same.all_5win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(PELT_conf_mat_1cp_5win <- apply(PELT_conf_mat_1cp_5win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(PELT_TPR_1cp_5win <- PELT_conf_mat_1cp_5win["TP"] / 
+  (PELT_conf_mat_1cp_5win["TP"] + PELT_conf_mat_1cp_5win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(PELT_PPV_1cp_5win <- PELT_conf_mat_1cp_5win["TP"] /
+  (PELT_conf_mat_1cp_5win["TP"] + PELT_conf_mat_1cp_5win["FP"]))
+```
+
+### BS
+
+```{r}
+BS_conf_mat_1cp_5win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_5win$total_confusionmatrix,
+                              Conf_Mat_BS_diff_1cp_same.all_5win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_5win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_diff.all_5win$total_confusionmatrix,
+                              Conf_Mat_BS_ine_1cp_same.all_5win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_diff.all_5win$total_confusionmatrix,
+                              Conf_Mat_BS_out_1cp_same.all_5win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_diff.all_5win$total_confusionmatrix,
+                              Conf_Mat_BS_send_1cp_same.all_5win$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BS_conf_mat_1cp_5win <- apply(BS_conf_mat_1cp_5win, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BS_TPR_1cp_5win <- BS_conf_mat_1cp_5win["TP"] / 
+  (BS_conf_mat_1cp_5win["TP"] + BS_conf_mat_1cp_5win["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BS_PPV_1cp_5win <- BS_conf_mat_1cp_5win["TP"] /
+  (BS_conf_mat_1cp_5win["TP"] + BS_conf_mat_1cp_5win["FP"]))
+```
+
+## Mean Square Error (MSE)
+
+Here we identify any *window difference within 2* as TP (the range of MSE and MSD functions = 3 because there are three windows containing the real CP time points, and we use the middle window as a reference, so the range is set to 1 more than the actual)
+
+### BOCPD
+
+```{r}
+BOCD_MSE_1cp <- c(unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
+                  unlist(MSE_BOCD_diff_1cp_same.all$MSE),
+                  unlist(MSE_BOCD_ine_1cp$MSE),
+                  unlist(MSE_BOCD_ine_1cp_diff.all$MSE),
+                  unlist(MSE_BOCD_ine_1cp_same.all$MSE),
+                  unlist(MSE_BOCD_out_1cp_diff.all$MSE),
+                  unlist(MSE_BOCD_out_1cp_same.all$MSE),
+                  unlist(MSE_BOCD_send_1cp_diff.all$MSE),
+                  unlist(MSE_BOCD_send_1cp_same.all$MSE))
+
+# the average MSE cross the scenarios
+(BOCD_MSE_1cp <- mean(BOCD_MSE_1cp, na.rm = T))
+```
+
+### PELT
+
+```{r}
+PELT_MSE_1cp <- c(unlist(MSE_PELT_diff_1cp_diff.all$MSE),
+                  unlist(MSE_PELT_diff_1cp_same.all$MSE),
+                  unlist(MSE_PELT_ine_1cp$MSE),
+                  unlist(MSE_PELT_ine_1cp_diff.all$MSE),
+                  unlist(MSE_PELT_ine_1cp_same.all$MSE),
+                  unlist(MSE_PELT_out_1cp_diff.all$MSE),
+                  unlist(MSE_PELT_out_1cp_same.all$MSE),
+                  unlist(MSE_PELT_send_1cp_diff.all$MSE),
+                  unlist(MSE_PELT_send_1cp_same.all$MSE))
+
+# the average MSE cross the scenarios
+(PELT_MSE_1cp <- mean(PELT_MSE_1cp, na.rm = T))
+```
+
+### BS
+
+```{r}
+BS_MSE_1cp <- c(unlist(MSE_BS_diff_1cp_diff.all$MSE),
+                unlist(MSE_BS_diff_1cp_same.all$MSE),
+                unlist(MSE_BS_ine_1cp$MSE),
+                unlist(MSE_BS_ine_1cp_diff.all$MSE),
+                unlist(MSE_BS_ine_1cp_same.all$MSE),
+                unlist(MSE_BS_out_1cp_diff.all$MSE),
+                unlist(MSE_BS_out_1cp_same.all$MSE),
+                unlist(MSE_BS_send_1cp_diff.all$MSE),
+                unlist(MSE_BS_send_1cp_same.all$MSE))
+
+# the average MSE cross the scenarios
+(BS_MSE_1cp <- mean(BS_MSE_1cp, na.rm = T))
+```
+
+## Mean Sign Difference (MSD)
+
+### BOCPD
+
+```{r}
+BOCD_MSD_1cp <- c(unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
+                  unlist(MSD_BOCD_diff_1cp_same.all$MSD),
+                  unlist(MSD_BOCD_ine_1cp$MSD),
+                  unlist(MSD_BOCD_ine_1cp_diff.all$MSD),
+                  unlist(MSD_BOCD_ine_1cp_same.all$MSD),
+                  unlist(MSD_BOCD_out_1cp_diff.all$MSD),
+                  unlist(MSD_BOCD_out_1cp_same.all$MSD),
+                  unlist(MSD_BOCD_send_1cp_diff.all$MSD),
+                  unlist(MSD_BOCD_send_1cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(BOCD_MSD_1cp <- mean(BOCD_MSD_1cp, na.rm = T))
+```
+
+### PELT
+
+```{r}
+PELT_MSD_1cp <- c(unlist(MSD_PELT_diff_1cp_diff.all$MSD),
+                  unlist(MSD_PELT_diff_1cp_same.all$MSD),
+                  unlist(MSD_PELT_ine_1cp$MSD),
+                  unlist(MSD_PELT_ine_1cp_diff.all$MSD),
+                  unlist(MSD_PELT_ine_1cp_same.all$MSD),
+                  unlist(MSD_PELT_out_1cp_diff.all$MSD),
+                  unlist(MSD_PELT_out_1cp_same.all$MSD),
+                  unlist(MSD_PELT_send_1cp_diff.all$MSD),
+                  unlist(MSD_PELT_send_1cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(PELT_MSD_1cp <- mean(PELT_MSD_1cp, na.rm = T))
+```
+
+### BS
+
+```{r}
+BS_MSD_1cp <- c(unlist(MSD_BS_diff_1cp_diff.all$MSD),
+                unlist(MSD_BS_diff_1cp_same.all$MSD),
+                unlist(MSD_BS_ine_1cp$MSD),
+                unlist(MSD_BS_ine_1cp_diff.all$MSD),
+                unlist(MSD_BS_ine_1cp_same.all$MSD),
+                unlist(MSD_BS_out_1cp_diff.all$MSD),
+                unlist(MSD_BS_out_1cp_same.all$MSD),
+                unlist(MSD_BS_send_1cp_diff.all$MSD),
+                unlist(MSD_BS_send_1cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(BS_MSD_1cp <- mean(BS_MSD_1cp, na.rm = T))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Comparison between CPDs for 2 CP scenarios
+
+We combined all of the confusion matrices of REH that contain one changepoint to compare overall performance and determine which CPD performed the best in 2 CP scenarios.
+
+## Confusion Matrix
+
+### BOCPD
+
+```{r}
+BOCD_conf_mat_2cp <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_diff_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_2cp$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_ine_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_out_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_out_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_send_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_BOCD_send_2cp_same.all$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BOCD_conf_mat_2cp <- apply(BOCD_conf_mat_2cp, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BOCD_TPR_2cp <- BOCD_conf_mat_2cp["TP"] / 
+  (BOCD_conf_mat_2cp["TP"] + BOCD_conf_mat_2cp["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BOCD_PPV_2cp <- BOCD_conf_mat_2cp["TP"] /
+  (BOCD_conf_mat_2cp["TP"] + BOCD_conf_mat_2cp["FP"]))
+```
+
+### PELT
+
+```{r}
+PELT_conf_mat_2cp <- rbind(Conf_Mat_PELT_diff_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_diff_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_2cp$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_ine_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_out_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_out_2cp_same.all$total_confusionmatrix,
+                       Conf_Mat_PELT_send_2cp_diff.all$total_confusionmatrix,
+                       Conf_Mat_PELT_send_2cp_same.all$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(PELT_conf_mat_2cp <- apply(PELT_conf_mat_2cp, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(PELT_TPR_2cp <- PELT_conf_mat_2cp["TP"] / 
+  (PELT_conf_mat_2cp["TP"] + PELT_conf_mat_2cp["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(PELT_PPV_2cp <- PELT_conf_mat_2cp["TP"] /
+  (PELT_conf_mat_2cp["TP"] + PELT_conf_mat_2cp["FP"]))
+```
+
+### BS
+
+```{r}
+BS_conf_mat_2cp <- rbind(Conf_Mat_BS_diff_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_diff_2cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_ine_2cp$total_confusionmatrix,
+                     Conf_Mat_BS_ine_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_ine_2cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_out_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_out_2cp_same.all$total_confusionmatrix,
+                     Conf_Mat_BS_send_2cp_diff.all$total_confusionmatrix,
+                     Conf_Mat_BS_send_2cp_same.all$total_confusionmatrix)
+
+# the combined Confusion Matrix
+(BS_conf_mat_2cp <- apply(BS_conf_mat_2cp, 2, sum))
+
+# True Positive Rate 
+# In all positive observations, what is the probability that the model correctly predicts the true positive
+# The probability that a CPD correctly detect CPs
+(BS_TPR_2cp <- BS_conf_mat_2cp["TP"] / 
+  (BS_conf_mat_2cp["TP"] + BS_conf_mat_2cp["FN"]))
+  
+# Positive Predictive Value
+# The CPD predicts a CP, what is the actual prob. it is a CP.
+(BS_PPV_2cp <- BS_conf_mat_2cp["TP"] /
+  (BS_conf_mat_2cp["TP"] + BS_conf_mat_2cp["FP"]))
+```
+
+## Mean Square Error (MSE)
+
+### BOCPD
+
+```{r}
+BOCD_MSE_2cp <- c(unlist(MSE_BOCD_diff_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_diff_2cp_same.all$MSE),
+              unlist(MSE_BOCD_ine_2cp$MSE),
+              unlist(MSE_BOCD_ine_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_ine_2cp_same.all$MSE),
+              unlist(MSE_BOCD_out_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_out_2cp_same.all$MSE),
+              unlist(MSE_BOCD_send_2cp_diff.all$MSE),
+              unlist(MSE_BOCD_send_2cp_same.all$MSE))
+
+# the average MSE cross the scenarios
+(BOCD_MSE_2cp <- mean(BOCD_MSE_2cp, na.rm = T))
+```
+
+### PELT
+
+```{r}
+PELT_MSE_2cp <- c(unlist(MSE_PELT_diff_2cp_diff.all$MSE),
+              unlist(MSE_PELT_diff_2cp_same.all$MSE),
+              unlist(MSE_PELT_ine_2cp$MSE),
+              unlist(MSE_PELT_ine_2cp_diff.all$MSE),
+              unlist(MSE_PELT_ine_2cp_same.all$MSE),
+              unlist(MSE_PELT_out_2cp_diff.all$MSE),
+              unlist(MSE_PELT_out_2cp_same.all$MSE),
+              unlist(MSE_PELT_send_2cp_diff.all$MSE),
+              unlist(MSE_PELT_send_2cp_same.all$MSE))
+
+# the average MSE cross the scenarios
+(PELT_MSE_2cp <- mean(PELT_MSE_2cp, na.rm = T))
+```
+
+### BS
+
+```{r}
+BS_MSE_2cp <- c(unlist(MSE_BS_diff_2cp_diff.all$MSE),
+              unlist(MSE_BS_diff_2cp_same.all$MSE),
+              unlist(MSE_BS_ine_2cp$MSE),
+              unlist(MSE_BS_ine_2cp_diff.all$MSE),
+              unlist(MSE_BS_ine_2cp_same.all$MSE),
+              unlist(MSE_BS_out_2cp_diff.all$MSE),
+              unlist(MSE_BS_out_2cp_same.all$MSE),
+              unlist(MSE_BS_send_2cp_diff.all$MSE),
+              unlist(MSE_BS_send_2cp_same.all$MSE))
+
+# the average MSE cross the scenarios
+(BS_MSE_2cp <- mean(BS_MSE_2cp, na.rm = T))
+```
+
+## Mean Sign Difference (MSD)
+
+### BOCPD
+
+```{r}
+BOCD_MSD_2cp <- c(unlist(MSD_BOCD_diff_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_diff_2cp_same.all$MSD),
+              unlist(MSD_BOCD_ine_2cp$MSD),
+              unlist(MSD_BOCD_ine_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_ine_2cp_same.all$MSD),
+              unlist(MSD_BOCD_out_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_out_2cp_same.all$MSD),
+              unlist(MSD_BOCD_send_2cp_diff.all$MSD),
+              unlist(MSD_BOCD_send_2cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(BOCD_MSD_2cp <- mean(BOCD_MSD_2cp, na.rm = T))
+```
+
+### PELT
+
+```{r}
+PELT_MSD_2cp <- c(unlist(MSD_PELT_diff_2cp_diff.all$MSD),
+              unlist(MSD_PELT_diff_2cp_same.all$MSD),
+              unlist(MSD_PELT_ine_2cp$MSD),
+              unlist(MSD_PELT_ine_2cp_diff.all$MSD),
+              unlist(MSD_PELT_ine_2cp_same.all$MSD),
+              unlist(MSD_PELT_out_2cp_diff.all$MSD),
+              unlist(MSD_PELT_out_2cp_same.all$MSD),
+              unlist(MSD_PELT_send_2cp_diff.all$MSD),
+              unlist(MSD_PELT_send_2cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(PELT_MSD_2cp <- mean(PELT_MSD_2cp, na.rm = T))
+```
+
+### BS
+
+```{r}
+BS_MSD_2cp <- c(unlist(MSD_BS_diff_2cp_diff.all$MSD),
+            unlist(MSD_BS_diff_2cp_same.all$MSD),
+            unlist(MSD_BS_ine_2cp$MSD),
+            unlist(MSD_BS_ine_2cp_diff.all$MSD),
+            unlist(MSD_BS_ine_2cp_same.all$MSD),
+            unlist(MSD_BS_out_2cp_diff.all$MSD),
+            unlist(MSD_BS_out_2cp_same.all$MSD),
+            unlist(MSD_BS_send_2cp_diff.all$MSD),
+            unlist(MSD_BS_send_2cp_same.all$MSD))
+
+# the average MSD cross the scenarios
+(BS_MSD_2cp <- mean(BS_MSD_2cp, na.rm = T))
 ```
 
 # Total Comparison between CPDs
@@ -1981,7 +3715,7 @@ BS_conf_mat <- rbind(Conf_Mat_BS_diff_1cp_diff.all$total_confusionmatrix,
                      Conf_Mat_BS_send_2cp_same.all$total_confusionmatrix)
 
 # the combined Confusion Matrix
-(BS_conf_mat_tot <- apply(a, 2, sum))
+(BS_conf_mat_tot <- apply(BS_conf_mat, 2, sum))
 
 # True Positive Rate 
 # In all positive observations, what is the probability that the model correctly predicts the true positive

@@ -7,9 +7,46 @@ output: pdf_document
 ```{r}
 library(remstats) # the formula for REH
 library(relevent) # fit REH to REM
-library(REHdynamics)
+library(REHdynamics) # fit the moving window REM
+library(ocp) # package for BOCD
+library(changepoint) # package for PELT, BS
 set.seed(9252568)
 ```
+
+```{r}
+# Load data using load():
+load("RealLife_Data/Merged_ALL_parts_Apollo.rdata")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ```{r}
 Apollo.13 <- readRDS(file = "RealLife_Data/PartOfApollo_13.RDS")
@@ -100,7 +137,31 @@ PELT_fixmw_out@cpts[-length(PELT_fixmw_out@cpts)] + 34
 
 
 
+```{r}
+BOCD_fixmw_ine_param <- onlineCPD(fixmw_ine_param[34:148], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
 
+locat_BOCD_ine <- BOCD_fixmw_ine_param[["changepoint_lists"]][["maxCPs"]][[1]] +34
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_ine <- locat_BOCD_ine[-1])
+
+plot(BOCD_fixmw_ine_param)
+```
+
+```{r}
+BOCD_fixmw_out_param <- onlineCPD(fixmw_out_param[34:148], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+
+locat_BOCD_out <- BOCD_fixmw_out_param[["changepoint_lists"]][["maxCPs"]][[1]] +34
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_out <- locat_BOCD_out[-1])
+
+plot(BOCD_fixmw_out_param)
+```
 
 
 
@@ -119,25 +180,25 @@ PELT_fixmw_out@cpts[-length(PELT_fixmw_out@cpts)] + 34
 1. Step 1: compute the optimal lengths of the windows
 ```{r}
 # obtain data-driven window widths
-ddwin <- ddwindows(edgelist = Apollo.13, tie_effects = formula, mintime = 2000, 
+ddwin <- ddwindows(edgelist = Apollo.13, tie_effects = formula, mintime = 1000, 
 		covar = covar)
 ```
 
 2. Step 2: fit the REM by windows
 ```{r}
 #  fits a moving window relational event model
-model_ddwin_1cp_diff.all <- MWrem(windows = ddwin_1cp_diff.all$windows, edgelist = reh_1cp_diff.all, 
-		stats = stat.1cp_diff.all, actors = covar$id, directed = TRUE)
+model_ddwin <- MWrem(windows = ddwin$windows, edgelist = Apollo.13, 
+		stats = stat, actors = covar$id, directed = TRUE)
 ```
 
 3. Step 3: extract the parameters by windows and plot them out
 ```{r}
 # extract the parameters
-ddmw_send_1cp_param_diff.all <- 1
-for (i in 1:length(model_ddwin_1cp_diff.all)) {
-  ddmw_send_1cp_param_diff.all[i] <- model_ddwin_1cp_diff.all[[i]][["coefficients"]][["send.z"]]
+ddmw_send_param <- 1
+for (i in 34:length(model_ddwin)) {
+  ddmw_send_param[i] <- model_ddwin[[i]][["coefficients"]][["inertia"]]
 }
-plot(ddmw_send_1cp_param_diff.all, type = "lm") # plot the movement of parameter
+plot(ddmw_send_param, type = "lm") # plot the movement of parameter
 ```
 
 ```{r}
