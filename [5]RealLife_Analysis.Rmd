@@ -15,7 +15,8 @@ set.seed(9252568)
 
 ```{r}
 # Load data using load():
-load("RealLife_Data/Merged_ALL_parts_Apollo.rdata")
+#load("RealLife_Data/Merged_ALL_parts_Apollo.rdata")
+Apollo13 <- read.csv("RealLife_Data/Apollo13.csv", sep =';')
 ```
 
 
