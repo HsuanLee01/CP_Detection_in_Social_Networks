@@ -13,11 +13,280 @@ library(changepoint) # package for PELT, BS
 set.seed(9252568)
 ```
 
+# Load the data
+
 ```{r}
 # Load data using load():
 #load("RealLife_Data/Merged_ALL_parts_Apollo.rdata")
 Apollo13 <- read.csv("RealLife_Data/Apollo13.csv", sep =';')
 ```
+
+## Represent the names of actors by number
+```{r}
+Apollo13$sender <- as.numeric(c("CDR" = "1", 
+                                "CAPCOM" = "2", 
+                                "FLIGHT" = "3", 
+                                "EECOM" = "4", 
+                                "GNC" = "5", 
+                                "INCO" = "6", 
+                                "CMP" = "7", 
+                                "CONTROL" = "8", 
+                                "TELMU" = "9", 
+                                "GUIDO" = "10", 
+                                "LMP" = "11", 
+                                "FDO" = "12", 
+                                "NETWORK" = "13", 
+                                "AFD" = "14", 
+                                "RECOVERY" = "15", 
+                                "FAO" = "16", 
+                                "RETRO" = "17", 
+                                "PROCEDURES" = "18", 
+                                "SURGEON" = "19", 
+                                "SC" = "20", 
+                                "MS" = "21", 
+                                "MCC" = "22", 
+                                "CT" = "23", 
+                                "IWO" = "24", 
+                                "R" = "25", 
+                                "P" = "26", 
+                                "ARIA" = "27", 
+                                "R1" = "28", 
+                                "S" = "29")[Apollo13$sender])
+```
+
+```{r}
+Apollo13$receiver <- as.numeric(c("CDR" = "1", 
+                                  "CAPCOM" = "2", 
+                                  "FLIGHT" = "3", 
+                                  "EECOM" = "4", 
+                                  "GNC" = "5", 
+                                  "INCO" = "6", 
+                                  "CMP" = "7", 
+                                  "CONTROL" = "8", 
+                                  "TELMU" = "9", 
+                                  "GUIDO" = "10", 
+                                  "LMP" = "11", 
+                                  "FDO" = "12", 
+                                  "NETWORK" = "13", 
+                                  "AFD" = "14", 
+                                  "RECOVERY" = "15", 
+                                  "FAO" = "16", 
+                                  "RETRO" = "17", 
+                                  "PROCEDURES" = "18", 
+                                  "SURGEON" = "19", 
+                                  "SC" = "20", 
+                                  "MS" = "21", 
+                                  "MCC" = "22", 
+                                  "CT" = "23", 
+                                  "IWO" = "24", 
+                                  "R" = "25", 
+                                  "P" = "26", 
+                                  "ARIA" = "27", 
+                                  "R1" = "28", 
+                                  "S" = "29", 
+                                  "ALL" = "30")[Apollo13$receiver])
+```
+
+## Remove the messages, only leave time, and actors information
+```{r}
+# remove messages column
+Apollo13 <- Apollo13[,-3]
+
+# rename the columns
+colnames(Apollo13) <- c("time", "actor1", "actor2")
+```
+
+## We only take first 6500 events into account, as the CP we known is at 42424.8 second, we dont need the whole dataset
+```{r}
+#Apollo13 <- Apollo13[1:6500, ]
+```
+
+# Fit the REM
+
+## Step 1: Assign the formula that indicates which effects shoould contain in the model
+```{r}
+formula <- ~ 1 + 
+  remstats::inertia(scaling = "std") +
+  remstats::outdegreeSender(scaling= "std") +
+  remstats::reciprocity(scaling = "std") +
+  remstats::totaldegreeSender(scaling = "std") +
+  remstats::psABBA(consider_type = FALSE) +
+  remstats::psABXA(consider_type = FALSE) +
+  remstats::psABBY(consider_type = FALSE)
+
+covar <- data.frame(id = 1:30, time = 0)
+```
+
+## Step 2: Compute the statistics
+```{r}
+out <- remstats(tie_effects = formula, edgelist = Apollo13, actors = 30)
+stat <- out[["statistics"]] # extract the statistics from the list
+```
+
+## Step 3: Fit the windows on the REH
+
+Compute the optimal lengths of the windows (data-driven MW)
+```{r}
+# obtain data-driven window widths
+#ddwin <- ddwindows(edgelist = Apollo13, tie_effects = formula, mintime = 1000, 
+#                   covar = covar)
+```
+
+Fit the REM by windows
+```{r}
+#  fits a moving window relational event model
+#model_ddwin <- MWrem(windows = ddwin$windows, edgelist = Apollo13, 
+#		                 stats = stat, actors = covar$id, directed = TRUE)
+```
+
+-----------------
+Fit the fix MWREM
+```{r}
+# maximum time point of each iteration of REH
+tau <- max(Apollo13$time)
+
+# specify the length of the window
+windows <- REHdynamics::createwindows(1000, tau, overlap = 2/3)
+
+# fit to the REM model
+model_fixwin <- REHdynamics::MWrem(windows, edgelist = Apollo13, 
+                                   stats = stat,
+                                   actors = covar$id, directed = TRUE, 
+                                   method = "MLE", model = "tie", ncores = 2)
+```
+
+dont know why, i can only use `inertia` and `outdegreeSender`
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# extract the parameters
+fixmw_ine_param <- 1
+for (i in 34:length(model_fixwin)) {
+  fixmw_ine_param[i] <- model_fixwin[[i]][["coefficients"]][["inertia"]]
+}
+plot(fixmw_ine_param, type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_param <- 1
+for (i in 34:length(model_fixwin)) {
+  fixmw_out_param[i] <- model_fixwin[[i]][["coefficients"]][["outdegreeSender"]]
+}
+plot(fixmw_out_param, type = "point") # plot the movement of parameter
+```
+
+
+
+
+
+
+
+
+
+
+
+Extract the parameters by windows and plot them out
+```{r}
+# extract the parameters
+ddmw_send_param <- 1
+for (i in 34:length(model_ddwin)) {
+  ddmw_send_param[i] <- model_ddwin[[i]][["coefficients"]][["inertia"]]
+}
+plot(ddmw_send_param, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+ddmw_diff_1cp_param_diff.all <- 1
+for (i in 1:length(model_ddwin_1cp_diff.all)) {
+  ddmw_diff_1cp_param_diff.all[i] <- model_ddwin_1cp_diff.all[[i]][["coefficients"]][["difference.z"]]
+}
+plot(ddmw_diff_1cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+ddmw_ine_1cp_param_diff.all <- 1
+for (i in 1:length(model_ddwin_1cp_diff.all)) {
+  ddmw_ine_1cp_param_diff.all[i] <- model_ddwin_1cp_diff.all[[i]][["coefficients"]][["inertia"]]
+}
+plot(ddmw_ine_1cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+ddmw_reci_1cp_param_diff.all <- 1
+for (i in 1:length(model_ddwin_1cp_diff.all)) {
+  ddmw_reci_1cp_param_diff.all[i] <- model_ddwin_1cp_diff.all[[i]][["coefficients"]][["reciprocity"]]
+}
+plot(ddmw_reci_1cp_param_diff.all, type = "lm") # plot the movement of parameter
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# maximum time point of each iteration of REH
+tau <- max(Apollo13$time)
+
+# specify the length of the window
+windows <- REHdynamics::createwindows(1000, tau, overlap = 2/3)
+
+# fit to the REM model
+model_fixwin <- REHdynamics::MWrem(windows, edgelist = Apollo13, 
+                                   stats = stat,
+                                   actors = covar$id, directed = TRUE, 
+                                   method = "MLE", model = "tie", ncores = 2)
+```
+
+```{r}
+Apollo13$actor1 <- as.numeric(Apollo13$actor1)
+Apollo13$actor2 <- as.numeric(Apollo13$actor2)
+
+sort(unique(Apollo13$actor1))
+sort(unique(Apollo13$actor2))
+```
+
+
+
+
+
+
+
+
+
 
 
 
@@ -228,7 +497,16 @@ for (i in 1:length(model_ddwin_1cp_diff.all)) {
 }
 plot(ddmw_reci_1cp_param_diff.all, type = "lm") # plot the movement of parameter
 ```
-```
+
+
+
+
+
+
+
+
+
+
 
 
 
