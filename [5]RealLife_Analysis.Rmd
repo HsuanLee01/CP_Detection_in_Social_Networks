@@ -53,19 +53,55 @@ stat <- out[["statistics"]] # extract the statistics from the list
 Compute the optimal lengths of the windows (data-driven MW)
 ```{r}
 # obtain data-driven window widths
-ddwin <- ddwindows(edgelist = Apollo.13, tie_effects = formula, mintime = 1000, 
-                   covar = covar)
+#ddwin <- ddwindows(edgelist = Apollo.13, tie_effects = formula, mintime = 1000, 
+#                   covar = covar)
 ```
 
 Save the DDMW, as it takes long time to run (15 hours)
 ```{r}
-saveRDS(object = ddwin, file = "Apollo.13_ddwin.RDS")
+#saveRDS(object = ddwin, file = "Apollo.13_ddwin.RDS")
 ```
 
 Read the DDMW file
 ```{r}
 ddmw <- readRDS("Apollo.13_ddwin.RDS")
 ```
+
+Extract the windows
+```{r}
+
+
+
+
+
+
+ddmw[["options"]][[i]][["begin"]][1]
+ddmw[["options"]][[i]][["end"]][length(ddmw[["options"]][[i]][["end"]])]
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 Fit the REM by windows
 ```{r}
@@ -77,6 +113,8 @@ model_ddwin <- MWrem(windows = ddmw$windows, edgelist = Apollo.13,
 -----------------
 Fit the fix MWREM
 ```{r}
+# changepoint 201321 second
+
 # maximum time point of each iteration of REH
 tau <- max(Apollo.13$time)
 
@@ -90,9 +128,158 @@ model_fixwin <- REHdynamics::MWrem(windows, edgelist = Apollo.13,
                                    method = "MLE", model = "tie", ncores = 2)
 ```
 
+```{r}
+# extract the parameters
+fixmw_ine_param <- 1
+for (i in 593:length(model_fixwin)) {
+  fixmw_ine_param[i] <- model_fixwin[[i]][["coefficients"]][["inertia"]]
+}
+plot(fixmw_ine_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_out_param <- 1
+for (i in 593:length(model_fixwin)) {
+  fixmw_out_param[i] <- model_fixwin[[i]][["coefficients"]][["outdegreeSender"]]
+}
+plot(fixmw_out_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_rec_param <- 1
+for (i in 593:length(model_fixwin)) {
+  fixmw_rec_param[i] <- model_fixwin[[i]][["coefficients"]][["reciprocity"]]
+}
+plot(fixmw_rec_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_totSend_param <- 1
+for (i in 593:length(model_fixwin)) {
+  fixmw_totSend_param[i] <- model_fixwin[[i]][["coefficients"]][["totaldegreeSender"]]
+}
+plot(fixmw_totSend_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_psABBA_param <- 1
+for (i in 593:length(model_fixwin)) {
+  fixmw_psABBA_param[i] <- model_fixwin[[i]][["coefficients"]][["psABBA"]]
+}
+plot(fixmw_psABBA_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_psABXA_param <- 1
+for (i in 593:length(model_fixwin)) {
+  fixmw_psABXA_param[i] <- model_fixwin[[i]][["coefficients"]][["psABXA"]]
+}
+plot(fixmw_psABXA_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
+```
+
+```{r}
+# extract the parameters
+fixmw_psABBY_param <- 1
+for (i in 593:length(model_fixwin)) {
+  fixmw_psABBY_param[i] <- model_fixwin[[i]][["coefficients"]][["psABBY"]]
+}
+plot(fixmw_psABBY_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
+```
 
 
 
+
+
+
+```{r}
+PELT_fixmw_ine <- cpt.meanvar(fixmw_ine_param[593:length(model_fixwin)], method="PELT")
+
+PELT_fixmw_ine@cpts[-length(PELT_fixmw_ine@cpts)] + 593
+
+```
+
+```{r}
+PELT_fixmw_out <- cpt.meanvar(fixmw_out_param[593:length(model_fixwin)], method="PELT")
+
+PELT_fixmw_out@cpts[-length(PELT_fixmw_out@cpts)] + 593
+```
+
+```{r}
+PELT_fixmw_rec <- cpt.meanvar(fixmw_rec_param[593:length(model_fixwin)], method="PELT")
+
+PELT_fixmw_rec@cpts[-length(PELT_fixmw_rec@cpts)] + 593
+```
+
+```{r}
+PELT_fixmw_totSend <- cpt.meanvar(fixmw_totSend_param[593:length(model_fixwin)], method="PELT")
+
+PELT_fixmw_totSend@cpts[-length(PELT_fixmw_totSend@cpts)] + 593
+```
+
+```{r}
+PELT_fixmw_psABBA <- cpt.meanvar(fixmw_psABBA_param[593:length(model_fixwin)], method="PELT")
+
+PELT_fixmw_psABBA@cpts[-length(PELT_fixmw_psABBA@cpts)] + 593
+```
+
+```{r}
+PELT_fixmw_psABXA <- cpt.meanvar(fixmw_psABXA_param[593:length(model_fixwin)], method="PELT")
+
+PELT_fixmw_psABXA@cpts[-length(PELT_fixmw_psABXA@cpts)] + 593
+```
+
+```{r}
+PELT_fixmw_psABBY <- cpt.meanvar(fixmw_psABBY_param[593:length(model_fixwin)], method="PELT")
+
+PELT_fixmw_psABBY@cpts[-length(PELT_fixmw_psABBY@cpts)] + 593
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+BOCD_fixmw_ine_param <- onlineCPD(fixmw_ine_param[593:length(model_fixwin)], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+
+locat_BOCD_ine <- BOCD_fixmw_ine_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_ine <- locat_BOCD_ine[-1])
+
+plot(BOCD_fixmw_ine_param)
+```
+
+```{r}
+BOCD_fixmw_out_param <- onlineCPD(fixmw_out_param[593:length(model_fixwin)], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+
+locat_BOCD_out <- BOCD_fixmw_out_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_out <- locat_BOCD_out[-1])
+
+plot(BOCD_fixmw_out_param)
+```
 
 
 
@@ -312,7 +499,7 @@ plot(fixmw_ine_param, type = "point") # plot the movement of parameter
 ```{r}
 # extract the parameters
 fixmw_out_param <- 1
-for (i in 34:length(model_fixwin)) {
+for (i in 1:length(model_fixwin)) {
   fixmw_out_param[i] <- model_fixwin[[i]][["coefficients"]][["outdegreeSender"]]
 }
 plot(fixmw_out_param, type = "point") # plot the movement of parameter
