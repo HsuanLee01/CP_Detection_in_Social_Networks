@@ -70,11 +70,6 @@ ddmw <- readRDS("Apollo.13_ddwin.RDS")
 Extract the windows
 ```{r}
 
-
-
-
-
-
 ddmw[["options"]][[i]][["begin"]][1]
 ddmw[["options"]][[i]][["end"]][length(ddmw[["options"]][[i]][["end"]])]
 ```
