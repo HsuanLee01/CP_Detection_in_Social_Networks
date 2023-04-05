@@ -4733,7 +4733,7 @@ con_mat_PPV %>%
   ggplot(aes(x = Window, y = PPV, color = CPD)) +
   geom_line(size = 0.8) +
   scale_color_brewer(palette="Set1") +
-  labs(title = "Changepoint Detection Performance", x = "Window Size", y = "True Positive Rate") +
+  labs(title = "Changepoint Detection Performance", x = "Window Size", y = "Predictive Positive Value") +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5, family = "serif"),
         axis.text = element_text(family = "serif"),
@@ -4741,3 +4741,16 @@ con_mat_PPV %>%
         legend.text = element_text(family = "serif"),
         legend.title = element_text(family = "serif"))
 ```
+
+
+1. compare the time they spent
+
+2. change the overlap to see if msds are still negative or not -> or how could we explain that
+(how many dataset they detect the cps before true one)
+
+3. start writing right now -> focus more on the main points, not too detailed !!!!!
+
+4. systematic change the parameters
+
+5. plot things, and tables -> its clearer!!!!!! -> also create the plot for different scenarios show in the same plot
+

@@ -17,7 +17,140 @@ set.seed(9252568)
 
 ```{r}
 # Load data using load():
-#load("RealLife_Data/Merged_ALL_parts_Apollo.rdata")
+load("RealLife_Data/Merged_ALL_parts_Apollo.rdata")
+
+# change the name of dataset, only leave time and actors infomation
+Apollo.13 <- Merged_ALL_parts_Apollo[, -c(4,5)]
+
+# change the names of columns
+colnames(Apollo.13) <- c("time", "actor1", "actor2")
+```
+
+# Fit the REM
+
+## Step 1: Assign the formula that indicates which effects shoould contain in the model
+```{r}
+formula <- ~ 1 + 
+  remstats::inertia(scaling = "std") +
+  remstats::outdegreeSender(scaling= "std") +
+  remstats::reciprocity(scaling = "std") +
+  remstats::totaldegreeSender(scaling = "std") +
+  remstats::psABBA(consider_type = FALSE) +
+  remstats::psABXA(consider_type = FALSE) +
+  remstats::psABBY(consider_type = FALSE)
+
+covar <- data.frame(id = 1:19, time = 0)
+```
+
+## Step 2: Compute the statistics
+```{r}
+out <- remstats(tie_effects = formula, edgelist = Apollo.13, actors = 19)
+stat <- out[["statistics"]] # extract the statistics from the list
+```
+
+## Step 3: Fit the windows on the REH
+
+Compute the optimal lengths of the windows (data-driven MW)
+```{r}
+# obtain data-driven window widths
+ddwin <- ddwindows(edgelist = Apollo.13, tie_effects = formula, mintime = 1000, 
+                   covar = covar)
+```
+
+Save the DDMW, as it takes long time to run (15 hours)
+```{r}
+saveRDS(object = ddwin, file = "Apollo.13_ddwin.RDS")
+```
+
+Read the DDMW file
+```{r}
+ddmw <- readRDS("Apollo.13_ddwin.RDS")
+```
+
+Fit the REM by windows
+```{r}
+# fits a moving window relational event model
+model_ddwin <- MWrem(windows = ddmw$windows, edgelist = Apollo.13, 
+		                 stats = stat, actors = covar$id, directed = TRUE)
+```
+
+-----------------
+Fit the fix MWREM
+```{r}
+# maximum time point of each iteration of REH
+tau <- max(Apollo.13$time)
+
+# specify the length of the window
+windows <- REHdynamics::createwindows(1000, tau, overlap = 2/3)
+
+# fit to the REM model
+model_fixwin <- REHdynamics::MWrem(windows, edgelist = Apollo.13, 
+                                   stats = stat,
+                                   actors = covar$id, directed = TRUE, 
+                                   method = "MLE", model = "tie", ncores = 2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+# Load data using load():
+load("RealLife_Data/Merged_ALL_parts_Apollo.rdata")
+
 Apollo13 <- read.csv("RealLife_Data/Apollo13.csv", sep =';')
 ```
 
@@ -155,7 +288,7 @@ model_fixwin <- REHdynamics::MWrem(windows, edgelist = Apollo13,
                                    method = "MLE", model = "tie", ncores = 2)
 ```
 
-dont know why, i can only use `inertia` and `outdegreeSender`
+Don't know why, i can only use `inertia` and `outdegreeSender`
 
 
 
