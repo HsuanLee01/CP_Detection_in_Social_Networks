@@ -238,18 +238,6 @@ PELT_fixmw_psABBY@cpts[-length(PELT_fixmw_psABBY@cpts)] + 593
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 ```{r}
 BOCD_fixmw_ine_param <- onlineCPD(fixmw_ine_param[593:length(model_fixwin)], 
                                             getR = T, 
@@ -276,15 +264,70 @@ locat_BOCD_out <- BOCD_fixmw_out_param[["changepoint_lists"]][["maxCPs"]][[1]] +
 plot(BOCD_fixmw_out_param)
 ```
 
+```{r}
+BOCD_fixmw_rec_param <- onlineCPD(fixmw_rec_param[593:length(model_fixwin)], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
 
+locat_BOCD_rec <- BOCD_fixmw_rec_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_rec <- locat_BOCD_rec[-1])
 
+plot(BOCD_fixmw_rec_param)
+```
 
+```{r}
+BOCD_fixmw_totSend_param <- onlineCPD(fixmw_totSend_param[593:length(model_fixwin)], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
 
+locat_BOCD_totSend <- BOCD_fixmw_totSend_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_totSend <- locat_BOCD_totSend[-1])
 
+plot(BOCD_fixmw_totSend_param)
+```
 
+```{r}
+BOCD_fixmw_psABBA_param <- onlineCPD(fixmw_psABBA_param[593:length(model_fixwin)], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
 
+locat_BOCD_psABBA <- BOCD_fixmw_psABBA_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_psABBA <- locat_BOCD_psABBA[-1])
 
+plot(BOCD_fixmw_psABBA_param)
+```
 
+```{r}
+BOCD_fixmw_psABXA_param <- onlineCPD(fixmw_psABXA_param[593:length(model_fixwin)], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+
+locat_BOCD_psABXA <- BOCD_fixmw_psABXA_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_psABXA <- locat_BOCD_psABXA[-1])
+
+plot(BOCD_fixmw_psABXA_param)
+```
+
+```{r}
+BOCD_fixmw_psABBY_param <- onlineCPD(fixmw_psABBY_param[593:length(model_fixwin)], 
+                                            getR = T, 
+                                            optionalOutputs = T, 
+                                            truncRlim = 10^-4)
+
+locat_BOCD_psABBY <- BOCD_fixmw_psABBY_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+# remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
+(locat_BOCD_psABBY <- locat_BOCD_psABBY[-1])
+
+plot(BOCD_fixmw_psABBY_param)
+```
 
 
 
