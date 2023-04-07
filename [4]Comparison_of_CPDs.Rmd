@@ -4687,7 +4687,9 @@ BS_MSD <- c(unlist(MSD_BS_diff_1cp_diff.all$MSD),
 
 ```{r}
 library(tidyverse)
-windowsFonts()
+library(patchwork) # combine many plots into one
+library(cowplot)
+windowsFonts() # to know the in built font I have
 ```
 
 ## Change of TPR with increase window differences 
@@ -4714,6 +4716,24 @@ con_mat_TPR %>%
         axis.title = element_text(family = "serif"),
         legend.text = element_text(family = "serif"),
         legend.title = element_text(family = "serif"))
+
+ggplot(con_mat_TPR, aes(x = Window, y = TPR, color = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1") +
+  labs(title = "Changepoint Detection Performance",
+       x = "Window Size",
+       y = "True Positive Rate") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
 ```
 
 ## Change of PPV with increase window differences
@@ -4733,14 +4753,87 @@ con_mat_PPV %>%
   ggplot(aes(x = Window, y = PPV, color = CPD)) +
   geom_line(size = 0.8) +
   scale_color_brewer(palette="Set1") +
-  labs(title = "Changepoint Detection Performance", x = "Window Size", y = "Predictive Positive Value") +
+  labs(title = "Changepoint Detection Performance", x = "Window Size", y = "Positive Predictive Value") +
   theme_classic() +
   theme(plot.title = element_text(hjust = 0.5, family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
         legend.text = element_text(family = "serif"),
         legend.title = element_text(family = "serif"))
+
+ggplot(con_mat_PPV, aes(x = Window, y = PPV, color = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1") +
+  labs(title = "Changepoint Detection Performance",
+       x = "Window Size",
+       y = "Positive Predictive Value") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
 ```
+
+```{r}
+p1 <- ggplot(con_mat_PPV, aes(x = Window, y = PPV, color = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1", guide = "legend") +
+  labs(x = "TP Window Range",
+       y = "Positive Predictive Value") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+
+p2 <- ggplot(con_mat_TPR, aes(x = Window, y = TPR, color = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1", guide = "none") +
+  labs(x = "TP Window Range",
+       y = "True Positive Rate") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+
+p2 + p1 + plot_layout(ncol = 2, widths = c(1, 1)) +
+  theme(legend.position = "right")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 1. compare the time they spent
@@ -4753,4 +4846,30 @@ con_mat_PPV %>%
 4. systematic change the parameters
 
 5. plot things, and tables -> its clearer!!!!!! -> also create the plot for different scenarios show in the same plot
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
