@@ -1958,27 +1958,27 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Inertia
 ```{r}
-(MSE_BOCD_ine_1cp <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine, 
+MSE_BOCD_ine_1cp <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine, 
                              true_CPs = 57, 
-                             range = 3))
+                             range = 3)
 ```
 
 ### PELT
 
 - Inertia
 ```{r}
-(MSE_PELT_ine_1cp <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine, 
+MSE_PELT_ine_1cp <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine, 
                              true_CPs = 57, 
-                             range = 3))
+                             range = 3)
 ```
 
 ### BS
 
 - Inertia
 ```{r}
-(MSE_BS_ine_1cp <- MSE_CPD(pred_CPs = locat_BS_1cp_ine, 
+MSE_BS_ine_1cp <- MSE_CPD(pred_CPs = locat_BS_1cp_ine, 
                              true_CPs = 57, 
-                             range = 3))
+                             range = 3)
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -1987,90 +1987,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSE_BOCD_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_send_same.all, 
+MSE_BOCD_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BOCD_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_diff_same.all,
+MSE_BOCD_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BOCD_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine_same.all, 
+MSE_BOCD_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSE_BOCD_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_out_same.all, 
+MSE_BOCD_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSE_PELT_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_send_same.all, 
+MSE_PELT_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_PELT_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_diff_same.all,
+MSE_PELT_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_PELT_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine_same.all, 
+MSE_PELT_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_PELT_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_out_same.all, 
+MSE_PELT_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSE_BS_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_send_same.all, 
+MSE_BS_send_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_send_same.all, 
                                      true_CPs = 57,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BS_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_diff_same.all,
+MSE_BS_diff_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_diff_same.all,
                                      true_CPs = 57,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BS_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_ine_same.all, 
+MSE_BS_ine_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_ine_same.all, 
                                     true_CPs = 57, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_BS_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_out_same.all, 
+MSE_BS_out_1cp_same.all <- MSE_CPD(pred_CPs = locat_BS_1cp_out_same.all, 
                                     true_CPs = 57, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 **The REH with 1 CPs in all effects at different locations**
@@ -2079,90 +2079,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSE_BOCD_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_send_diff.all, 
+MSE_BOCD_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BOCD_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_diff_diff.all,
+MSE_BOCD_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BOCD_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
+MSE_BOCD_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSE_BOCD_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_out_diff.all, 
+MSE_BOCD_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSE_PELT_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_send_diff.all, 
+MSE_PELT_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_PELT_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_diff_diff.all,
+MSE_PELT_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_PELT_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine_diff.all, 
+MSE_PELT_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_PELT_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_out_diff.all, 
+MSE_PELT_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSE_BS_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_send_diff.all, 
+MSE_BS_send_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_send_diff.all, 
                                      true_CPs = 32,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BS_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_diff_diff.all,
+MSE_BS_diff_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_diff_diff.all,
                                      true_CPs = 47,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BS_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_ine_diff.all, 
+MSE_BS_ine_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_ine_diff.all, 
                                     true_CPs = 19, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_BS_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_out_diff.all, 
+MSE_BS_out_1cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_1cp_out_diff.all, 
                                     true_CPs = 57, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 **The REH with two CPs in inertia**
@@ -2171,27 +2171,27 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Inertia
 ```{r}
-(MSE_BOCD_ine_2cp <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine, 
+MSE_BOCD_ine_2cp <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 3))
+                             range = 3)
 ```
 
 ### PELT
 
 - Inertia
 ```{r}
-(MSE_PELT_ine_2cp <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine, 
+MSE_PELT_ine_2cp <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 3))
+                             range = 3)
 ```
 
 ### BS
 
 - Inertia
 ```{r}
-(MSE_BS_ine_2cp <- MSE_CPD(pred_CPs = locat_BS_2cp_ine, 
+MSE_BS_ine_2cp <- MSE_CPD(pred_CPs = locat_BS_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 3))
+                             range = 3)
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -2200,90 +2200,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSE_BOCD_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_send_same.all, 
+MSE_BOCD_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BOCD_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_diff_same.all,
+MSE_BOCD_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BOCD_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine_same.all, 
+MSE_BOCD_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSE_BOCD_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_out_same.all, 
+MSE_BOCD_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSE_PELT_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_send_same.all, 
+MSE_PELT_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_PELT_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_diff_same.all,
+MSE_PELT_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_PELT_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine_same.all, 
+MSE_PELT_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_PELT_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_out_same.all, 
+MSE_PELT_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSE_BS_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_send_same.all, 
+MSE_BS_send_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_send_same.all, 
                                      true_CPs = c(25, 80),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BS_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_diff_same.all,
+MSE_BS_diff_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_diff_same.all,
                                      true_CPs = c(25, 80),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BS_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_ine_same.all, 
+MSE_BS_ine_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_ine_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_BS_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_out_same.all, 
+MSE_BS_out_2cp_same.all <- MSE_CPD(pred_CPs = locat_BS_2cp_out_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 **The REH with 2 CPs in all effects at different locations**
@@ -2292,90 +2292,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSE_BOCD_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_send_diff.all, 
+MSE_BOCD_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BOCD_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_diff_diff.all,
+MSE_BOCD_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BOCD_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
+MSE_BOCD_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSE_BOCD_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_out_diff.all, 
+MSE_BOCD_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BOCD_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSE_PELT_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_send_diff.all, 
+MSE_PELT_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_PELT_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_diff_diff.all,
+MSE_PELT_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_PELT_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine_diff.all, 
+MSE_PELT_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_PELT_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_out_diff.all, 
+MSE_PELT_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_PELT_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSE_BS_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_send_diff.all, 
+MSE_BS_send_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_send_diff.all, 
                                      true_CPs = c(32, 66),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSE_BS_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_diff_diff.all,
+MSE_BS_diff_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_diff_diff.all,
                                      true_CPs = c(28, 61),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSE_BS_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_ine_diff.all, 
+MSE_BS_ine_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_ine_diff.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSE_BS_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_out_diff.all, 
+MSE_BS_out_2cp_diff.all <- MSE_CPD(pred_CPs = locat_BS_2cp_out_diff.all, 
                                     true_CPs = c(39, 81), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 ## Mean Sign Difference
@@ -2386,27 +2386,27 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Inertia
 ```{r}
-(MSD_BOCD_ine_1cp <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine, 
+MSD_BOCD_ine_1cp <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine, 
                              true_CPs = 57, 
-                             range = 3))
+                             range = 3)
 ```
 
 ### PELT
 
 - Inertia
 ```{r}
-(MSD_PELT_ine_1cp <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine, 
+MSD_PELT_ine_1cp <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine, 
                              true_CPs = 57, 
-                             range = 3))
+                             range = 3)
 ```
 
 ### BS
 
 - Inertia
 ```{r}
-(MSD_BS_ine_1cp <- MSD_CPD(pred_CPs = locat_BS_1cp_ine, 
+MSD_BS_ine_1cp <- MSD_CPD(pred_CPs = locat_BS_1cp_ine, 
                              true_CPs = 57, 
-                             range = 3))
+                             range = 3)
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -2415,90 +2415,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSD_BOCD_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_send_same.all, 
+MSD_BOCD_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BOCD_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_diff_same.all,
+MSD_BOCD_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BOCD_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine_same.all, 
+MSD_BOCD_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSD_BOCD_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_out_same.all, 
+MSD_BOCD_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSD_PELT_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_send_same.all, 
+MSD_PELT_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_send_same.all, 
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_PELT_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_diff_same.all,
+MSD_PELT_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_diff_same.all,
                                        true_CPs = 57,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_PELT_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine_same.all, 
+MSD_PELT_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_PELT_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_out_same.all, 
+MSD_PELT_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_out_same.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSD_BS_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_send_same.all, 
+MSD_BS_send_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_send_same.all, 
                                      true_CPs = 57,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BS_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_diff_same.all,
+MSD_BS_diff_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_diff_same.all,
                                      true_CPs = 57,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BS_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_ine_same.all, 
+MSD_BS_ine_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_ine_same.all, 
                                     true_CPs = 57, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_BS_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_out_same.all, 
+MSD_BS_out_1cp_same.all <- MSD_CPD(pred_CPs = locat_BS_1cp_out_same.all, 
                                     true_CPs = 57, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 **The REH with 1 CPs in all effects at different locations**
@@ -2507,90 +2507,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSD_BOCD_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_send_diff.all, 
+MSD_BOCD_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BOCD_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_diff_diff.all,
+MSD_BOCD_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BOCD_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
+MSD_BOCD_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSD_BOCD_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_out_diff.all, 
+MSD_BOCD_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSD_PELT_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_send_diff.all, 
+MSD_PELT_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_send_diff.all, 
                                        true_CPs = 32,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_PELT_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_diff_diff.all,
+MSD_PELT_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_diff_diff.all,
                                        true_CPs = 47,
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_PELT_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine_diff.all, 
+MSD_PELT_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_ine_diff.all, 
                                       true_CPs = 19, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_PELT_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_out_diff.all, 
+MSD_PELT_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_1cp_out_diff.all, 
                                       true_CPs = 57, 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSD_BS_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_send_diff.all, 
+MSD_BS_send_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_send_diff.all, 
                                      true_CPs = 32,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BS_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_diff_diff.all,
+MSD_BS_diff_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_diff_diff.all,
                                      true_CPs = 47,
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BS_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_ine_diff.all, 
+MSD_BS_ine_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_ine_diff.all, 
                                     true_CPs = 19, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_BS_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_out_diff.all, 
+MSD_BS_out_1cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_1cp_out_diff.all, 
                                     true_CPs = 57, 
-                                    range = 3))
+                                    range = 3)
 ```
 
 **The REH with two CPs in inertia**
@@ -2599,27 +2599,27 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Inertia
 ```{r}
-(MSD_BOCD_ine_2cp <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine, 
+MSD_BOCD_ine_2cp <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 3))
+                             range = 3)
 ```
 
 ### PELT
 
 - Inertia
 ```{r}
-(MSD_PELT_ine_2cp <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine, 
+MSD_PELT_ine_2cp <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 3))
+                             range = 3)
 ```
 
 ### BS
 
 - Inertia
 ```{r}
-(MSD_BS_ine_2cp <- MSD_CPD(pred_CPs = locat_BS_2cp_ine, 
+MSD_BS_ine_2cp <- MSD_CPD(pred_CPs = locat_BS_2cp_ine, 
                              true_CPs = c(25, 80), 
-                             range = 3))
+                             range = 3)
 ```
 
 **The REH with 1 CPs in all effects at same location**
@@ -2628,90 +2628,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSD_BOCD_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_send_same.all, 
+MSD_BOCD_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BOCD_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_diff_same.all,
+MSD_BOCD_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BOCD_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine_same.all, 
+MSD_BOCD_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSD_BOCD_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_out_same.all, 
+MSD_BOCD_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSD_PELT_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_send_same.all, 
+MSD_PELT_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_send_same.all, 
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_PELT_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_diff_same.all,
+MSD_PELT_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_diff_same.all,
                                        true_CPs = c(25, 80),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_PELT_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine_same.all, 
+MSD_PELT_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_PELT_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_out_same.all, 
+MSD_PELT_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_out_same.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSD_BS_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_send_same.all, 
+MSD_BS_send_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_send_same.all, 
                                      true_CPs = c(25, 80),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BS_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_diff_same.all,
+MSD_BS_diff_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_diff_same.all,
                                      true_CPs = c(25, 80),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BS_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_ine_same.all, 
+MSD_BS_ine_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_ine_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_BS_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_out_same.all, 
+MSD_BS_out_2cp_same.all <- MSD_CPD(pred_CPs = locat_BS_2cp_out_same.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 **The REH with 2 CPs in all effects at different locations**
@@ -2720,90 +2720,90 @@ Conf_Mat_BS_out_2cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_2cp_out_dif
 
 - Sender Effect
 ```{r}
-(MSD_BOCD_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_send_diff.all, 
+MSD_BOCD_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BOCD_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_diff_diff.all,
+MSD_BOCD_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BOCD_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
+MSD_BOCD_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender 
 ```{r}
-(MSD_BOCD_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_out_diff.all, 
+MSD_BOCD_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BOCD_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### PELT
 
 - Sender Effect
 ```{r}
-(MSD_PELT_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_send_diff.all, 
+MSD_PELT_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_send_diff.all, 
                                        true_CPs = c(32, 66),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_PELT_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_diff_diff.all,
+MSD_PELT_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_diff_diff.all,
                                        true_CPs = c(28, 61),
-                                       range = 3))
+                                       range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_PELT_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine_diff.all, 
+MSD_PELT_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_ine_diff.all, 
                                       true_CPs = c(25, 80), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_PELT_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_out_diff.all, 
+MSD_PELT_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_PELT_2cp_out_diff.all, 
                                       true_CPs = c(39, 81), 
-                                      range = 3))
+                                      range = 3)
 ```
 
 ### BS
 
 - Sender Effect
 ```{r}
-(MSD_BS_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_send_diff.all, 
+MSD_BS_send_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_send_diff.all, 
                                      true_CPs = c(32, 66),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Difference
 ```{r}
-(MSD_BS_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_diff_diff.all,
+MSD_BS_diff_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_diff_diff.all,
                                      true_CPs = c(28, 61),
-                                     range = 3))
+                                     range = 3)
 ```
 
 - Inertia
 ```{r}
-(MSD_BS_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_ine_diff.all, 
+MSD_BS_ine_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_ine_diff.all, 
                                     true_CPs = c(25, 80), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 - Outdegree Sender
 ```{r}
-(MSD_BS_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_out_diff.all, 
+MSD_BS_out_2cp_diff.all <- MSD_CPD(pred_CPs = locat_BS_2cp_out_diff.all, 
                                     true_CPs = c(39, 81), 
-                                    range = 3))
+                                    range = 3)
 ```
 
 # Comparison between CPDs for No CP scenarios
@@ -4683,7 +4683,12 @@ BS_MSD <- c(unlist(MSD_BS_diff_1cp_diff.all$MSD),
 (BS_MSD_tot <- mean(BS_MSD, na.rm = T))
 ```
 
-# Plot
+
+
+
+--------------------------------------------------------------------------------
+
+# Plots and Tables
 
 ```{r}
 library(tidyverse)
@@ -4692,7 +4697,9 @@ library(cowplot)
 windowsFonts() # to know the in built font I have
 ```
 
-## Change of TPR with increase window differences 
+## Total scenarios, Different accepted windows
+
+### Change of TPR with increase window differences 
 ```{r}
 con_mat_TPR <- data.frame("TPR" = c(BOCD_TPR_tot_1win, BOCD_TPR_tot_2win,
                                     BOCD_TPR_tot_3win, BOCD_TPR_tot_4win,
@@ -4704,18 +4711,6 @@ con_mat_TPR <- data.frame("TPR" = c(BOCD_TPR_tot_1win, BOCD_TPR_tot_2win,
                                     BS_TPR_tot_5win),
                           "CPD" = c(rep("BOCPD", 5), rep("PELT", 5), rep("BS", 5)),
                           "Window" = rep(1:5, times = 3))
-
-con_mat_TPR %>% 
-  ggplot(aes(x = Window, y = TPR, color = CPD)) +
-  geom_line(size = 0.8) +
-  scale_color_brewer(palette="Set1") +
-  labs(title = "Changepoint Detection Performance", x = "Window Size", y = "True Positive Rate") +
-  theme_classic() +
-  theme(plot.title = element_text(hjust = 0.5, family = "serif"),
-        axis.text = element_text(family = "serif"),
-        axis.title = element_text(family = "serif"),
-        legend.text = element_text(family = "serif"),
-        legend.title = element_text(family = "serif"))
 
 ggplot(con_mat_TPR, aes(x = Window, y = TPR, color = CPD)) +
   geom_line(size = 1) +
@@ -4736,7 +4731,7 @@ ggplot(con_mat_TPR, aes(x = Window, y = TPR, color = CPD)) +
         panel.background = element_blank())
 ```
 
-## Change of PPV with increase window differences
+### Change of PPV with increase window differences
 ```{r}
 con_mat_PPV <- data.frame("PPV" = c(BOCD_PPV_tot_1win, BOCD_PPV_tot_2win,
                                     BOCD_PPV_tot_3win, BOCD_PPV_tot_4win,
@@ -4748,18 +4743,6 @@ con_mat_PPV <- data.frame("PPV" = c(BOCD_PPV_tot_1win, BOCD_PPV_tot_2win,
                                     BS_PPV_tot_5win),
                           "CPD" = c(rep("BOCPD", 5), rep("PELT", 5), rep("BS", 5)),
                           "Window" = rep(1:5, times = 3))
-
-con_mat_PPV %>% 
-  ggplot(aes(x = Window, y = PPV, color = CPD)) +
-  geom_line(size = 0.8) +
-  scale_color_brewer(palette="Set1") +
-  labs(title = "Changepoint Detection Performance", x = "Window Size", y = "Positive Predictive Value") +
-  theme_classic() +
-  theme(plot.title = element_text(hjust = 0.5, family = "serif"),
-        axis.text = element_text(family = "serif"),
-        axis.title = element_text(family = "serif"),
-        legend.text = element_text(family = "serif"),
-        legend.title = element_text(family = "serif"))
 
 ggplot(con_mat_PPV, aes(x = Window, y = PPV, color = CPD)) +
   geom_line(size = 1) +
@@ -4780,6 +4763,7 @@ ggplot(con_mat_PPV, aes(x = Window, y = PPV, color = CPD)) +
         panel.background = element_blank())
 ```
 
+### Combine PPV and TPR with different acctepted windows plots into one plot
 ```{r}
 p1 <- ggplot(con_mat_PPV, aes(x = Window, y = PPV, color = CPD)) +
   geom_line(size = 1) +
@@ -4818,6 +4802,204 @@ p2 <- ggplot(con_mat_TPR, aes(x = Window, y = TPR, color = CPD)) +
 p2 + p1 + plot_layout(ncol = 2, widths = c(1, 1)) +
   theme(legend.position = "right")
 ```
+
+## For each scenario (3 windows)
+
+### Number of FP of each scenario for each CPD
+
+```{r}
+# add confusion matrix of no changpoint into the total confusion matrix as well
+# BOCD
+BOCD_conf_mat_tot_3win_comb <- rbind(BOCD_conf_mat_tot_3win, 
+                                     BOCD_conf_mat_ncp)
+BOCD_conf_mat_tot_3win_comb <- apply(BOCD_conf_mat_tot_3win_comb, 2, sum)
+# PELT
+PELT_conf_mat_tot_3win_comb <- rbind(PELT_conf_mat_tot_3win, 
+                                     PELT_conf_mat_ncp)
+PELT_conf_mat_tot_3win_comb <- apply(PELT_conf_mat_tot_3win_comb, 2, sum)
+# BS
+BS_conf_mat_tot_3win_comb <- rbind(BS_conf_mat_tot_3win, 
+                                   BS_conf_mat_ncp)
+BS_conf_mat_tot_3win_comb <- apply(BS_conf_mat_tot_3win_comb, 2, sum)
+
+# create a data with all info of FP at each scenario with different CPDs
+con_mat_all.scene <- data.frame("FP" = c(BOCD_conf_mat_1cp_3win[2],
+                                         BOCD_conf_mat_2cp_3win[2],
+                                         BOCD_conf_mat_ncp[2],
+                                         BOCD_conf_mat_tot_3win_comb[2],
+                                         PELT_conf_mat_1cp_3win[2],
+                                         PELT_conf_mat_2cp_3win[2],
+                                         PELT_conf_mat_ncp[2],
+                                         PELT_conf_mat_tot_3win_comb[2],
+                                         BS_conf_mat_1cp_3win[2],
+                                         BS_conf_mat_2cp_3win[2],
+                                         BS_conf_mat_ncp[2],
+                                         BS_conf_mat_tot_3win_comb[2]),
+                               "CPD" = c(rep("BOCPD", 4), rep("PELT", 4), rep("BS", 4)),
+                               "No.CPs" = rep(c("1", "2", "0", "total"), 3))
+
+ggplot(con_mat_all.scene, aes(x = No.CPs, y = FP, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1") +
+  labs(x = "No. of Changepoints",
+       y = "No. False Posituve") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+```
+
+### TPR of each scenario for each CPD
+
+```{r}
+# create a data with all info of FP at each scenario with different CPDs
+con_mat_TPR_all.scene <- data.frame("TPR" = c(BOCD_TPR_1cp_3win,
+                                              BOCD_TPR_2cp_3win,
+                                              BOCD_TPR_tot_3win,
+                                              PELT_TPR_1cp_3win,
+                                              PELT_TPR_2cp_3win,
+                                              PELT_TPR_tot_3win,
+                                              BS_TPR_1cp_3win,
+                                              BS_TPR_2cp_3win,
+                                              BS_TPR_tot_3win),
+                                    "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
+                                    "No.CPs" = rep(c("1", "2", "total"), 3))
+
+ggplot(con_mat_TPR_all.scene, aes(x = No.CPs, y = TPR, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1") +
+  labs(x = "No. of Changepoints",
+       y = "True Posistive Rate") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+```
+
+### PPV of each scenario for each CPD
+
+```{r}
+# create a data with all info of FP at each scenario with different CPDs
+con_mat_PPV_all.scene <- data.frame("PPV" = c(BOCD_PPV_1cp_3win,
+                                              BOCD_PPV_2cp_3win,
+                                              BOCD_PPV_tot_3win,
+                                              PELT_PPV_1cp_3win,
+                                              PELT_PPV_2cp_3win,
+                                              PELT_PPV_tot_3win,
+                                              BS_PPV_1cp_3win,
+                                              BS_PPV_2cp_3win,
+                                              BS_PPV_tot_3win),
+                                    "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
+                                    "No.CPs" = rep(c("1", "2", "total"), 3))
+
+ggplot(con_mat_PPV_all.scene, aes(x = No.CPs, y = PPV, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1") +
+  labs(x = "No. of Changepoints",
+       y = "Posistive Predictive Value") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+```
+
+### Combine FP, PPV and TPR with different acctepted windows plots into one plot
+```{r}
+p3 <- ggplot(con_mat_all.scene, aes(x = No.CPs, y = FP, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1", guide = "none") +
+  labs(x = "No. of Changepoints",
+       y = "No. False Posituve") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+
+p4 <- ggplot(con_mat_TPR_all.scene, aes(x = No.CPs, y = TPR, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1", guide = "none") +
+  labs(x = "No. of Changepoints",
+       y = "True Posistive Rate") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+
+
+p5 <- ggplot(con_mat_PPV_all.scene, aes(x = No.CPs, y = PPV, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1", guide = "legend") +
+  labs(x = "No. of Changepoints",
+       y = "Posistive Predictive Value") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
+        axis.text = element_text(size = 14, family = "serif"),
+        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(size = 12, family = "serif"),
+        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())
+
+# Get the maximum y value across all plots
+max_y <- max(max(con_mat_all.scene$FP), max(con_mat_TPR_all.scene$TPR), max(con_mat_PPV_all.scene$PPV))
+
+# Set the same y limits for all plots
+p3 <- p3 + ylim(0, max_y)
+p4 <- p4 + ylim(0, max_y)
+p5 <- p5 + ylim(0, max_y)
+
+# Combine the plots
+p3 + p4 + p5 + plot_layout(ncol = 3, widths = c(1/3, 1/3, 1/3)) +
+  theme(legend.position = "right")
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
