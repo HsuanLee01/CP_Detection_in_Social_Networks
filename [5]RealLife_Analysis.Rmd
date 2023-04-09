@@ -10,6 +10,10 @@ library(relevent) # fit REH to REM
 library(REHdynamics) # fit the moving window REM
 library(ocp) # package for BOCD
 library(changepoint) # package for PELT, BS
+library(tidyverse)
+library(patchwork) # combine many plots into one
+library(cowplot)
+library(RColorBrewer) # colors for the plot
 set.seed(9252568)
 ```
 
@@ -64,20 +68,21 @@ Save the DDMW, as it takes long time to run (15 hours) -> *Problemtic*
 
 Read the DDMW file -> *Problemtic*
 ```{r}
-ddmw <- readRDS("Apollo.13_ddwin.RDS")
+#ddmw <- readRDS("Apollo.13_ddwin.RDS")
 ```
 
 Fit the REM by windows -> *Problemtic*
 ```{r}
 # fits a moving window relational event model
-model_ddwin <- MWrem(windows = ddmw$windows, edgelist = Apollo.13, 
-		                 stats = stat, actors = covar$id, directed = TRUE)
+#model_ddwin <- MWrem(windows = ddmw$windows, edgelist = Apollo.13, 
+#		                 stats = stat, actors = covar$id, directed = TRUE)
 ```
 
 -----------------
 Fit the fix MWREM
 ```{r}
 # changepoint 201321 second
+# 602-607 window or -> 9-14 window
 
 # maximum time point of each iteration of REH
 tau <- max(Apollo.13$time)
@@ -99,7 +104,6 @@ fixmw_ine_param <- 1
 for (i in 593:length(model_fixwin)) {
   fixmw_ine_param[i] <- model_fixwin[[i]][["coefficients"]][["inertia"]]
 }
-plot(fixmw_ine_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
 ```
 
 ```{r}
@@ -108,7 +112,6 @@ fixmw_out_param <- 1
 for (i in 593:length(model_fixwin)) {
   fixmw_out_param[i] <- model_fixwin[[i]][["coefficients"]][["outdegreeSender"]]
 }
-plot(fixmw_out_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
 ```
 
 ```{r}
@@ -117,7 +120,6 @@ fixmw_rec_param <- 1
 for (i in 593:length(model_fixwin)) {
   fixmw_rec_param[i] <- model_fixwin[[i]][["coefficients"]][["reciprocity"]]
 }
-plot(fixmw_rec_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
 ```
 
 ```{r}
@@ -126,7 +128,6 @@ fixmw_totSend_param <- 1
 for (i in 593:length(model_fixwin)) {
   fixmw_totSend_param[i] <- model_fixwin[[i]][["coefficients"]][["totaldegreeSender"]]
 }
-plot(fixmw_totSend_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
 ```
 
 ```{r}
@@ -135,7 +136,6 @@ fixmw_psABBA_param <- 1
 for (i in 593:length(model_fixwin)) {
   fixmw_psABBA_param[i] <- model_fixwin[[i]][["coefficients"]][["psABBA"]]
 }
-plot(fixmw_psABBA_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
 ```
 
 ```{r}
@@ -144,7 +144,6 @@ fixmw_psABXA_param <- 1
 for (i in 593:length(model_fixwin)) {
   fixmw_psABXA_param[i] <- model_fixwin[[i]][["coefficients"]][["psABXA"]]
 }
-plot(fixmw_psABXA_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
 ```
 
 ```{r}
@@ -153,54 +152,124 @@ fixmw_psABBY_param <- 1
 for (i in 593:length(model_fixwin)) {
   fixmw_psABBY_param[i] <- model_fixwin[[i]][["coefficients"]][["psABBY"]]
 }
-plot(fixmw_psABBY_param[593:length(model_fixwin)], type = "point") # plot the movement of parameter
 ```
 
 Operate chnagepoint detection methods to detect the chagepoint
+
+- BS
+
+```{r}
+BS_fixmw_ine <- cpt.meanvar(fixmw_ine_param[593:length(model_fixwin)], method="BinSeg")
+
+locat_BS_ine <- BS_fixmw_ine@cpts[-length(BS_fixmw_ine@cpts)]
+
+locat_BS_ine + 593
+```
+
+```{r}
+BS_fixmw_out <- cpt.meanvar(fixmw_out_param[593:length(model_fixwin)], method="BinSeg")
+
+locat_BS_out <- BS_fixmw_out@cpts[-length(BS_fixmw_out@cpts)]
+
+locat_BS_out + 593
+```
+
+```{r}
+BS_fixmw_rec <- cpt.meanvar(fixmw_rec_param[593:length(model_fixwin)], method="BinSeg")
+
+locat_BS_rec <- BS_fixmw_rec@cpts[-length(BS_fixmw_rec@cpts)]
+
+locat_BS_rec + 593
+```
+
+```{r}
+BS_fixmw_totSend <- cpt.meanvar(fixmw_totSend_param[593:length(model_fixwin)], method="BinSeg")
+
+locat_BS_totSend <- BS_fixmw_totSend@cpts[-length(BS_fixmw_totSend@cpts)]
+
+locat_BS_totSend + 593
+```
+
+```{r}
+BS_fixmw_psABBA <- cpt.meanvar(fixmw_psABBA_param[593:length(model_fixwin)], method="BinSeg")
+
+locat_BS_psABBA <- BS_fixmw_psABBA@cpts[-length(BS_fixmw_psABBA@cpts)]
+
+locat_BS_psABBA + 593
+```
+
+```{r}
+BS_fixmw_psABXA <- cpt.meanvar(fixmw_psABXA_param[593:length(model_fixwin)], method="BinSeg")
+
+locat_BS_psABXA <- BS_fixmw_psABXA@cpts[-length(BS_fixmw_psABXA@cpts)]
+
+locat_BS_psABXA + 593
+```
+
+```{r}
+BS_fixmw_psABBY <- cpt.meanvar(fixmw_psABBY_param[593:length(model_fixwin)], method="BinSeg")
+
+locat_BS_psABBY <- BS_fixmw_psABBY@cpts[-length(BS_fixmw_psABBY@cpts)]
+
+locat_BS_psABBY + 593
+```
 
 - PELT
 
 ```{r}
 PELT_fixmw_ine <- cpt.meanvar(fixmw_ine_param[593:length(model_fixwin)], method="PELT")
 
-PELT_fixmw_ine@cpts[-length(PELT_fixmw_ine@cpts)] + 593
+locat_PELT_ine <- PELT_fixmw_ine@cpts[-length(PELT_fixmw_ine@cpts)]
 
+locat_PELT_ine + 593
 ```
 
 ```{r}
 PELT_fixmw_out <- cpt.meanvar(fixmw_out_param[593:length(model_fixwin)], method="PELT")
 
-PELT_fixmw_out@cpts[-length(PELT_fixmw_out@cpts)] + 593
+locat_PELT_out <- PELT_fixmw_out@cpts[-length(PELT_fixmw_out@cpts)]
+
+locat_PELT_out + 593
 ```
 
 ```{r}
 PELT_fixmw_rec <- cpt.meanvar(fixmw_rec_param[593:length(model_fixwin)], method="PELT")
 
-PELT_fixmw_rec@cpts[-length(PELT_fixmw_rec@cpts)] + 593
+locat_PELT_rec <- PELT_fixmw_rec@cpts[-length(PELT_fixmw_rec@cpts)]
+
+locat_PELT_rec + 593
 ```
 
 ```{r}
 PELT_fixmw_totSend <- cpt.meanvar(fixmw_totSend_param[593:length(model_fixwin)], method="PELT")
 
-PELT_fixmw_totSend@cpts[-length(PELT_fixmw_totSend@cpts)] + 593
+locat_PELT_totSend <- PELT_fixmw_totSend@cpts[-length(PELT_fixmw_totSend@cpts)]
+
+locat_PELT_totSend + 593
 ```
 
 ```{r}
 PELT_fixmw_psABBA <- cpt.meanvar(fixmw_psABBA_param[593:length(model_fixwin)], method="PELT")
 
-PELT_fixmw_psABBA@cpts[-length(PELT_fixmw_psABBA@cpts)] + 593
+locat_PELT_psABBA <- PELT_fixmw_psABBA@cpts[-length(PELT_fixmw_psABBA@cpts)]
+
+locat_PELT_psABBA + 593
 ```
 
 ```{r}
 PELT_fixmw_psABXA <- cpt.meanvar(fixmw_psABXA_param[593:length(model_fixwin)], method="PELT")
 
-PELT_fixmw_psABXA@cpts[-length(PELT_fixmw_psABXA@cpts)] + 593
+locat_PELT_psABXA <- PELT_fixmw_psABXA@cpts[-length(PELT_fixmw_psABXA@cpts)]
+
+locat_PELT_psABXA + 593
 ```
 
 ```{r}
 PELT_fixmw_psABBY <- cpt.meanvar(fixmw_psABBY_param[593:length(model_fixwin)], method="PELT")
 
-PELT_fixmw_psABBY@cpts[-length(PELT_fixmw_psABBY@cpts)] + 593
+locat_PELT_psABBY <- PELT_fixmw_psABBY@cpts[-length(PELT_fixmw_psABBY@cpts)]
+
+locat_PELT_psABBY + 593
 ```
 
 - BOCPD
@@ -211,9 +280,11 @@ BOCD_fixmw_ine_param <- onlineCPD(fixmw_ine_param[593:length(model_fixwin)],
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 
-locat_BOCD_ine <- BOCD_fixmw_ine_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+locat_BOCD_ine <- BOCD_fixmw_ine_param[["changepoint_lists"]][["maxCPs"]][[1]]
 # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
 (locat_BOCD_ine <- locat_BOCD_ine[-1])
+
+locat_BOCD_ine +593
 
 plot(BOCD_fixmw_ine_param)
 ```
@@ -224,9 +295,11 @@ BOCD_fixmw_out_param <- onlineCPD(fixmw_out_param[593:length(model_fixwin)],
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 
-locat_BOCD_out <- BOCD_fixmw_out_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+locat_BOCD_out <- BOCD_fixmw_out_param[["changepoint_lists"]][["maxCPs"]][[1]]
 # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
 (locat_BOCD_out <- locat_BOCD_out[-1])
+
+locat_BOCD_out + 593
 
 plot(BOCD_fixmw_out_param)
 ```
@@ -237,9 +310,11 @@ BOCD_fixmw_rec_param <- onlineCPD(fixmw_rec_param[593:length(model_fixwin)],
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 
-locat_BOCD_rec <- BOCD_fixmw_rec_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+locat_BOCD_rec <- BOCD_fixmw_rec_param[["changepoint_lists"]][["maxCPs"]][[1]]
 # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
 (locat_BOCD_rec <- locat_BOCD_rec[-1])
+
+locat_BOCD_rec + 593
 
 plot(BOCD_fixmw_rec_param)
 ```
@@ -250,9 +325,11 @@ BOCD_fixmw_totSend_param <- onlineCPD(fixmw_totSend_param[593:length(model_fixwi
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 
-locat_BOCD_totSend <- BOCD_fixmw_totSend_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+locat_BOCD_totSend <- BOCD_fixmw_totSend_param[["changepoint_lists"]][["maxCPs"]][[1]]
 # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
 (locat_BOCD_totSend <- locat_BOCD_totSend[-1])
+
+locat_BOCD_totSend + 593
 
 plot(BOCD_fixmw_totSend_param)
 ```
@@ -263,9 +340,11 @@ BOCD_fixmw_psABBA_param <- onlineCPD(fixmw_psABBA_param[593:length(model_fixwin)
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 
-locat_BOCD_psABBA <- BOCD_fixmw_psABBA_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+locat_BOCD_psABBA <- BOCD_fixmw_psABBA_param[["changepoint_lists"]][["maxCPs"]][[1]]
 # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
 (locat_BOCD_psABBA <- locat_BOCD_psABBA[-1])
+
+locat_BOCD_psABBA + 593
 
 plot(BOCD_fixmw_psABBA_param)
 ```
@@ -276,9 +355,11 @@ BOCD_fixmw_psABXA_param <- onlineCPD(fixmw_psABXA_param[593:length(model_fixwin)
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 
-locat_BOCD_psABXA <- BOCD_fixmw_psABXA_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+locat_BOCD_psABXA <- BOCD_fixmw_psABXA_param[["changepoint_lists"]][["maxCPs"]][[1]]
 # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
 (locat_BOCD_psABXA <- locat_BOCD_psABXA[-1])
+
+locat_BOCD_psABXA + 593
 
 plot(BOCD_fixmw_psABXA_param)
 ```
@@ -289,9 +370,386 @@ BOCD_fixmw_psABBY_param <- onlineCPD(fixmw_psABBY_param[593:length(model_fixwin)
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 
-locat_BOCD_psABBY <- BOCD_fixmw_psABBY_param[["changepoint_lists"]][["maxCPs"]][[1]] +593
+locat_BOCD_psABBY <- BOCD_fixmw_psABBY_param[["changepoint_lists"]][["maxCPs"]][[1]]
 # remove the first value of the vector, as BOCPD function indicates the first window as CP all the time
 (locat_BOCD_psABBY <- locat_BOCD_psABBY[-1])
 
+locat_BOCD_psABBY + 593
+
 plot(BOCD_fixmw_psABBY_param)
+```
+
+
+
+
+-----------------------
+
+# Visualization
+
+## Extract effects' parameters
+
+```{r}
+# windows given parameters
+winpar <- data.frame("window" = 1:(length(model_fixwin)-592),
+                     "inertia" = fixmw_ine_param[593:length(model_fixwin)],
+                     "outdegreeSender" = fixmw_out_param[593:length(model_fixwin)],
+                     "reciprocity" = fixmw_rec_param[593:length(model_fixwin)],
+                     "totaldegreeSender" = fixmw_totSend_param[593:length(model_fixwin)],
+                     "psABBA" = fixmw_psABBA_param[593:length(model_fixwin)],
+                     "psABXA" = fixmw_psABXA_param[593:length(model_fixwin)],
+                     "psABBY" = fixmw_psABBY_param[593:length(model_fixwin)])
+```
+
+## Fluctuations of Effects' parameters in one plot
+
+```{r fig.width=7.33, fig.height=2.5}
+winpar_long <- winpar %>% 
+  pivot_longer(cols = -window, names_to = "effect", values_to = "parameter")
+
+ggplot(winpar_long, aes(x = window, y = parameter, color = effect)) +
+  geom_point() +
+  scale_color_brewer(palette = "Set1", guide = "legend") +
+  labs(x = "Window", 
+       y = "Parameter", 
+       color = "Effect") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #panel.border = element_blank(),
+        panel.background = element_blank())
+```
+
+## Inertia
+
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+inertia_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = inertia)) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[1]) +
+  labs(title = "Inertia",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_ine, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_ine))), 
+                 color = "BOCPD", linetype = "dashed"),
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_ine - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_ine))), 
+                 color = "PELT", linetype = "dotted"), 
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_ine + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_ine))), 
+                 color = "BS", linetype = "solid"), 
+             size = 0.7,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#ef3f37", "#262161", "#fbaf41"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
+
+inertia_cpd.plot
+```
+
+## OutdegreeSender
+
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+outdegree_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = outdegreeSender)) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[2]) +
+  labs(title = "OutdegreeSender",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_out, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_out))), 
+                 color = "BOCPD", linetype = "dashed"),
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_out - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_out))), 
+                 color = "PELT", linetype = "dotted"), 
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_out + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_out))), 
+                 color = "BS", linetype = "solid"), 
+             size = 0.7,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#ef3f37", "#262161", "#fbaf41"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
+
+outdegree_cpd.plot
+```
+
+## Reciprocity
+
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+reciprocity_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = reciprocity)) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[6]) +
+  labs(title = "Reciprocity",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_rec, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_rec))), 
+                 color = "BOCPD", linetype = "dashed"),
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_rec - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_rec))), 
+                 color = "PELT", linetype = "dotted"), 
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_rec + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_rec))), 
+                 color = "BS", linetype = "solid"), 
+             size = 0.7,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#ef3f37", "#262161", "#fbaf41"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
+
+reciprocity_cpd.plot
+```
+
+## TotaldegreeSender
+
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+totSender_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = totaldegreeSender)) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[7]) +
+  labs(title = "TotaldegreeSender",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_totSend, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_totSend))), 
+                 color = "BOCPD", linetype = "dashed"),
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_totSend - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_totSend))), 
+                 color = "PELT", linetype = "dotted"), 
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_totSend + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_totSend))), 
+                 color = "BS", linetype = "solid"), 
+             size = 0.7,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#ef3f37", "#262161", "#fbaf41"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
+
+totSender_cpd.plot
+```
+
+## psABBA
+
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+psABBA_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = psABBA)) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[3]) +
+  labs(title = "psABBA",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_psABBA, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_psABBA))), 
+                 color = "BOCPD", linetype = "dashed"),
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_psABBA - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_psABBA))), 
+                 color = "PELT", linetype = "dotted"), 
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_psABBA + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_psABBA))), 
+                 color = "BS", linetype = "solid"), 
+             size = 0.7,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#ef3f37", "#262161", "#fbaf41"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
+
+psABBA_cpd.plot
+```
+
+## psABXA
+
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+psABXA_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = psABXA)) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[5]) +
+  labs(title = "psABXA",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_psABXA, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_psABXA))), 
+                 color = "BOCPD", linetype = "dashed"),
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_psABXA - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_psABXA))), 
+                 color = "PELT", linetype = "dotted"), 
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_psABXA + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_psABXA))), 
+                 color = "BS", linetype = "solid"), 
+             size = 0.7,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#ef3f37", "#262161", "#fbaf41"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
+
+psABXA_cpd.plot
+```
+
+## psABBY
+
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+psABBY_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = psABBY)) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[4]) +
+  labs(title = "psABBY",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "right",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_psABBY, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_psABBY))), 
+                 color = "BOCPD", linetype = "dashed"),
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_psABBY - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_psABBY))), 
+                 color = "PELT", linetype = "dotted"), 
+             size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_psABBY + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_psABBY))), 
+                 color = "BS", linetype = "solid"), 
+             size = 0.7,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#ef3f37", "#262161", "#fbaf41"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
+
+psABBY_cpd.plot
+```
+
+## Combine all plots
+
+```{r fig.height=7.5, fig.width=11, warning=FALSE}
+inertia_cpd.plot + 
+  outdegree_cpd.plot + 
+  reciprocity_cpd.plot + 
+  totSender_cpd.plot +
+  psABBA_cpd.plot +
+  psABXA_cpd.plot +
+  psABBY_cpd.plot +
+  plot_layout(ncol = 2, widths = c(1,1)) +
+  theme(legend.position = "right")
 ```

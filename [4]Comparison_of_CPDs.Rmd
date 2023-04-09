@@ -4688,7 +4688,7 @@ BS_MSD <- c(unlist(MSD_BS_diff_1cp_diff.all$MSD),
 
 --------------------------------------------------------------------------------
 
-# Plots and Tables
+# Visualization
 
 ```{r}
 library(tidyverse)
@@ -4699,8 +4699,10 @@ windowsFonts() # to know the in built font I have
 
 ## Total scenarios, Different accepted windows
 
-### Change of TPR with increase window differences 
+### Information of TPR with increasing window differences
+
 ```{r}
+# create a data with all info of TPR with different window differences
 con_mat_TPR <- data.frame("TPR" = c(BOCD_TPR_tot_1win, BOCD_TPR_tot_2win,
                                     BOCD_TPR_tot_3win, BOCD_TPR_tot_4win,
                                     BOCD_TPR_tot_5win, PELT_TPR_tot_1win, 
@@ -4711,28 +4713,12 @@ con_mat_TPR <- data.frame("TPR" = c(BOCD_TPR_tot_1win, BOCD_TPR_tot_2win,
                                     BS_TPR_tot_5win),
                           "CPD" = c(rep("BOCPD", 5), rep("PELT", 5), rep("BS", 5)),
                           "Window" = rep(1:5, times = 3))
-
-ggplot(con_mat_TPR, aes(x = Window, y = TPR, color = CPD)) +
-  geom_line(size = 1) +
-  scale_color_brewer(palette = "Set1") +
-  labs(title = "Changepoint Detection Performance",
-       x = "Window Size",
-       y = "True Positive Rate") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
-        legend.position = "bottom",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank())
 ```
 
-### Change of PPV with increase window differences
+### Information of PPV with increasing window differences
+
 ```{r}
+# create a data with all info of PPV with different window differences
 con_mat_PPV <- data.frame("PPV" = c(BOCD_PPV_tot_1win, BOCD_PPV_tot_2win,
                                     BOCD_PPV_tot_3win, BOCD_PPV_tot_4win,
                                     BOCD_PPV_tot_5win, PELT_PPV_tot_1win, 
@@ -4743,60 +4729,45 @@ con_mat_PPV <- data.frame("PPV" = c(BOCD_PPV_tot_1win, BOCD_PPV_tot_2win,
                                     BS_PPV_tot_5win),
                           "CPD" = c(rep("BOCPD", 5), rep("PELT", 5), rep("BS", 5)),
                           "Window" = rep(1:5, times = 3))
-
-ggplot(con_mat_PPV, aes(x = Window, y = PPV, color = CPD)) +
-  geom_line(size = 1) +
-  scale_color_brewer(palette = "Set1") +
-  labs(title = "Changepoint Detection Performance",
-       x = "Window Size",
-       y = "Positive Predictive Value") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
-        legend.position = "bottom",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank())
 ```
 
-### Combine PPV and TPR with different acctepted windows plots into one plot
-```{r}
+### Plot TPR and PPV for different accepted window lengths
+
+```{r fig.width=7.33, fig.height=2.5}
 p1 <- ggplot(con_mat_PPV, aes(x = Window, y = PPV, color = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "legend") +
-  labs(x = "TP Window Range",
+  labs(title = "Positive Predictive Value",
+       x = "TP Window Range",
        y = "Positive Predictive Value") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
         legend.position = "bottom",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
+        #panel.border = element_blank(),
         panel.background = element_blank())
 
 p2 <- ggplot(con_mat_TPR, aes(x = Window, y = TPR, color = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "none") +
-  labs(x = "TP Window Range",
+  labs(title = "True Positive Rate",
+       x = "TP Window Range",
        y = "True Positive Rate") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
         legend.position = "none",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
+        #panel.border = element_blank(),
         panel.background = element_blank())
 
 p2 + p1 + plot_layout(ncol = 2, widths = c(1, 1)) +
@@ -4805,7 +4776,7 @@ p2 + p1 + plot_layout(ncol = 2, widths = c(1, 1)) +
 
 ## For each scenario (3 windows)
 
-### Number of FP of each scenario for each CPD
+### Information of "number of FP of each scenario for each CPD"
 
 ```{r}
 # add confusion matrix of no changpoint into the total confusion matrix as well
@@ -4823,7 +4794,7 @@ BS_conf_mat_tot_3win_comb <- rbind(BS_conf_mat_tot_3win,
 BS_conf_mat_tot_3win_comb <- apply(BS_conf_mat_tot_3win_comb, 2, sum)
 
 # create a data with all info of FP at each scenario with different CPDs
-con_mat_all.scene <- data.frame("FP" = c(BOCD_conf_mat_1cp_3win[2],
+con_mat_FP_all.scene <- data.frame("FP" = c(BOCD_conf_mat_1cp_3win[2],
                                          BOCD_conf_mat_2cp_3win[2],
                                          BOCD_conf_mat_ncp[2],
                                          BOCD_conf_mat_tot_3win_comb[2],
@@ -4837,26 +4808,9 @@ con_mat_all.scene <- data.frame("FP" = c(BOCD_conf_mat_1cp_3win[2],
                                          BS_conf_mat_tot_3win_comb[2]),
                                "CPD" = c(rep("BOCPD", 4), rep("PELT", 4), rep("BS", 4)),
                                "No.CPs" = rep(c("1", "2", "0", "total"), 3))
-
-ggplot(con_mat_all.scene, aes(x = No.CPs, y = FP, color = CPD, group = CPD)) +
-  geom_line(size = 1) +
-  scale_color_brewer(palette = "Set1") +
-  labs(x = "No. of Changepoints",
-       y = "No. False Posituve") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
-        legend.position = "bottom",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank())
 ```
 
-### TPR of each scenario for each CPD
+### Information of "TPR of each scenario for each CPD"
 
 ```{r}
 # create a data with all info of FP at each scenario with different CPDs
@@ -4871,26 +4825,9 @@ con_mat_TPR_all.scene <- data.frame("TPR" = c(BOCD_TPR_1cp_3win,
                                               BS_TPR_tot_3win),
                                     "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
                                     "No.CPs" = rep(c("1", "2", "total"), 3))
-
-ggplot(con_mat_TPR_all.scene, aes(x = No.CPs, y = TPR, color = CPD, group = CPD)) +
-  geom_line(size = 1) +
-  scale_color_brewer(palette = "Set1") +
-  labs(x = "No. of Changepoints",
-       y = "True Posistive Rate") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
-        legend.position = "bottom",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank())
 ```
 
-### PPV of each scenario for each CPD
+### Information of "PPV of each scenario for each CPD"
 
 ```{r}
 # create a data with all info of FP at each scenario with different CPDs
@@ -4905,153 +4842,145 @@ con_mat_PPV_all.scene <- data.frame("PPV" = c(BOCD_PPV_1cp_3win,
                                               BS_PPV_tot_3win),
                                     "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
                                     "No.CPs" = rep(c("1", "2", "total"), 3))
-
-ggplot(con_mat_PPV_all.scene, aes(x = No.CPs, y = PPV, color = CPD, group = CPD)) +
-  geom_line(size = 1) +
-  scale_color_brewer(palette = "Set1") +
-  labs(x = "No. of Changepoints",
-       y = "Posistive Predictive Value") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
-        legend.position = "bottom",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank())
 ```
 
-### Combine FP, PPV and TPR with different acctepted windows plots into one plot
-```{r}
-p3 <- ggplot(con_mat_all.scene, aes(x = No.CPs, y = FP, color = CPD, group = CPD)) +
+### Plot FP, PPV and TPR with different scenarios
+
+```{r fig.width=11, fig.height=2.5}
+p3 <- ggplot(con_mat_FP_all.scene, aes(x = No.CPs, y = FP, color = CPD, group = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "none") +
-  labs(x = "No. of Changepoints",
+  labs(title = "No. False Positive",
+       x = "No. Changepoints",
        y = "No. False Posituve") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
         legend.position = "none",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
+        #panel.border = element_blank(),
         panel.background = element_blank())
 
 p4 <- ggplot(con_mat_TPR_all.scene, aes(x = No.CPs, y = TPR, color = CPD, group = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "none") +
-  labs(x = "No. of Changepoints",
+  labs(title = "True Posistive Rate",
+       x = "No. Changepoints",
        y = "True Posistive Rate") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
         legend.position = "none",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
+        #panel.border = element_blank(),
         panel.background = element_blank())
 
 
 p5 <- ggplot(con_mat_PPV_all.scene, aes(x = No.CPs, y = PPV, color = CPD, group = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "legend") +
-  labs(x = "No. of Changepoints",
-       y = "Posistive Predictive Value") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "serif"),
-        axis.text = element_text(size = 14, family = "serif"),
-        axis.title = element_text(size = 14, face = "bold", family = "serif"),
+  labs(title = "Positive Predictive Value",
+       x = "No. Changepoints",
+       y = "Positive Predictive Value") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
         legend.position = "bottom",
-        legend.text = element_text(size = 12, family = "serif"),
-        legend.title = element_text(size = 14, face = "bold", family = "serif"),
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.border = element_blank(),
+        #panel.border = element_blank(),
         panel.background = element_blank())
-
-# Get the maximum y value across all plots
-max_y <- max(max(con_mat_all.scene$FP), max(con_mat_TPR_all.scene$TPR), max(con_mat_PPV_all.scene$PPV))
-
-# Set the same y limits for all plots
-p3 <- p3 + ylim(0, max_y)
-p4 <- p4 + ylim(0, max_y)
-p5 <- p5 + ylim(0, max_y)
 
 # Combine the plots
 p3 + p4 + p5 + plot_layout(ncol = 3, widths = c(1/3, 1/3, 1/3)) +
   theme(legend.position = "right")
 ```
 
+### Information of " MSE of each scenario for each CPD"
 
+```{r}
+# create a data with all info of FP at each scenario with different CPDs
+MSE_all.scene <- data.frame("MSE" = c(BOCD_MSE_1cp,
+                                      BOCD_MSE_2cp,
+                                      BOCD_MSE_tot,
+                                      PELT_MSE_1cp,
+                                      PELT_MSE_2cp,
+                                      PELT_MSE_tot,
+                                      BS_MSE_1cp,
+                                      BS_MSE_2cp,
+                                      BS_MSE_tot),
+                            "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
+                            "No.CPs" = rep(c("1", "2", "total"), 3))
+```
 
+### Information of " MSD of each scenario for each CPD"
 
+```{r}
+# create a data with all info of FP at each scenario with different CPDs
+MSD_all.scene <- data.frame("MSD" = c(BOCD_MSD_1cp,
+                                      BOCD_MSD_2cp,
+                                      BOCD_MSD_tot,
+                                      PELT_MSD_1cp,
+                                      PELT_MSD_2cp,
+                                      PELT_MSD_tot,
+                                      BS_MSD_1cp,
+                                      BS_MSD_2cp,
+                                      BS_MSD_tot),
+                            "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
+                            "No.CPs" = rep(c("1", "2", "total"), 3))
+```
 
+### Plot MSE and MSD with different scenarios
 
+```{r fig.width=7.33, fig.height=2.5}
+p6 <- ggplot(MSE_all.scene, aes(x = No.CPs, y = MSE, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1", guide = "none") +
+  labs(title = "Mean Square Error",
+       x = "No. Changepoints",
+       y = "Mean Square Error") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #panel.border = element_blank(),
+        panel.background = element_blank())
 
+p7 <- ggplot(MSD_all.scene, aes(x = No.CPs, y = MSD, color = CPD, group = CPD)) +
+  geom_line(size = 1) +
+  scale_color_brewer(palette = "Set1", guide = "legend") +
+  labs(title = "Mean Sign Difference",
+       x = "No. Changepoints",
+       y = "Mean Sign Difference") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "bottom",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        #panel.border = element_blank(),
+        panel.background = element_blank())
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-1. compare the time they spent
-
-2. change the overlap to see if msds are still negative or not -> or how could we explain that
-(how many dataset they detect the cps before true one)
-
-3. start writing right now -> focus more on the main points, not too detailed !!!!!
-
-4. systematic change the parameters
-
-5. plot things, and tables -> its clearer!!!!!! -> also create the plot for different scenarios show in the same plot
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Combine the plots
+p6 + p7 + plot_layout(ncol = 2, widths = c(1, 1)) +
+  theme(legend.position = "right")
+```
