@@ -285,8 +285,6 @@ locat_BOCD_ine <- BOCD_fixmw_ine_param[["changepoint_lists"]][["maxCPs"]][[1]]
 (locat_BOCD_ine <- locat_BOCD_ine[-1])
 
 locat_BOCD_ine +593
-
-plot(BOCD_fixmw_ine_param)
 ```
 
 ```{r}
@@ -300,8 +298,6 @@ locat_BOCD_out <- BOCD_fixmw_out_param[["changepoint_lists"]][["maxCPs"]][[1]]
 (locat_BOCD_out <- locat_BOCD_out[-1])
 
 locat_BOCD_out + 593
-
-plot(BOCD_fixmw_out_param)
 ```
 
 ```{r}
@@ -315,8 +311,6 @@ locat_BOCD_rec <- BOCD_fixmw_rec_param[["changepoint_lists"]][["maxCPs"]][[1]]
 (locat_BOCD_rec <- locat_BOCD_rec[-1])
 
 locat_BOCD_rec + 593
-
-plot(BOCD_fixmw_rec_param)
 ```
 
 ```{r}
@@ -330,8 +324,6 @@ locat_BOCD_totSend <- BOCD_fixmw_totSend_param[["changepoint_lists"]][["maxCPs"]
 (locat_BOCD_totSend <- locat_BOCD_totSend[-1])
 
 locat_BOCD_totSend + 593
-
-plot(BOCD_fixmw_totSend_param)
 ```
 
 ```{r}
@@ -345,8 +337,6 @@ locat_BOCD_psABBA <- BOCD_fixmw_psABBA_param[["changepoint_lists"]][["maxCPs"]][
 (locat_BOCD_psABBA <- locat_BOCD_psABBA[-1])
 
 locat_BOCD_psABBA + 593
-
-plot(BOCD_fixmw_psABBA_param)
 ```
 
 ```{r}
@@ -360,8 +350,6 @@ locat_BOCD_psABXA <- BOCD_fixmw_psABXA_param[["changepoint_lists"]][["maxCPs"]][
 (locat_BOCD_psABXA <- locat_BOCD_psABXA[-1])
 
 locat_BOCD_psABXA + 593
-
-plot(BOCD_fixmw_psABXA_param)
 ```
 
 ```{r}
@@ -375,8 +363,6 @@ locat_BOCD_psABBY <- BOCD_fixmw_psABBY_param[["changepoint_lists"]][["maxCPs"]][
 (locat_BOCD_psABBY <- locat_BOCD_psABBY[-1])
 
 locat_BOCD_psABBY + 593
-
-plot(BOCD_fixmw_psABBY_param)
 ```
 
 
