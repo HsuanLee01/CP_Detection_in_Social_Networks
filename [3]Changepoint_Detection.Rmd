@@ -45,12 +45,16 @@ fixmw_out_ncp_param <- readRDS("Window_Parameters/fixmw_out_ncp_param.RDS")
 ```{r}
 # Detect the CPs
 BOCD_fixmw_send_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_send_ncp_param)) {
   BOCD_fixmw_send_ncp_param[[i]] <- onlineCPD(fixmw_send_ncp_param[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
+end_time <- Sys.time()
+BOCD_ncp_send_operation_time <- end_time - start_time
+print(paste("Operation time:", BOCD_ncp_send_operation_time))
 
 # location of the CPs
 locat_BOCD_ncp_send <- list()
@@ -69,12 +73,16 @@ for (i in 1:length(BOCD_fixmw_send_ncp_param)) {
 ```{r}
 # Detect the CPs
 BOCD_fixmw_diff_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_diff_ncp_param)) {
   BOCD_fixmw_diff_ncp_param[[i]] <- onlineCPD(fixmw_diff_ncp_param[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
+end_time <- Sys.time()
+BOCD_ncp_diff_operation_time <- end_time - start_time
+print(paste("Operation time:", BOCD_ncp_diff_operation_time))
 
 # location of the CPs
 locat_BOCD_ncp_diff <- list()
@@ -93,12 +101,16 @@ for (i in 1:length(BOCD_fixmw_diff_ncp_param)) {
 ```{r}
 # Detect the CPs
 BOCD_fixmw_ine_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_ine_ncp_param)) {
   BOCD_fixmw_ine_ncp_param[[i]] <- onlineCPD(fixmw_ine_ncp_param[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
+end_time <- Sys.time()
+BOCD_ncp_ine_operation_time <- end_time - start_time
+print(paste("Operation time:", BOCD_ncp_ine_operation_time))
 
 # location of the CPs
 locat_BOCD_ncp_ine <- list()
@@ -117,12 +129,16 @@ for (i in 1:length(BOCD_fixmw_ine_ncp_param)) {
 ```{r}
 # Detect the CPs
 BOCD_fixmw_out_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   BOCD_fixmw_out_ncp_param[[i]] <- onlineCPD(fixmw_out_ncp_param[[i]], 
                                             getR = T, 
                                             optionalOutputs = T, 
                                             truncRlim = 10^-4)
 }
+end_time <- Sys.time()
+BOCD_ncp_out_operation_time <- end_time - start_time
+print(paste("Operation time:", BOCD_ncp_out_operation_time))
 
 # location of the CPs
 locat_BOCD_ncp_out <- list()
@@ -142,9 +158,13 @@ for (i in 1:length(BOCD_fixmw_out_ncp_param)) {
 ```{r}
 # detect the changepoints
 PELT_fixmw_send_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   PELT_fixmw_send_ncp_param[[i]] <- cpt.meanvar(fixmw_send_ncp_param[[i]], method="PELT")
 }
+end_time <- Sys.time()
+PELT_ncp_send_operation_time <- end_time - start_time
+print(paste("Operation time:", PELT_ncp_send_operation_time))
 
 # location of the changepoints
 locat_PELT_ncp_send <- list()
@@ -164,9 +184,13 @@ for (i in 1:length(PELT_fixmw_send_ncp_param)) {
 ```{r}
 # detect the changepoints
 PELT_fixmw_diff_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   PELT_fixmw_diff_ncp_param[[i]] <- cpt.meanvar(fixmw_diff_ncp_param[[i]], method="PELT")
 }
+end_time <- Sys.time()
+PELT_ncp_diff_operation_time <- end_time - start_time
+print(paste("Operation time:", PELT_ncp_diff_operation_time))
 
 # location of the changepoints
 locat_PELT_ncp_diff <- list()
@@ -186,9 +210,13 @@ for (i in 1:length(PELT_fixmw_diff_ncp_param)) {
 ```{r}
 # detect the changepoints
 PELT_fixmw_ine_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   PELT_fixmw_ine_ncp_param[[i]] <- cpt.meanvar(fixmw_ine_ncp_param[[i]], method="PELT")
 }
+end_time <- Sys.time()
+PELT_ncp_ine_operation_time <- end_time - start_time
+print(paste("Operation time:", PELT_ncp_ine_operation_time))
 
 # location of the changepoints
 locat_PELT_ncp_ine <- list()
@@ -208,10 +236,13 @@ for (i in 1:length(PELT_fixmw_ine_ncp_param)) {
 ```{r}
 # detect the changepoints
 PELT_fixmw_out_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   PELT_fixmw_out_ncp_param[[i]] <- cpt.meanvar(fixmw_out_ncp_param[[i]], method="PELT")
 }
-
+end_time <- Sys.time()
+PELT_ncp_out_operation_time <- end_time - start_time
+print(paste("Operation time:", PELT_ncp_out_operation_time))
 # location of the changepoints
 locat_PELT_ncp_out <- list()
 for (i in 1:length(PELT_fixmw_out_ncp_param)) {
@@ -231,9 +262,13 @@ for (i in 1:length(PELT_fixmw_out_ncp_param)) {
 ```{r}
 # detect the changepoints
 BS_fixmw_send_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   BS_fixmw_send_ncp_param[[i]] <- cpt.meanvar(fixmw_send_ncp_param[[i]], method="BinSeg")
 }
+end_time <- Sys.time()
+BS_ncp_send_operation_time <- end_time - start_time
+print(paste("Operation time:", BS_ncp_send_operation_time))
 
 # location of the changepoints
 locat_BS_ncp_send <- list()
@@ -253,9 +288,13 @@ for (i in 1:length(BS_fixmw_send_ncp_param)) {
 ```{r}
 # detect the changepoints
 BS_fixmw_diff_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   BS_fixmw_diff_ncp_param[[i]] <- cpt.meanvar(fixmw_diff_ncp_param[[i]], method="BinSeg")
 }
+end_time <- Sys.time()
+BS_ncp_diff_operation_time <- end_time - start_time
+print(paste("Operation time:", BS_ncp_diff_operation_time))
 
 # location of the changepoints
 locat_BS_ncp_diff <- list()
@@ -275,9 +314,13 @@ for (i in 1:length(BS_fixmw_diff_ncp_param)) {
 ```{r}
 # detect the changepoints
 BS_fixmw_ine_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   BS_fixmw_ine_ncp_param[[i]] <- cpt.meanvar(fixmw_ine_ncp_param[[i]], method="BinSeg")
 }
+end_time <- Sys.time()
+BS_ncp_ine_operation_time <- end_time - start_time
+print(paste("Operation time:", BS_ncp_ine_operation_time))
 
 # location of the changepoints
 locat_BS_ncp_ine <- list()
@@ -297,9 +340,13 @@ for (i in 1:length(BS_fixmw_ine_ncp_param)) {
 ```{r}
 # detect the changepoints
 BS_fixmw_out_ncp_param <- list()
+start_time <- Sys.time()
 for (i in 1:length(fixmw_out_ncp_param)) {
   BS_fixmw_out_ncp_param[[i]] <- cpt.meanvar(fixmw_out_ncp_param[[i]], method="BinSeg")
 }
+end_time <- Sys.time()
+BS_ncp_out_operation_time <- end_time - start_time
+print(paste("Operation time:", BS_ncp_out_operation_time))
 
 # location of the changepoints
 locat_BS_ncp_out <- list()
