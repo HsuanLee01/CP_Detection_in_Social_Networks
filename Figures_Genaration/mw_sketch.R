@@ -1,6 +1,7 @@
-library(ggplot2)
+library(tidyverse)
 library(lubridate)
 library(RColorBrewer)
+library(ggforce) # add bracket under the window line
 
 mw_scketch <- data.frame("Time" = c("00:00", "01:00", "02:00", "03:00", "04:00", "05:00"))
 
@@ -14,18 +15,18 @@ mw_scketch %>%
   # add color for overlapped areas
   geom_rect(aes(xmin = as.POSIXct("01:00:00", format="%H:%M:%S"), xmax = as.POSIXct("02:00:00", format="%H:%M:%S"), ymin = 1, ymax = 2),
             fill = "#FFEDDA") + 
-  geom_rect(aes(xmin = as.POSIXct("02:00:00", format="%H:%M:%S"), xmax = as.POSIXct("03:00:00", format="%H:%M:%S"), ymin = 2, ymax = 3),
-            fill = "#FFEDDA") +
-  geom_rect(aes(xmin = as.POSIXct("03:00:00", format="%H:%M:%S"), xmax = as.POSIXct("04:00:00", format="%H:%M:%S"), ymin = 3, ymax = 4),
-            fill = "#FFEDDA") +
+  #geom_rect(aes(xmin = as.POSIXct("02:00:00", format="%H:%M:%S"), xmax = as.POSIXct("03:00:00", format="%H:%M:%S"), ymin = 2, ymax = 3),
+  #          fill = "#FFEDDA") +
+  #geom_rect(aes(xmin = as.POSIXct("03:00:00", format="%H:%M:%S"), xmax = as.POSIXct("04:00:00", format="%H:%M:%S"), ymin = 3, ymax = 4),
+  #          fill = "#FFEDDA") +
   
   # add texts of Overlap (1 Hour)
   geom_text(aes(x = as.POSIXct("01:30:00", format="%H:%M:%S"), y = 1.5, label = "Overlap (1 Hour)"), 
             color = "black", size = 2.5, fontface = "italic") +
-  geom_text(aes(x = as.POSIXct("02:30:00", format="%H:%M:%S"), y = 2.5, label = "Overlap (1 Hour)"), 
-            color = "black", size = 2.5, fontface = "italic") +
-  geom_text(aes(x = as.POSIXct("03:30:00", format="%H:%M:%S"), y = 3.5, label = "Overlap (1 Hour)"), 
-            color = "black", size = 2.5, fontface = "italic") +
+  #geom_text(aes(x = as.POSIXct("02:30:00", format="%H:%M:%S"), y = 2.5, label = "Overlap (1 Hour)"), 
+  #          color = "black", size = 2.5, fontface = "italic") +
+  #geom_text(aes(x = as.POSIXct("03:30:00", format="%H:%M:%S"), y = 3.5, label = "Overlap (1 Hour)"), 
+  #          color = "black", size = 2.5, fontface = "italic") +
   
   # add windows' horizontal lines
   geom_segment(aes(x = as.POSIXct("00:00:00", format="%H:%M:%S"), y = 1, xend = as.POSIXct("02:00:00", format="%H:%M:%S"), yend = 1)) +
@@ -66,10 +67,29 @@ mw_scketch %>%
   geom_segment(aes(x = as.POSIXct("05:00:00", format="%H:%M:%S"), y = 3.9, xend = as.POSIXct("05:00:00", format="%H:%M:%S"), yend = 4.1), 
                linetype = "solid", color = "black") +
   
+  # add texts under windows
+  geom_text(aes(x = as.POSIXct("01:00:00", format="%H:%M:%S"), y = 0.65, label = "Window"), 
+            color = "black", size = 2.5, fontface = "italic") +
+  #geom_text(aes(x = as.POSIXct("02:00:00", format="%H:%M:%S"), y = 1.6, label = "Window 2"), 
+  #          color = "black", size = 2.5, fontface = "italic") +
+  #geom_text(aes(x = as.POSIXct("03:00:00", format="%H:%M:%S"), y = 2.6, label = "Window 3"), 
+  #          color = "black", size = 2.5, fontface = "italic") +
+  #geom_text(aes(x = as.POSIXct("04:00:00", format="%H:%M:%S"), y = 3.6, label = "Window 4"), 
+  #          color = "black", size = 2.5, fontface = "italic") +
+  
+  # add bracket
+  # add bracket between text and line for Window 1
+  geom_curve(aes(x = as.POSIXct("00:00:00", format="%H:%M:%S"), y = 1, xend = as.POSIXct("02:00:00", format="%H:%M:%S"), yend = 1),
+             curvature = 0.08, color = "black") +
+  
+  
+  
   # add the labs 
   labs(title = "Moving Window Approach",
        x = "Time (Hour)",
-       y = "Window") +
+       y = "") +
+  # remove the marked scale on y axis
+  scale_y_continuous(breaks=NULL) +
   theme_bw() +
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
@@ -79,4 +99,6 @@ mw_scketch %>%
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        panel.background = element_blank())
+        panel.background = element_blank(),
+        # remove the values on y axis
+        axis.text.y = element_blank())
