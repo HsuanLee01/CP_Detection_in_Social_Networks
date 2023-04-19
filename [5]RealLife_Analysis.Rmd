@@ -424,7 +424,7 @@ inertia_cpd.plot <-
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
-        legend.position = "right",
+        legend.position = "none",
         legend.text = element_text(family = "serif"),
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
@@ -433,17 +433,17 @@ inertia_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_BOCD_ine, 
                                 rep(NA, length(winpar$window)-length(locat_BOCD_ine))), 
                  color = "BOCPD", linetype = "dashed"),
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_PELT_ine - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_ine))), 
                  color = "PELT", linetype = "dotted"), 
-             size = 1.2,
+             #size = 1.2,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_ine + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_ine))), 
                  color = "BS", linetype = "solid"), 
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
@@ -469,7 +469,7 @@ outdegree_cpd.plot <-
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
-        legend.position = "right",
+        legend.position = "none",
         legend.text = element_text(family = "serif"),
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
@@ -478,17 +478,17 @@ outdegree_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_BOCD_out, 
                                 rep(NA, length(winpar$window)-length(locat_BOCD_out))), 
                  color = "BOCPD", linetype = "dashed"),
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_PELT_out - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_out))), 
                  color = "PELT", linetype = "dotted"), 
-             size = 1.2,
+             #size = 1.2,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_out + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_out))), 
                  color = "BS", linetype = "solid"), 
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
@@ -514,7 +514,7 @@ indegreeReceiver_cpd.plot <-
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
-        legend.position = "right",
+        legend.position = "none",
         legend.text = element_text(family = "serif"),
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
@@ -523,17 +523,17 @@ indegreeReceiver_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_BOCD_indeg, 
                                 rep(NA, length(winpar$window)-length(locat_BOCD_indeg))), 
                  color = "BOCPD", linetype = "dashed"),
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_PELT_indeg - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_indeg))), 
                  color = "PELT", linetype = "dotted"), 
-             size = 1.2,
+             #size = 1.2,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_indeg + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_indeg))), 
                  color = "BS", linetype = "solid"), 
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
@@ -559,7 +559,7 @@ totSender_cpd.plot <-
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
-        legend.position = "right",
+        legend.position = "none",
         legend.text = element_text(family = "serif"),
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
@@ -568,17 +568,17 @@ totSender_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_BOCD_totSend, 
                                 rep(NA, length(winpar$window)-length(locat_BOCD_totSend))), 
                  color = "BOCPD", linetype = "dashed"),
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_PELT_totSend - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_totSend))), 
                  color = "PELT", linetype = "dotted"), 
-             size = 1.2,
+             #size = 1.2,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_totSend + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_totSend))), 
                  color = "BS", linetype = "solid"), 
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
@@ -604,7 +604,7 @@ psABBA_cpd.plot <-
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
-        legend.position = "right",
+        legend.position = "none",
         legend.text = element_text(family = "serif"),
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
@@ -613,17 +613,17 @@ psABBA_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_BOCD_psABBA, 
                                 rep(NA, length(winpar$window)-length(locat_BOCD_psABBA))), 
                  color = "BOCPD", linetype = "dashed"),
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_PELT_psABBA - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_psABBA))), 
                  color = "PELT", linetype = "dotted"), 
-             size = 1.2,
+             #size = 1.2,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_psABBA + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_psABBA))), 
                  color = "BS", linetype = "solid"), 
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
@@ -649,7 +649,7 @@ psABXA_cpd.plot <-
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
-        legend.position = "right",
+        legend.position = "none",
         legend.text = element_text(family = "serif"),
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
@@ -658,17 +658,17 @@ psABXA_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_BOCD_psABXA, 
                                 rep(NA, length(winpar$window)-length(locat_BOCD_psABXA))), 
                  color = "BOCPD", linetype = "dashed"),
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_PELT_psABXA - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_psABXA))), 
                  color = "PELT", linetype = "dotted"), 
-             size = 1.2,
+             #size = 1.2,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_psABXA + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_psABXA))), 
                  color = "BS", linetype = "solid"), 
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
@@ -694,7 +694,7 @@ psABBY_cpd.plot <-
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
         axis.title = element_text(family = "serif"),
-        legend.position = "right",
+        legend.position = "none",
         legend.text = element_text(family = "serif"),
         legend.title = element_text(face = "italic", family = "serif"),
         panel.grid.major = element_blank(),
@@ -703,17 +703,17 @@ psABBY_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_BOCD_psABBY, 
                                 rep(NA, length(winpar$window)-length(locat_BOCD_psABBY))), 
                  color = "BOCPD", linetype = "dashed"),
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_PELT_psABBY - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_psABBY))), 
                  color = "PELT", linetype = "dotted"), 
-             size = 1.2,
+             #size = 1.2,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_psABBY + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_psABBY))), 
                  color = "BS", linetype = "solid"), 
-             size = 1,
+             #size = 1,
              show.legend = TRUE) +
   scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
@@ -728,7 +728,7 @@ psABBY_cpd.plot
 
 ## Combine all plots
 
-```{r fig.height=7.5, fig.width=11, warning=FALSE}
+```{r fig.height=7.5, fig.width=9, warning=FALSE}
 indegreeReceiver_cpd.plot +
   inertia_cpd.plot +
   outdegree_cpd.plot + 
@@ -737,5 +737,42 @@ indegreeReceiver_cpd.plot +
   psABXA_cpd.plot +
   totSender_cpd.plot +
   plot_layout(ncol = 2, widths = c(1,1)) +
-  theme(legend.position = "right")
+  theme(legend.position = "bottom",
+        legend.box = "horizontal",
+        # legend x and y position
+        legend.justification = c(4.5, 2),
+        # legend height of the entire plot
+        legend.margin = margin(t = -1.8, r = 0, b = 0, l = 0, unit = "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14))
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

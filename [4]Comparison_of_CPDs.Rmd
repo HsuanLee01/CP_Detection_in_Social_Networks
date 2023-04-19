@@ -105,12 +105,12 @@ conf_matrix <- function(pred_CPs, # e.g. locat_BOCD_1cp_out_same.all
 MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
                     true_CPs, # a vector, the location of true CPs
                     range # the range that the detected CP inside that range with true CP can still recognized as TP
-){
+) {
   
-  # create a blank list for square error with the same length as number of datasets
+  # create a blank list for sign difference with the same length as number of datasets
   initial_SE <- lapply(seq_along(pred_CPs), function(x) list())
   
-  # create a blank list to store mean square error of each dataset
+  # create a blank list to store mean sign difference of each dataset
   MSE <- lapply(seq_along(pred_CPs), function(x) list())
   
   # for each dataset
@@ -125,26 +125,31 @@ MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
       for (cp_det in 1:length(pred_CPs[[i]])) {
         
         # for column, i.e., number of true CPs
-        for (cp_true in 1: length(true_CPs)) {
+        for (cp_true in 1:length(true_CPs)) {
           
-          # store the square error of all the detected CPs with all the true CP into the matrix
-          detected_SE[cp_det,cp_true] <- (true_CPs[cp_true] - pred_CPs[[i]][cp_det])^2
+          # store the sign difference of all the detected CPs with all the true CP into the matrix
+          detected_SE[cp_det,cp_true] <- pred_CPs[[i]][cp_det] - true_CPs[cp_true]
         }
       }
       
       # Find minimum SE for each true CP, as only the minimum one is the real detected CP for that true CP
       initial_SE[[i]] <- apply(detected_SE, 2, function(x) {
         
-        min_val <- min(x)
+        # calculate the minimum absolute distance and multiply it by the sign of the corresponding element
+        # in order to maintain the original sign (positive/negative) of the distance
+        # sign(x) returns the sign of a real number x, which is either -1, 0, or 1, 
+        # depending on whether x is negative, zero, or positive, respectively.
+        # which.min(abs(x)) is used to find the index of the element with the smallest absolute value in the vector x
+        min_val <- sign(x[which.min(abs(x))]) * min(abs(x) -1)
         
-        # if min_val equals 1, change it to 0, as one true CPs can be in three windows
-        if (min_val == 1) {
-          min_val <- 0
-        }
+        # if the minimum absolute distance is 1, change it to 0, as one true CP can be in three windows
+        #if (abs(min_val) == 1) {
+        #  min_val <- 0
+        #}
         
-        # the range that the detected CP inside that range with true CP can still recognized as TP
-        if (min_val <= range^2) {
-          min_val
+        # the range that the detected CP inside that range with true CP can still recognized as TP, at least = 2
+        if (abs(min_val) <= range) {
+          (min_val)^2
         } else {
           NA # if the detected CP is not inside the range, we assign it a NA (FP)
         }
@@ -154,15 +159,15 @@ MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
       initial_SE[[i]] <- na.omit(initial_SE[[i]])
     }
     
-    # extract values from initial_SE and sum the square error of each CP
-    MSE[[i]] <- sum(unlist(initial_SE[[i]]), na.rm = T) / length(initial_SE[[i]])
+    # extract values from initial_SE and sum the SE of each CP
+    MSE[[i]] <- sum(unlist(initial_SE[[i]]), na.rm = TRUE) / length(initial_SE[[i]])
     
   }
   # the average MSE of all datasets
-  total_MSE <- mean(unlist(MSE), na.rm = T)
+  total_MSE <- mean(unlist(MSE), na.rm = TRUE)
   
   return(list(MSE = MSE, 
-              Averade_MSE = total_MSE))
+              Average_MSE = total_MSE))
 }
 ```
 
@@ -174,10 +179,10 @@ MSD_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
                     range # the range that the detected CP inside that range with true CP can still recognized as TP
 ) {
   
-  # create a blank list for sign difference with the same length as number of datasets
+  # create a blank list for squared error with the same length as number of datasets
   initial_SD <- lapply(seq_along(pred_CPs), function(x) list())
   
-  # create a blank list to store mean sign difference of each dataset
+  # create a blank list to store mean squared error of each dataset
   MSD <- lapply(seq_along(pred_CPs), function(x) list())
   
   # for each dataset
@@ -194,7 +199,7 @@ MSD_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
         # for column, i.e., number of true CPs
         for (cp_true in 1:length(true_CPs)) {
           
-          # store the sign difference of all the detected CPs with all the true CP into the matrix
+          # store the squared error of all the detected CPs with all the true CP into the matrix
           detected_SD[cp_det,cp_true] <- pred_CPs[[i]][cp_det] - true_CPs[cp_true]
         }
       }
@@ -207,12 +212,12 @@ MSD_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
         # sign(x) returns the sign of a real number x, which is either -1, 0, or 1, 
         # depending on whether x is negative, zero, or positive, respectively.
         # which.min(abs(x)) is used to find the index of the element with the smallest absolute value in the vector x
-        min_val <- sign(x[which.min(abs(x))]) * min(abs(x))
+        min_val <- sign(x[which.min(abs(x))]) * min(abs(x) -1)
         
         # if the minimum absolute distance is 1, change it to 0, as one true CP can be in three windows
-        if (abs(min_val) == 1) {
-          min_val <- 0
-        }
+        #if (abs(min_val) == 1) {
+        #  min_val <- 0
+        #}
         
         # the range that the detected CP inside that range with true CP can still recognized as TP, at least = 2
         if (abs(min_val) <= range) {
@@ -2877,14 +2882,15 @@ We combined all of the confusion matrices of REH that contain one changepoint to
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_1cp_1win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_1win$total_confusionmatrix,
+# remove the CP at different locations scenario
+BOCD_conf_mat_1cp_1win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_1cp_same.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_1win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_1cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_1cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_1cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_1cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_1cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -2905,14 +2911,14 @@ BOCD_conf_mat_1cp_1win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_1win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_1cp_1win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_1win$total_confusionmatrix,
+PELT_conf_mat_1cp_1win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_1cp_same.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_1win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_1cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_1cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_1cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_1cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_1cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_1cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -2933,14 +2939,14 @@ PELT_conf_mat_1cp_1win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_1win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_1cp_1win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_1win$total_confusionmatrix,
+BS_conf_mat_1cp_1win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_diff_1cp_same.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_1win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_1cp_diff.all_1win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_1cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_same.all_1win$total_confusionmatrix,
-                              Conf_Mat_BS_out_1cp_diff.all_1win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_1cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_out_1cp_same.all_1win$total_confusionmatrix,
-                              Conf_Mat_BS_send_1cp_diff.all_1win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_1cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_send_1cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -2963,14 +2969,14 @@ BS_conf_mat_1cp_1win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_1win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_1cp_2win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_2win$total_confusionmatrix,
+BOCD_conf_mat_1cp_2win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_1cp_same.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_2win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_1cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_1cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_1cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_1cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_1cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -2991,14 +2997,14 @@ BOCD_conf_mat_1cp_2win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_2win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_1cp_2win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_2win$total_confusionmatrix,
+PELT_conf_mat_1cp_2win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_1cp_same.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_2win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_1cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_1cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_1cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_1cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_1cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_1cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3019,14 +3025,14 @@ PELT_conf_mat_1cp_2win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_2win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_1cp_2win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_2win$total_confusionmatrix,
+BS_conf_mat_1cp_2win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_diff_1cp_same.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_2win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_1cp_diff.all_2win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_1cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_same.all_2win$total_confusionmatrix,
-                              Conf_Mat_BS_out_1cp_diff.all_2win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_1cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_out_1cp_same.all_2win$total_confusionmatrix,
-                              Conf_Mat_BS_send_1cp_diff.all_2win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_1cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_send_1cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3049,14 +3055,14 @@ BS_conf_mat_1cp_2win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_2win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_1cp_3win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_3win$total_confusionmatrix,
+BOCD_conf_mat_1cp_3win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_1cp_same.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_3win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_1cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_1cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_1cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_1cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_1cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3077,14 +3083,14 @@ BOCD_conf_mat_1cp_3win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_3win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_1cp_3win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_3win$total_confusionmatrix,
+PELT_conf_mat_1cp_3win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_1cp_same.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_3win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_1cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_1cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_1cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_1cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_1cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_1cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3105,14 +3111,14 @@ PELT_conf_mat_1cp_3win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_3win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_1cp_3win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_3win$total_confusionmatrix,
+BS_conf_mat_1cp_3win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_diff_1cp_same.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_3win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_1cp_diff.all_3win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_1cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_same.all_3win$total_confusionmatrix,
-                              Conf_Mat_BS_out_1cp_diff.all_3win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_1cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_out_1cp_same.all_3win$total_confusionmatrix,
-                              Conf_Mat_BS_send_1cp_diff.all_3win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_1cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_send_1cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3135,14 +3141,14 @@ BS_conf_mat_1cp_3win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_3win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_1cp_4win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_4win$total_confusionmatrix,
+BOCD_conf_mat_1cp_4win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_1cp_same.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_4win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_1cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_1cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_1cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_1cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_1cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3163,14 +3169,14 @@ BOCD_conf_mat_1cp_4win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_4win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_1cp_4win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_4win$total_confusionmatrix,
+PELT_conf_mat_1cp_4win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_1cp_same.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_4win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_1cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_1cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_1cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_1cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_1cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_1cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3191,14 +3197,14 @@ PELT_conf_mat_1cp_4win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_4win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_1cp_4win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_4win$total_confusionmatrix,
+BS_conf_mat_1cp_4win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_diff_1cp_same.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_4win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_1cp_diff.all_4win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_1cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_same.all_4win$total_confusionmatrix,
-                              Conf_Mat_BS_out_1cp_diff.all_4win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_1cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_out_1cp_same.all_4win$total_confusionmatrix,
-                              Conf_Mat_BS_send_1cp_diff.all_4win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_1cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_send_1cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3221,14 +3227,14 @@ BS_conf_mat_1cp_4win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_4win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_1cp_5win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_5win$total_confusionmatrix,
+BOCD_conf_mat_1cp_5win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_1cp_same.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_5win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_1cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_1cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_1cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_1cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_1cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_1cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3249,14 +3255,14 @@ BOCD_conf_mat_1cp_5win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_5win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_1cp_5win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_5win$total_confusionmatrix,
+PELT_conf_mat_1cp_5win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_1cp_same.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_5win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_1cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_1cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_1cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_1cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_1cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_1cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_1cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3277,14 +3283,14 @@ PELT_conf_mat_1cp_5win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_5win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_1cp_5win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_5win$total_confusionmatrix,
+BS_conf_mat_1cp_5win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_diff_1cp_same.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_5win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_1cp_diff.all_5win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_1cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_ine_1cp_same.all_5win$total_confusionmatrix,
-                              Conf_Mat_BS_out_1cp_diff.all_5win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_1cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_out_1cp_same.all_5win$total_confusionmatrix,
-                              Conf_Mat_BS_send_1cp_diff.all_5win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_1cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_send_1cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3304,19 +3310,19 @@ BS_conf_mat_1cp_5win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_5win$total_confusion
 
 ## Mean Square Error (MSE)
 
-Here we identify any *window difference within 2* as TP (the range of MSE and MSD functions = 3 because there are three windows containing the real CP time points, and we use the middle window as a reference, so the range is set to 1 more than the actual)
+Here we identify any *window difference within 3* as TP
 
 ### BOCPD
 
 ```{r}
-BOCD_MSE_1cp <- c(unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
+BOCD_MSE_1cp <- c(#unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
                   unlist(MSE_BOCD_diff_1cp_same.all$MSE),
                   unlist(MSE_BOCD_ine_1cp$MSE),
-                  unlist(MSE_BOCD_ine_1cp_diff.all$MSE),
+                  #unlist(MSE_BOCD_ine_1cp_diff.all$MSE),
                   unlist(MSE_BOCD_ine_1cp_same.all$MSE),
-                  unlist(MSE_BOCD_out_1cp_diff.all$MSE),
+                  #unlist(MSE_BOCD_out_1cp_diff.all$MSE),
                   unlist(MSE_BOCD_out_1cp_same.all$MSE),
-                  unlist(MSE_BOCD_send_1cp_diff.all$MSE),
+                  #unlist(MSE_BOCD_send_1cp_diff.all$MSE),
                   unlist(MSE_BOCD_send_1cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -3326,14 +3332,14 @@ BOCD_MSE_1cp <- c(unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
 ### PELT
 
 ```{r}
-PELT_MSE_1cp <- c(unlist(MSE_PELT_diff_1cp_diff.all$MSE),
+PELT_MSE_1cp <- c(#unlist(MSE_PELT_diff_1cp_diff.all$MSE),
                   unlist(MSE_PELT_diff_1cp_same.all$MSE),
                   unlist(MSE_PELT_ine_1cp$MSE),
-                  unlist(MSE_PELT_ine_1cp_diff.all$MSE),
+                  #unlist(MSE_PELT_ine_1cp_diff.all$MSE),
                   unlist(MSE_PELT_ine_1cp_same.all$MSE),
-                  unlist(MSE_PELT_out_1cp_diff.all$MSE),
+                  #unlist(MSE_PELT_out_1cp_diff.all$MSE),
                   unlist(MSE_PELT_out_1cp_same.all$MSE),
-                  unlist(MSE_PELT_send_1cp_diff.all$MSE),
+                  #unlist(MSE_PELT_send_1cp_diff.all$MSE),
                   unlist(MSE_PELT_send_1cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -3343,14 +3349,14 @@ PELT_MSE_1cp <- c(unlist(MSE_PELT_diff_1cp_diff.all$MSE),
 ### BS
 
 ```{r}
-BS_MSE_1cp <- c(unlist(MSE_BS_diff_1cp_diff.all$MSE),
+BS_MSE_1cp <- c(#unlist(MSE_BS_diff_1cp_diff.all$MSE),
                 unlist(MSE_BS_diff_1cp_same.all$MSE),
                 unlist(MSE_BS_ine_1cp$MSE),
-                unlist(MSE_BS_ine_1cp_diff.all$MSE),
+                #unlist(MSE_BS_ine_1cp_diff.all$MSE),
                 unlist(MSE_BS_ine_1cp_same.all$MSE),
-                unlist(MSE_BS_out_1cp_diff.all$MSE),
+                #unlist(MSE_BS_out_1cp_diff.all$MSE),
                 unlist(MSE_BS_out_1cp_same.all$MSE),
-                unlist(MSE_BS_send_1cp_diff.all$MSE),
+                #unlist(MSE_BS_send_1cp_diff.all$MSE),
                 unlist(MSE_BS_send_1cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -3362,14 +3368,14 @@ BS_MSE_1cp <- c(unlist(MSE_BS_diff_1cp_diff.all$MSE),
 ### BOCPD
 
 ```{r}
-BOCD_MSD_1cp <- c(unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
+BOCD_MSD_1cp <- c(#unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
                   unlist(MSD_BOCD_diff_1cp_same.all$MSD),
                   unlist(MSD_BOCD_ine_1cp$MSD),
-                  unlist(MSD_BOCD_ine_1cp_diff.all$MSD),
+                  #unlist(MSD_BOCD_ine_1cp_diff.all$MSD),
                   unlist(MSD_BOCD_ine_1cp_same.all$MSD),
-                  unlist(MSD_BOCD_out_1cp_diff.all$MSD),
+                  #unlist(MSD_BOCD_out_1cp_diff.all$MSD),
                   unlist(MSD_BOCD_out_1cp_same.all$MSD),
-                  unlist(MSD_BOCD_send_1cp_diff.all$MSD),
+                  #unlist(MSD_BOCD_send_1cp_diff.all$MSD),
                   unlist(MSD_BOCD_send_1cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -3379,14 +3385,14 @@ BOCD_MSD_1cp <- c(unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
 ### PELT
 
 ```{r}
-PELT_MSD_1cp <- c(unlist(MSD_PELT_diff_1cp_diff.all$MSD),
+PELT_MSD_1cp <- c(#unlist(MSD_PELT_diff_1cp_diff.all$MSD),
                   unlist(MSD_PELT_diff_1cp_same.all$MSD),
                   unlist(MSD_PELT_ine_1cp$MSD),
-                  unlist(MSD_PELT_ine_1cp_diff.all$MSD),
+                  #unlist(MSD_PELT_ine_1cp_diff.all$MSD),
                   unlist(MSD_PELT_ine_1cp_same.all$MSD),
-                  unlist(MSD_PELT_out_1cp_diff.all$MSD),
+                  #unlist(MSD_PELT_out_1cp_diff.all$MSD),
                   unlist(MSD_PELT_out_1cp_same.all$MSD),
-                  unlist(MSD_PELT_send_1cp_diff.all$MSD),
+                  #unlist(MSD_PELT_send_1cp_diff.all$MSD),
                   unlist(MSD_PELT_send_1cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -3396,14 +3402,14 @@ PELT_MSD_1cp <- c(unlist(MSD_PELT_diff_1cp_diff.all$MSD),
 ### BS
 
 ```{r}
-BS_MSD_1cp <- c(unlist(MSD_BS_diff_1cp_diff.all$MSD),
+BS_MSD_1cp <- c(#unlist(MSD_BS_diff_1cp_diff.all$MSD),
                 unlist(MSD_BS_diff_1cp_same.all$MSD),
                 unlist(MSD_BS_ine_1cp$MSD),
-                unlist(MSD_BS_ine_1cp_diff.all$MSD),
+                #unlist(MSD_BS_ine_1cp_diff.all$MSD),
                 unlist(MSD_BS_ine_1cp_same.all$MSD),
-                unlist(MSD_BS_out_1cp_diff.all$MSD),
+                #unlist(MSD_BS_out_1cp_diff.all$MSD),
                 unlist(MSD_BS_out_1cp_same.all$MSD),
-                unlist(MSD_BS_send_1cp_diff.all$MSD),
+                #unlist(MSD_BS_send_1cp_diff.all$MSD),
                 unlist(MSD_BS_send_1cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -3421,14 +3427,14 @@ We combined all of the confusion matrices of REH that contain one changepoint to
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_2cp_1win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_1win$total_confusionmatrix,
+BOCD_conf_mat_2cp_1win <- rbind(#Conf_Mat_BOCD_diff_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_2cp_same.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_1win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_2cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_2cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_2cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_2cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_2cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3449,14 +3455,14 @@ BOCD_conf_mat_2cp_1win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_1win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_2cp_1win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_1win$total_confusionmatrix,
+PELT_conf_mat_2cp_1win <- rbind(#Conf_Mat_PELT_diff_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_2cp_same.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_1win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_2cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_2cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_2cp_same.all_1win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_2cp_diff.all_1win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_2cp_diff.all_1win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_2cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3477,14 +3483,14 @@ PELT_conf_mat_2cp_1win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_1win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_2cp_1win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_1win$total_confusionmatrix,
+BS_conf_mat_2cp_1win <- rbind(#Conf_Mat_BS_diff_2cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_diff_2cp_same.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_1win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_2cp_diff.all_1win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_2cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_same.all_1win$total_confusionmatrix,
-                              Conf_Mat_BS_out_2cp_diff.all_1win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_2cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_out_2cp_same.all_1win$total_confusionmatrix,
-                              Conf_Mat_BS_send_2cp_diff.all_1win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_2cp_diff.all_1win$total_confusionmatrix,
                               Conf_Mat_BS_send_2cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3507,14 +3513,14 @@ BS_conf_mat_2cp_1win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_1win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_2cp_2win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_2win$total_confusionmatrix,
+BOCD_conf_mat_2cp_2win <- rbind(#Conf_Mat_BOCD_diff_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_2cp_same.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_2win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_2cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_2cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_2cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_2cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_2cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3535,14 +3541,14 @@ BOCD_conf_mat_2cp_2win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_2win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_2cp_2win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_2win$total_confusionmatrix,
+PELT_conf_mat_2cp_2win <- rbind(#Conf_Mat_PELT_diff_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_2cp_same.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_2win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_2cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_2cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_2cp_same.all_2win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_2cp_diff.all_2win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_2cp_diff.all_2win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_2cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3563,14 +3569,14 @@ PELT_conf_mat_2cp_2win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_2win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_2cp_2win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_2win$total_confusionmatrix,
+BS_conf_mat_2cp_2win <- rbind(#Conf_Mat_BS_diff_2cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_diff_2cp_same.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_2win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_2cp_diff.all_2win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_2cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_same.all_2win$total_confusionmatrix,
-                              Conf_Mat_BS_out_2cp_diff.all_2win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_2cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_out_2cp_same.all_2win$total_confusionmatrix,
-                              Conf_Mat_BS_send_2cp_diff.all_2win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_2cp_diff.all_2win$total_confusionmatrix,
                               Conf_Mat_BS_send_2cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3593,14 +3599,14 @@ BS_conf_mat_2cp_2win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_2win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_2cp_3win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_3win$total_confusionmatrix,
+BOCD_conf_mat_2cp_3win <- rbind(#Conf_Mat_BOCD_diff_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_2cp_same.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_3win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_2cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_2cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_2cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_2cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_2cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3621,14 +3627,14 @@ BOCD_conf_mat_2cp_3win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_3win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_2cp_3win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_3win$total_confusionmatrix,
+PELT_conf_mat_2cp_3win <- rbind(#Conf_Mat_PELT_diff_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_2cp_same.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_3win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_2cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_2cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_2cp_same.all_3win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_2cp_diff.all_3win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_2cp_diff.all_3win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_2cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3649,14 +3655,14 @@ PELT_conf_mat_2cp_3win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_3win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_2cp_3win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_3win$total_confusionmatrix,
+BS_conf_mat_2cp_3win <- rbind(#Conf_Mat_BS_diff_2cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_diff_2cp_same.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_3win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_2cp_diff.all_3win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_2cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_same.all_3win$total_confusionmatrix,
-                              Conf_Mat_BS_out_2cp_diff.all_3win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_2cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_out_2cp_same.all_3win$total_confusionmatrix,
-                              Conf_Mat_BS_send_2cp_diff.all_3win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_2cp_diff.all_3win$total_confusionmatrix,
                               Conf_Mat_BS_send_2cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3679,14 +3685,14 @@ BS_conf_mat_2cp_3win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_3win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_2cp_4win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_4win$total_confusionmatrix,
+BOCD_conf_mat_2cp_4win <- rbind(#Conf_Mat_BOCD_diff_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_2cp_same.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_4win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_2cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_2cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_2cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_2cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_2cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3707,14 +3713,14 @@ BOCD_conf_mat_2cp_4win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_4win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_2cp_4win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_4win$total_confusionmatrix,
+PELT_conf_mat_2cp_4win <- rbind(#Conf_Mat_PELT_diff_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_2cp_same.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_4win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_2cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_2cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_2cp_same.all_4win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_2cp_diff.all_4win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_2cp_diff.all_4win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_2cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3735,14 +3741,14 @@ PELT_conf_mat_2cp_4win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_4win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_2cp_4win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_4win$total_confusionmatrix,
+BS_conf_mat_2cp_4win <- rbind(#Conf_Mat_BS_diff_2cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_diff_2cp_same.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_4win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_2cp_diff.all_4win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_2cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_same.all_4win$total_confusionmatrix,
-                              Conf_Mat_BS_out_2cp_diff.all_4win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_2cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_out_2cp_same.all_4win$total_confusionmatrix,
-                              Conf_Mat_BS_send_2cp_diff.all_4win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_2cp_diff.all_4win$total_confusionmatrix,
                               Conf_Mat_BS_send_2cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3765,14 +3771,14 @@ BS_conf_mat_2cp_4win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_4win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_2cp_5win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_5win$total_confusionmatrix,
+BOCD_conf_mat_2cp_5win <- rbind(#Conf_Mat_BOCD_diff_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_diff_2cp_same.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_5win$total_confusionmatrix,
-                                Conf_Mat_BOCD_ine_2cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_ine_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_ine_2cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_BOCD_out_2cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_out_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_out_2cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_BOCD_send_2cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_BOCD_send_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_BOCD_send_2cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3793,14 +3799,14 @@ BOCD_conf_mat_2cp_5win <- rbind(Conf_Mat_BOCD_diff_2cp_diff.all_5win$total_confu
 ### PELT
 
 ```{r}
-PELT_conf_mat_2cp_5win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_5win$total_confusionmatrix,
+PELT_conf_mat_2cp_5win <- rbind(#Conf_Mat_PELT_diff_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_diff_2cp_same.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_5win$total_confusionmatrix,
-                                Conf_Mat_PELT_ine_2cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_PELT_ine_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_ine_2cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_PELT_out_2cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_PELT_out_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_out_2cp_same.all_5win$total_confusionmatrix,
-                                Conf_Mat_PELT_send_2cp_diff.all_5win$total_confusionmatrix,
+                                #Conf_Mat_PELT_send_2cp_diff.all_5win$total_confusionmatrix,
                                 Conf_Mat_PELT_send_2cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3821,14 +3827,14 @@ PELT_conf_mat_2cp_5win <- rbind(Conf_Mat_PELT_diff_2cp_diff.all_5win$total_confu
 ### BS
 
 ```{r}
-BS_conf_mat_2cp_5win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_5win$total_confusionmatrix,
+BS_conf_mat_2cp_5win <- rbind(#Conf_Mat_BS_diff_2cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_diff_2cp_same.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_5win$total_confusionmatrix,
-                              Conf_Mat_BS_ine_2cp_diff.all_5win$total_confusionmatrix,
+                              #Conf_Mat_BS_ine_2cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_ine_2cp_same.all_5win$total_confusionmatrix,
-                              Conf_Mat_BS_out_2cp_diff.all_5win$total_confusionmatrix,
+                              #Conf_Mat_BS_out_2cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_out_2cp_same.all_5win$total_confusionmatrix,
-                              Conf_Mat_BS_send_2cp_diff.all_5win$total_confusionmatrix,
+                              #Conf_Mat_BS_send_2cp_diff.all_5win$total_confusionmatrix,
                               Conf_Mat_BS_send_2cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -3851,14 +3857,14 @@ BS_conf_mat_2cp_5win <- rbind(Conf_Mat_BS_diff_2cp_diff.all_5win$total_confusion
 ### BOCPD
 
 ```{r}
-BOCD_MSE_2cp <- c(unlist(MSE_BOCD_diff_2cp_diff.all$MSE),
+BOCD_MSE_2cp <- c(#unlist(MSE_BOCD_diff_2cp_diff.all$MSE),
               unlist(MSE_BOCD_diff_2cp_same.all$MSE),
               unlist(MSE_BOCD_ine_2cp$MSE),
-              unlist(MSE_BOCD_ine_2cp_diff.all$MSE),
+              #unlist(MSE_BOCD_ine_2cp_diff.all$MSE),
               unlist(MSE_BOCD_ine_2cp_same.all$MSE),
-              unlist(MSE_BOCD_out_2cp_diff.all$MSE),
+              #unlist(MSE_BOCD_out_2cp_diff.all$MSE),
               unlist(MSE_BOCD_out_2cp_same.all$MSE),
-              unlist(MSE_BOCD_send_2cp_diff.all$MSE),
+              #unlist(MSE_BOCD_send_2cp_diff.all$MSE),
               unlist(MSE_BOCD_send_2cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -3868,14 +3874,14 @@ BOCD_MSE_2cp <- c(unlist(MSE_BOCD_diff_2cp_diff.all$MSE),
 ### PELT
 
 ```{r}
-PELT_MSE_2cp <- c(unlist(MSE_PELT_diff_2cp_diff.all$MSE),
+PELT_MSE_2cp <- c(#unlist(MSE_PELT_diff_2cp_diff.all$MSE),
               unlist(MSE_PELT_diff_2cp_same.all$MSE),
               unlist(MSE_PELT_ine_2cp$MSE),
-              unlist(MSE_PELT_ine_2cp_diff.all$MSE),
+              #unlist(MSE_PELT_ine_2cp_diff.all$MSE),
               unlist(MSE_PELT_ine_2cp_same.all$MSE),
-              unlist(MSE_PELT_out_2cp_diff.all$MSE),
+              #unlist(MSE_PELT_out_2cp_diff.all$MSE),
               unlist(MSE_PELT_out_2cp_same.all$MSE),
-              unlist(MSE_PELT_send_2cp_diff.all$MSE),
+              #unlist(MSE_PELT_send_2cp_diff.all$MSE),
               unlist(MSE_PELT_send_2cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -3885,14 +3891,14 @@ PELT_MSE_2cp <- c(unlist(MSE_PELT_diff_2cp_diff.all$MSE),
 ### BS
 
 ```{r}
-BS_MSE_2cp <- c(unlist(MSE_BS_diff_2cp_diff.all$MSE),
+BS_MSE_2cp <- c(#unlist(MSE_BS_diff_2cp_diff.all$MSE),
               unlist(MSE_BS_diff_2cp_same.all$MSE),
               unlist(MSE_BS_ine_2cp$MSE),
-              unlist(MSE_BS_ine_2cp_diff.all$MSE),
+              #unlist(MSE_BS_ine_2cp_diff.all$MSE),
               unlist(MSE_BS_ine_2cp_same.all$MSE),
-              unlist(MSE_BS_out_2cp_diff.all$MSE),
+              #unlist(MSE_BS_out_2cp_diff.all$MSE),
               unlist(MSE_BS_out_2cp_same.all$MSE),
-              unlist(MSE_BS_send_2cp_diff.all$MSE),
+              #unlist(MSE_BS_send_2cp_diff.all$MSE),
               unlist(MSE_BS_send_2cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -3904,14 +3910,14 @@ BS_MSE_2cp <- c(unlist(MSE_BS_diff_2cp_diff.all$MSE),
 ### BOCPD
 
 ```{r}
-BOCD_MSD_2cp <- c(unlist(MSD_BOCD_diff_2cp_diff.all$MSD),
+BOCD_MSD_2cp <- c(#unlist(MSD_BOCD_diff_2cp_diff.all$MSD),
               unlist(MSD_BOCD_diff_2cp_same.all$MSD),
               unlist(MSD_BOCD_ine_2cp$MSD),
-              unlist(MSD_BOCD_ine_2cp_diff.all$MSD),
+              #unlist(MSD_BOCD_ine_2cp_diff.all$MSD),
               unlist(MSD_BOCD_ine_2cp_same.all$MSD),
-              unlist(MSD_BOCD_out_2cp_diff.all$MSD),
+              #unlist(MSD_BOCD_out_2cp_diff.all$MSD),
               unlist(MSD_BOCD_out_2cp_same.all$MSD),
-              unlist(MSD_BOCD_send_2cp_diff.all$MSD),
+              #unlist(MSD_BOCD_send_2cp_diff.all$MSD),
               unlist(MSD_BOCD_send_2cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -3921,14 +3927,14 @@ BOCD_MSD_2cp <- c(unlist(MSD_BOCD_diff_2cp_diff.all$MSD),
 ### PELT
 
 ```{r}
-PELT_MSD_2cp <- c(unlist(MSD_PELT_diff_2cp_diff.all$MSD),
+PELT_MSD_2cp <- c(#unlist(MSD_PELT_diff_2cp_diff.all$MSD),
               unlist(MSD_PELT_diff_2cp_same.all$MSD),
               unlist(MSD_PELT_ine_2cp$MSD),
-              unlist(MSD_PELT_ine_2cp_diff.all$MSD),
+              #unlist(MSD_PELT_ine_2cp_diff.all$MSD),
               unlist(MSD_PELT_ine_2cp_same.all$MSD),
-              unlist(MSD_PELT_out_2cp_diff.all$MSD),
+              #unlist(MSD_PELT_out_2cp_diff.all$MSD),
               unlist(MSD_PELT_out_2cp_same.all$MSD),
-              unlist(MSD_PELT_send_2cp_diff.all$MSD),
+              #unlist(MSD_PELT_send_2cp_diff.all$MSD),
               unlist(MSD_PELT_send_2cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -3938,14 +3944,14 @@ PELT_MSD_2cp <- c(unlist(MSD_PELT_diff_2cp_diff.all$MSD),
 ### BS
 
 ```{r}
-BS_MSD_2cp <- c(unlist(MSD_BS_diff_2cp_diff.all$MSD),
+BS_MSD_2cp <- c(#unlist(MSD_BS_diff_2cp_diff.all$MSD),
             unlist(MSD_BS_diff_2cp_same.all$MSD),
             unlist(MSD_BS_ine_2cp$MSD),
-            unlist(MSD_BS_ine_2cp_diff.all$MSD),
+            #unlist(MSD_BS_ine_2cp_diff.all$MSD),
             unlist(MSD_BS_ine_2cp_same.all$MSD),
-            unlist(MSD_BS_out_2cp_diff.all$MSD),
+            #unlist(MSD_BS_out_2cp_diff.all$MSD),
             unlist(MSD_BS_out_2cp_same.all$MSD),
-            unlist(MSD_BS_send_2cp_diff.all$MSD),
+            #unlist(MSD_BS_send_2cp_diff.all$MSD),
             unlist(MSD_BS_send_2cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -3963,23 +3969,23 @@ We combined all of the confusion matrices of REH that contain the changepoint to
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_1win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_1win$total_confusionmatrix,
+BOCD_conf_mat_1win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_1cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_BOCD_diff_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_diff_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_2cp_same.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_1win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_1cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_same.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_1win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_1cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_1cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_2cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_1cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_1cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_2cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4000,23 +4006,23 @@ BOCD_conf_mat_1win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_1win$total_confusion
 ### PELT
 
 ```{r}
-PELT_conf_mat_1win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_1win$total_confusionmatrix,
+PELT_conf_mat_1win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_1cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_PELT_diff_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_PELT_diff_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_2cp_same.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_1win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_1cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_same.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_1win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_1cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_out_1cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_out_2cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_1cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_1cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_send_1cp_same.all_1win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_2cp_diff.all_1win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_2cp_diff.all_1win$total_confusionmatrix,
                        Conf_Mat_PELT_send_2cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4037,23 +4043,23 @@ PELT_conf_mat_1win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_1win$total_confusion
 ### BS
 
 ```{r}
-BS_conf_mat_1win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_1win$total_confusionmatrix,
+BS_conf_mat_1win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_diff_1cp_same.all_1win$total_confusionmatrix,
-                     Conf_Mat_BS_diff_2cp_diff.all_1win$total_confusionmatrix,
+                     #Conf_Mat_BS_diff_2cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_diff_2cp_same.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_1win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_1cp_diff.all_1win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_1cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_same.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_1win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_2cp_diff.all_1win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_2cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_same.all_1win$total_confusionmatrix,
-                     Conf_Mat_BS_out_1cp_diff.all_1win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_1cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_out_1cp_same.all_1win$total_confusionmatrix,
-                     Conf_Mat_BS_out_2cp_diff.all_1win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_2cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_out_2cp_same.all_1win$total_confusionmatrix,
-                     Conf_Mat_BS_send_1cp_diff.all_1win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_1cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_send_1cp_same.all_1win$total_confusionmatrix,
-                     Conf_Mat_BS_send_2cp_diff.all_1win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_2cp_diff.all_1win$total_confusionmatrix,
                      Conf_Mat_BS_send_2cp_same.all_1win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4076,23 +4082,23 @@ BS_conf_mat_1win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_1win$total_confusionmatr
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_2win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_2win$total_confusionmatrix,
+BOCD_conf_mat_2win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_1cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_BOCD_diff_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_diff_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_2cp_same.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_2win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_1cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_same.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_2win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_1cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_1cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_2cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_1cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_1cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_2cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4113,23 +4119,23 @@ BOCD_conf_mat_2win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_2win$total_confusion
 ### PELT
 
 ```{r}
-PELT_conf_mat_2win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_2win$total_confusionmatrix,
+PELT_conf_mat_2win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_1cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_PELT_diff_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_PELT_diff_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_2cp_same.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_2win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_1cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_same.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_2win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_1cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_out_1cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_out_2cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_1cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_1cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_send_1cp_same.all_2win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_2cp_diff.all_2win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_2cp_diff.all_2win$total_confusionmatrix,
                        Conf_Mat_PELT_send_2cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4150,23 +4156,23 @@ PELT_conf_mat_2win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_2win$total_confusion
 ### BS
 
 ```{r}
-BS_conf_mat_2win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_2win$total_confusionmatrix,
+BS_conf_mat_2win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_diff_1cp_same.all_2win$total_confusionmatrix,
-                     Conf_Mat_BS_diff_2cp_diff.all_2win$total_confusionmatrix,
+                     #Conf_Mat_BS_diff_2cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_diff_2cp_same.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_2win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_1cp_diff.all_2win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_1cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_same.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_2win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_2cp_diff.all_2win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_2cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_same.all_2win$total_confusionmatrix,
-                     Conf_Mat_BS_out_1cp_diff.all_2win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_1cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_out_1cp_same.all_2win$total_confusionmatrix,
-                     Conf_Mat_BS_out_2cp_diff.all_2win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_2cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_out_2cp_same.all_2win$total_confusionmatrix,
-                     Conf_Mat_BS_send_1cp_diff.all_2win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_1cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_send_1cp_same.all_2win$total_confusionmatrix,
-                     Conf_Mat_BS_send_2cp_diff.all_2win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_2cp_diff.all_2win$total_confusionmatrix,
                      Conf_Mat_BS_send_2cp_same.all_2win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4189,23 +4195,23 @@ BS_conf_mat_2win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_2win$total_confusionmatr
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_3win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_3win$total_confusionmatrix,
+BOCD_conf_mat_3win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_1cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_BOCD_diff_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_diff_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_2cp_same.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_3win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_1cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_same.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_3win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_1cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_1cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_2cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_1cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_1cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_2cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4226,23 +4232,23 @@ BOCD_conf_mat_3win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_3win$total_confusion
 ### PELT
 
 ```{r}
-PELT_conf_mat_3win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_3win$total_confusionmatrix,
+PELT_conf_mat_3win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_1cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_PELT_diff_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_PELT_diff_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_2cp_same.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_3win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_1cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_same.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_3win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_1cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_out_1cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_out_2cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_1cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_1cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_send_1cp_same.all_3win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_2cp_diff.all_3win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_2cp_diff.all_3win$total_confusionmatrix,
                        Conf_Mat_PELT_send_2cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4263,23 +4269,23 @@ PELT_conf_mat_3win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_3win$total_confusion
 ### BS
 
 ```{r}
-BS_conf_mat_3win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_3win$total_confusionmatrix,
+BS_conf_mat_3win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_diff_1cp_same.all_3win$total_confusionmatrix,
-                     Conf_Mat_BS_diff_2cp_diff.all_3win$total_confusionmatrix,
+                     #Conf_Mat_BS_diff_2cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_diff_2cp_same.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_3win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_1cp_diff.all_3win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_1cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_same.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_3win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_2cp_diff.all_3win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_2cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_same.all_3win$total_confusionmatrix,
-                     Conf_Mat_BS_out_1cp_diff.all_3win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_1cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_out_1cp_same.all_3win$total_confusionmatrix,
-                     Conf_Mat_BS_out_2cp_diff.all_3win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_2cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_out_2cp_same.all_3win$total_confusionmatrix,
-                     Conf_Mat_BS_send_1cp_diff.all_3win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_1cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_send_1cp_same.all_3win$total_confusionmatrix,
-                     Conf_Mat_BS_send_2cp_diff.all_3win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_2cp_diff.all_3win$total_confusionmatrix,
                      Conf_Mat_BS_send_2cp_same.all_3win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4302,23 +4308,23 @@ BS_conf_mat_3win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_3win$total_confusionmatr
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_4win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_4win$total_confusionmatrix,
+BOCD_conf_mat_4win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_1cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_BOCD_diff_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_diff_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_2cp_same.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_4win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_1cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_same.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_4win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_1cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_1cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_2cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_1cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_1cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_2cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4339,23 +4345,23 @@ BOCD_conf_mat_4win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_4win$total_confusion
 ### PELT
 
 ```{r}
-PELT_conf_mat_4win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_4win$total_confusionmatrix,
+PELT_conf_mat_4win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_1cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_PELT_diff_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_PELT_diff_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_2cp_same.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_4win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_1cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_same.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_4win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_1cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_out_1cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_out_2cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_1cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_1cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_send_1cp_same.all_4win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_2cp_diff.all_4win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_2cp_diff.all_4win$total_confusionmatrix,
                        Conf_Mat_PELT_send_2cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4376,23 +4382,23 @@ PELT_conf_mat_4win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_4win$total_confusion
 ### BS
 
 ```{r}
-BS_conf_mat_4win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_4win$total_confusionmatrix,
+BS_conf_mat_4win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_diff_1cp_same.all_4win$total_confusionmatrix,
-                     Conf_Mat_BS_diff_2cp_diff.all_4win$total_confusionmatrix,
+                     #Conf_Mat_BS_diff_2cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_diff_2cp_same.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_4win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_1cp_diff.all_4win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_1cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_same.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_4win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_2cp_diff.all_4win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_2cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_same.all_4win$total_confusionmatrix,
-                     Conf_Mat_BS_out_1cp_diff.all_4win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_1cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_out_1cp_same.all_4win$total_confusionmatrix,
-                     Conf_Mat_BS_out_2cp_diff.all_4win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_2cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_out_2cp_same.all_4win$total_confusionmatrix,
-                     Conf_Mat_BS_send_1cp_diff.all_4win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_1cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_send_1cp_same.all_4win$total_confusionmatrix,
-                     Conf_Mat_BS_send_2cp_diff.all_4win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_2cp_diff.all_4win$total_confusionmatrix,
                      Conf_Mat_BS_send_2cp_same.all_4win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4415,23 +4421,23 @@ BS_conf_mat_4win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_4win$total_confusionmatr
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_5win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_5win$total_confusionmatrix,
+BOCD_conf_mat_5win <- rbind(#Conf_Mat_BOCD_diff_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_1cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_BOCD_diff_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_diff_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_diff_2cp_same.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_5win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_1cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_1cp_same.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_5win$total_confusionmatrix,
-                       Conf_Mat_BOCD_ine_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_ine_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_ine_2cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_1cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_1cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_BOCD_out_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_out_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_out_2cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_1cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_1cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_BOCD_send_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_BOCD_send_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_BOCD_send_2cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4452,23 +4458,23 @@ BOCD_conf_mat_5win <- rbind(Conf_Mat_BOCD_diff_1cp_diff.all_5win$total_confusion
 ### PELT
 
 ```{r}
-PELT_conf_mat_5win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_5win$total_confusionmatrix,
+PELT_conf_mat_5win <- rbind(#Conf_Mat_PELT_diff_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_1cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_PELT_diff_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_PELT_diff_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_diff_2cp_same.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_5win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_1cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_1cp_same.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_5win$total_confusionmatrix,
-                       Conf_Mat_PELT_ine_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_PELT_ine_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_ine_2cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_1cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_out_1cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_PELT_out_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_PELT_out_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_out_2cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_1cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_1cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_send_1cp_same.all_5win$total_confusionmatrix,
-                       Conf_Mat_PELT_send_2cp_diff.all_5win$total_confusionmatrix,
+                       #Conf_Mat_PELT_send_2cp_diff.all_5win$total_confusionmatrix,
                        Conf_Mat_PELT_send_2cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4489,23 +4495,23 @@ PELT_conf_mat_5win <- rbind(Conf_Mat_PELT_diff_1cp_diff.all_5win$total_confusion
 ### BS
 
 ```{r}
-BS_conf_mat_5win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_5win$total_confusionmatrix,
+BS_conf_mat_5win <- rbind(#Conf_Mat_BS_diff_1cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_diff_1cp_same.all_5win$total_confusionmatrix,
-                     Conf_Mat_BS_diff_2cp_diff.all_5win$total_confusionmatrix,
+                     #Conf_Mat_BS_diff_2cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_diff_2cp_same.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_5win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_1cp_diff.all_5win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_1cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_ine_1cp_same.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_5win$total_confusionmatrix,
-                     Conf_Mat_BS_ine_2cp_diff.all_5win$total_confusionmatrix,
+                     #Conf_Mat_BS_ine_2cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_ine_2cp_same.all_5win$total_confusionmatrix,
-                     Conf_Mat_BS_out_1cp_diff.all_5win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_1cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_out_1cp_same.all_5win$total_confusionmatrix,
-                     Conf_Mat_BS_out_2cp_diff.all_5win$total_confusionmatrix,
+                     #Conf_Mat_BS_out_2cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_out_2cp_same.all_5win$total_confusionmatrix,
-                     Conf_Mat_BS_send_1cp_diff.all_5win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_1cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_send_1cp_same.all_5win$total_confusionmatrix,
-                     Conf_Mat_BS_send_2cp_diff.all_5win$total_confusionmatrix,
+                     #Conf_Mat_BS_send_2cp_diff.all_5win$total_confusionmatrix,
                      Conf_Mat_BS_send_2cp_same.all_5win$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4528,23 +4534,23 @@ BS_conf_mat_5win <- rbind(Conf_Mat_BS_diff_1cp_diff.all_5win$total_confusionmatr
 ### BOCPD
 
 ```{r}
-BOCD_MSE <- c(unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
+BOCD_MSE <- c(#unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
               unlist(MSE_BOCD_diff_1cp_same.all$MSE),
-              unlist(MSE_BOCD_diff_2cp_diff.all$MSE),
+              #unlist(MSE_BOCD_diff_2cp_diff.all$MSE),
               unlist(MSE_BOCD_diff_2cp_same.all$MSE),
               unlist(MSE_BOCD_ine_1cp$MSE),
-              unlist(MSE_BOCD_ine_1cp_diff.all$MSE),
+              #unlist(MSE_BOCD_ine_1cp_diff.all$MSE),
               unlist(MSE_BOCD_ine_1cp_same.all$MSE),
               unlist(MSE_BOCD_ine_2cp$MSE),
-              unlist(MSE_BOCD_ine_2cp_diff.all$MSE),
+              #unlist(MSE_BOCD_ine_2cp_diff.all$MSE),
               unlist(MSE_BOCD_ine_2cp_same.all$MSE),
-              unlist(MSE_BOCD_out_1cp_diff.all$MSE),
+              #unlist(MSE_BOCD_out_1cp_diff.all$MSE),
               unlist(MSE_BOCD_out_1cp_same.all$MSE),
-              unlist(MSE_BOCD_out_2cp_diff.all$MSE),
+              #unlist(MSE_BOCD_out_2cp_diff.all$MSE),
               unlist(MSE_BOCD_out_2cp_same.all$MSE),
-              unlist(MSE_BOCD_send_1cp_diff.all$MSE),
+              #unlist(MSE_BOCD_send_1cp_diff.all$MSE),
               unlist(MSE_BOCD_send_1cp_same.all$MSE),
-              unlist(MSE_BOCD_send_2cp_diff.all$MSE),
+              #unlist(MSE_BOCD_send_2cp_diff.all$MSE),
               unlist(MSE_BOCD_send_2cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -4554,23 +4560,23 @@ BOCD_MSE <- c(unlist(MSE_BOCD_diff_1cp_diff.all$MSE),
 ### PELT
 
 ```{r}
-PELT_MSE <- c(unlist(MSE_PELT_diff_1cp_diff.all$MSE),
+PELT_MSE <- c(#unlist(MSE_PELT_diff_1cp_diff.all$MSE),
               unlist(MSE_PELT_diff_1cp_same.all$MSE),
-              unlist(MSE_PELT_diff_2cp_diff.all$MSE),
+              #unlist(MSE_PELT_diff_2cp_diff.all$MSE),
               unlist(MSE_PELT_diff_2cp_same.all$MSE),
               unlist(MSE_PELT_ine_1cp$MSE),
-              unlist(MSE_PELT_ine_1cp_diff.all$MSE),
+              #unlist(MSE_PELT_ine_1cp_diff.all$MSE),
               unlist(MSE_PELT_ine_1cp_same.all$MSE),
               unlist(MSE_PELT_ine_2cp$MSE),
-              unlist(MSE_PELT_ine_2cp_diff.all$MSE),
+              #unlist(MSE_PELT_ine_2cp_diff.all$MSE),
               unlist(MSE_PELT_ine_2cp_same.all$MSE),
-              unlist(MSE_PELT_out_1cp_diff.all$MSE),
+              #unlist(MSE_PELT_out_1cp_diff.all$MSE),
               unlist(MSE_PELT_out_1cp_same.all$MSE),
-              unlist(MSE_PELT_out_2cp_diff.all$MSE),
+              #unlist(MSE_PELT_out_2cp_diff.all$MSE),
               unlist(MSE_PELT_out_2cp_same.all$MSE),
-              unlist(MSE_PELT_send_1cp_diff.all$MSE),
+              #unlist(MSE_PELT_send_1cp_diff.all$MSE),
               unlist(MSE_PELT_send_1cp_same.all$MSE),
-              unlist(MSE_PELT_send_2cp_diff.all$MSE),
+              #unlist(MSE_PELT_send_2cp_diff.all$MSE),
               unlist(MSE_PELT_send_2cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -4580,23 +4586,23 @@ PELT_MSE <- c(unlist(MSE_PELT_diff_1cp_diff.all$MSE),
 ### BS
 
 ```{r}
-BS_MSE <- c(unlist(MSE_BS_diff_1cp_diff.all$MSE),
+BS_MSE <- c(#unlist(MSE_BS_diff_1cp_diff.all$MSE),
               unlist(MSE_BS_diff_1cp_same.all$MSE),
-              unlist(MSE_BS_diff_2cp_diff.all$MSE),
+              #unlist(MSE_BS_diff_2cp_diff.all$MSE),
               unlist(MSE_BS_diff_2cp_same.all$MSE),
               unlist(MSE_BS_ine_1cp$MSE),
-              unlist(MSE_BS_ine_1cp_diff.all$MSE),
+              #unlist(MSE_BS_ine_1cp_diff.all$MSE),
               unlist(MSE_BS_ine_1cp_same.all$MSE),
               unlist(MSE_BS_ine_2cp$MSE),
-              unlist(MSE_BS_ine_2cp_diff.all$MSE),
+              #unlist(MSE_BS_ine_2cp_diff.all$MSE),
               unlist(MSE_BS_ine_2cp_same.all$MSE),
-              unlist(MSE_BS_out_1cp_diff.all$MSE),
+              #unlist(MSE_BS_out_1cp_diff.all$MSE),
               unlist(MSE_BS_out_1cp_same.all$MSE),
-              unlist(MSE_BS_out_2cp_diff.all$MSE),
+              #unlist(MSE_BS_out_2cp_diff.all$MSE),
               unlist(MSE_BS_out_2cp_same.all$MSE),
-              unlist(MSE_BS_send_1cp_diff.all$MSE),
+              #unlist(MSE_BS_send_1cp_diff.all$MSE),
               unlist(MSE_BS_send_1cp_same.all$MSE),
-              unlist(MSE_BS_send_2cp_diff.all$MSE),
+              #unlist(MSE_BS_send_2cp_diff.all$MSE),
               unlist(MSE_BS_send_2cp_same.all$MSE))
 
 # the average MSE cross the scenarios
@@ -4608,23 +4614,23 @@ BS_MSE <- c(unlist(MSE_BS_diff_1cp_diff.all$MSE),
 ### BOCPD
 
 ```{r}
-BOCD_MSD <- c(unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
+BOCD_MSD <- c(#unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
               unlist(MSD_BOCD_diff_1cp_same.all$MSD),
-              unlist(MSD_BOCD_diff_2cp_diff.all$MSD),
+              #unlist(MSD_BOCD_diff_2cp_diff.all$MSD),
               unlist(MSD_BOCD_diff_2cp_same.all$MSD),
               unlist(MSD_BOCD_ine_1cp$MSD),
-              unlist(MSD_BOCD_ine_1cp_diff.all$MSD),
+              #unlist(MSD_BOCD_ine_1cp_diff.all$MSD),
               unlist(MSD_BOCD_ine_1cp_same.all$MSD),
               unlist(MSD_BOCD_ine_2cp$MSD),
-              unlist(MSD_BOCD_ine_2cp_diff.all$MSD),
+              #unlist(MSD_BOCD_ine_2cp_diff.all$MSD),
               unlist(MSD_BOCD_ine_2cp_same.all$MSD),
-              unlist(MSD_BOCD_out_1cp_diff.all$MSD),
+              #unlist(MSD_BOCD_out_1cp_diff.all$MSD),
               unlist(MSD_BOCD_out_1cp_same.all$MSD),
-              unlist(MSD_BOCD_out_2cp_diff.all$MSD),
+              #unlist(MSD_BOCD_out_2cp_diff.all$MSD),
               unlist(MSD_BOCD_out_2cp_same.all$MSD),
-              unlist(MSD_BOCD_send_1cp_diff.all$MSD),
+              #unlist(MSD_BOCD_send_1cp_diff.all$MSD),
               unlist(MSD_BOCD_send_1cp_same.all$MSD),
-              unlist(MSD_BOCD_send_2cp_diff.all$MSD),
+              #unlist(MSD_BOCD_send_2cp_diff.all$MSD),
               unlist(MSD_BOCD_send_2cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -4634,23 +4640,23 @@ BOCD_MSD <- c(unlist(MSD_BOCD_diff_1cp_diff.all$MSD),
 ### PELT
 
 ```{r}
-PELT_MSD <- c(unlist(MSD_PELT_diff_1cp_diff.all$MSD),
+PELT_MSD <- c(#unlist(MSD_PELT_diff_1cp_diff.all$MSD),
               unlist(MSD_PELT_diff_1cp_same.all$MSD),
-              unlist(MSD_PELT_diff_2cp_diff.all$MSD),
+              #unlist(MSD_PELT_diff_2cp_diff.all$MSD),
               unlist(MSD_PELT_diff_2cp_same.all$MSD),
               unlist(MSD_PELT_ine_1cp$MSD),
-              unlist(MSD_PELT_ine_1cp_diff.all$MSD),
+              #unlist(MSD_PELT_ine_1cp_diff.all$MSD),
               unlist(MSD_PELT_ine_1cp_same.all$MSD),
               unlist(MSD_PELT_ine_2cp$MSD),
-              unlist(MSD_PELT_ine_2cp_diff.all$MSD),
+              #unlist(MSD_PELT_ine_2cp_diff.all$MSD),
               unlist(MSD_PELT_ine_2cp_same.all$MSD),
-              unlist(MSD_PELT_out_1cp_diff.all$MSD),
+              #unlist(MSD_PELT_out_1cp_diff.all$MSD),
               unlist(MSD_PELT_out_1cp_same.all$MSD),
-              unlist(MSD_PELT_out_2cp_diff.all$MSD),
+              #unlist(MSD_PELT_out_2cp_diff.all$MSD),
               unlist(MSD_PELT_out_2cp_same.all$MSD),
-              unlist(MSD_PELT_send_1cp_diff.all$MSD),
+              #unlist(MSD_PELT_send_1cp_diff.all$MSD),
               unlist(MSD_PELT_send_1cp_same.all$MSD),
-              unlist(MSD_PELT_send_2cp_diff.all$MSD),
+              #unlist(MSD_PELT_send_2cp_diff.all$MSD),
               unlist(MSD_PELT_send_2cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -4660,23 +4666,23 @@ PELT_MSD <- c(unlist(MSD_PELT_diff_1cp_diff.all$MSD),
 ### BS
 
 ```{r}
-BS_MSD <- c(unlist(MSD_BS_diff_1cp_diff.all$MSD),
+BS_MSD <- c(#unlist(MSD_BS_diff_1cp_diff.all$MSD),
             unlist(MSD_BS_diff_1cp_same.all$MSD),
-            unlist(MSD_BS_diff_2cp_diff.all$MSD),
+            #unlist(MSD_BS_diff_2cp_diff.all$MSD),
             unlist(MSD_BS_diff_2cp_same.all$MSD),
             unlist(MSD_BS_ine_1cp$MSD),
-            unlist(MSD_BS_ine_1cp_diff.all$MSD),
+            #unlist(MSD_BS_ine_1cp_diff.all$MSD),
             unlist(MSD_BS_ine_1cp_same.all$MSD),
             unlist(MSD_BS_ine_2cp$MSD),
-            unlist(MSD_BS_ine_2cp_diff.all$MSD),
+            #unlist(MSD_BS_ine_2cp_diff.all$MSD),
             unlist(MSD_BS_ine_2cp_same.all$MSD),
-            unlist(MSD_BS_out_1cp_diff.all$MSD),
+            #unlist(MSD_BS_out_1cp_diff.all$MSD),
             unlist(MSD_BS_out_1cp_same.all$MSD),
-            unlist(MSD_BS_out_2cp_diff.all$MSD),
+            #unlist(MSD_BS_out_2cp_diff.all$MSD),
             unlist(MSD_BS_out_2cp_same.all$MSD),
-            unlist(MSD_BS_send_1cp_diff.all$MSD),
+            #unlist(MSD_BS_send_1cp_diff.all$MSD),
             unlist(MSD_BS_send_1cp_same.all$MSD),
-            unlist(MSD_BS_send_2cp_diff.all$MSD),
+            #unlist(MSD_BS_send_2cp_diff.all$MSD),
             unlist(MSD_BS_send_2cp_same.all$MSD))
 
 # the average MSD cross the scenarios
@@ -4797,17 +4803,20 @@ BS_conf_mat_tot_3win_comb <- apply(BS_conf_mat_tot_3win_comb, 2, sum)
 con_mat_FP_all.scene <- data.frame("FP" = c(BOCD_conf_mat_1cp_3win[2],
                                          BOCD_conf_mat_2cp_3win[2],
                                          BOCD_conf_mat_ncp[2],
-                                         BOCD_conf_mat_tot_3win_comb[2],
+                                         #BOCD_conf_mat_tot_3win_comb[2],
                                          PELT_conf_mat_1cp_3win[2],
                                          PELT_conf_mat_2cp_3win[2],
                                          PELT_conf_mat_ncp[2],
-                                         PELT_conf_mat_tot_3win_comb[2],
+                                         #PELT_conf_mat_tot_3win_comb[2],
                                          BS_conf_mat_1cp_3win[2],
                                          BS_conf_mat_2cp_3win[2],
-                                         BS_conf_mat_ncp[2],
-                                         BS_conf_mat_tot_3win_comb[2]),
-                               "CPD" = c(rep("BOCPD", 4), rep("PELT", 4), rep("BS", 4)),
-                               "No.CPs" = rep(c("1", "2", "0", "total"), 3))
+                                         BS_conf_mat_ncp[2]
+                                         #,BS_conf_mat_tot_3win_comb[2]
+                                         ),
+                               "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
+                               "No.CPs" = rep(c("1", "2", "0"
+                                                #, "total"
+                                                ), 3))
 ```
 
 ### Information of "TPR of each scenario for each CPD"
@@ -4816,15 +4825,18 @@ con_mat_FP_all.scene <- data.frame("FP" = c(BOCD_conf_mat_1cp_3win[2],
 # create a data with all info of FP at each scenario with different CPDs
 con_mat_TPR_all.scene <- data.frame("TPR" = c(BOCD_TPR_1cp_3win,
                                               BOCD_TPR_2cp_3win,
-                                              BOCD_TPR_tot_3win,
+                                              #BOCD_TPR_tot_3win,
                                               PELT_TPR_1cp_3win,
                                               PELT_TPR_2cp_3win,
-                                              PELT_TPR_tot_3win,
+                                              #PELT_TPR_tot_3win,
                                               BS_TPR_1cp_3win,
-                                              BS_TPR_2cp_3win,
-                                              BS_TPR_tot_3win),
-                                    "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
-                                    "No.CPs" = rep(c("1", "2", "total"), 3))
+                                              BS_TPR_2cp_3win
+                                              #,BS_TPR_tot_3win
+                                              ),
+                                    "CPD" = c(rep("BOCPD", 2), rep("PELT", 2), rep("BS", 2)),
+                                    "No.CPs" = rep(c("1", "2"
+                                                     #, "total"
+                                                     ), 3))
 ```
 
 ### Information of "PPV of each scenario for each CPD"
@@ -4833,15 +4845,18 @@ con_mat_TPR_all.scene <- data.frame("TPR" = c(BOCD_TPR_1cp_3win,
 # create a data with all info of FP at each scenario with different CPDs
 con_mat_PPV_all.scene <- data.frame("PPV" = c(BOCD_PPV_1cp_3win,
                                               BOCD_PPV_2cp_3win,
-                                              BOCD_PPV_tot_3win,
+                                              #BOCD_PPV_tot_3win,
                                               PELT_PPV_1cp_3win,
                                               PELT_PPV_2cp_3win,
-                                              PELT_PPV_tot_3win,
+                                              #PELT_PPV_tot_3win,
                                               BS_PPV_1cp_3win,
-                                              BS_PPV_2cp_3win,
-                                              BS_PPV_tot_3win),
-                                    "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
-                                    "No.CPs" = rep(c("1", "2", "total"), 3))
+                                              BS_PPV_2cp_3win
+                                              #,BS_PPV_tot_3win
+                                              ),
+                                    "CPD" = c(rep("BOCPD", 2), rep("PELT", 2), rep("BS", 2)),
+                                    "No.CPs" = rep(c("1", "2"
+                                                     #, "total"
+                                                     ), 3))
 ```
 
 ### Plot FP, PPV and TPR with different scenarios
@@ -4913,15 +4928,18 @@ p3 + p4 + p5 + plot_layout(ncol = 3, widths = c(1/3, 1/3, 1/3)) +
 # create a data with all info of FP at each scenario with different CPDs
 MSE_all.scene <- data.frame("MSE" = c(BOCD_MSE_1cp,
                                       BOCD_MSE_2cp,
-                                      BOCD_MSE_tot,
+                                      #BOCD_MSE_tot,
                                       PELT_MSE_1cp,
                                       PELT_MSE_2cp,
-                                      PELT_MSE_tot,
+                                      #PELT_MSE_tot,
                                       BS_MSE_1cp,
-                                      BS_MSE_2cp,
-                                      BS_MSE_tot),
-                            "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
-                            "No.CPs" = rep(c("1", "2", "total"), 3))
+                                      BS_MSE_2cp
+                                      #,BS_MSE_tot
+                                      ),
+                            "CPD" = c(rep("BOCPD", 2), rep("PELT", 2), rep("BS", 2)),
+                            "No.CPs" = rep(c("1", "2"
+                                             #, "total"
+                                             ), 3))
 ```
 
 ### Information of " MSD of each scenario for each CPD"
@@ -4930,15 +4948,18 @@ MSE_all.scene <- data.frame("MSE" = c(BOCD_MSE_1cp,
 # create a data with all info of FP at each scenario with different CPDs
 MSD_all.scene <- data.frame("MSD" = c(BOCD_MSD_1cp,
                                       BOCD_MSD_2cp,
-                                      BOCD_MSD_tot,
+                                      #BOCD_MSD_tot,
                                       PELT_MSD_1cp,
                                       PELT_MSD_2cp,
-                                      PELT_MSD_tot,
+                                      #PELT_MSD_tot,
                                       BS_MSD_1cp,
-                                      BS_MSD_2cp,
-                                      BS_MSD_tot),
-                            "CPD" = c(rep("BOCPD", 3), rep("PELT", 3), rep("BS", 3)),
-                            "No.CPs" = rep(c("1", "2", "total"), 3))
+                                      BS_MSD_2cp
+                                      #,BS_MSD_tot
+                                      ),
+                            "CPD" = c(rep("BOCPD", 2), rep("PELT", 2), rep("BS", 2)),
+                            "No.CPs" = rep(c("1", "2"
+                                             #, "total"
+                                             ), 3))
 ```
 
 ### Plot MSE and MSD with different scenarios
@@ -4947,9 +4968,9 @@ MSD_all.scene <- data.frame("MSD" = c(BOCD_MSD_1cp,
 p6 <- ggplot(MSE_all.scene, aes(x = No.CPs, y = MSE, color = CPD, group = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "none") +
-  labs(title = "Mean Square Error",
+  labs(title = "Mean Squared Error",
        x = "No. Changepoints",
-       y = "Mean Square Error") +
+       y = "Mean Squared Error") +
   theme_bw() +
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
@@ -4965,9 +4986,9 @@ p6 <- ggplot(MSE_all.scene, aes(x = No.CPs, y = MSE, color = CPD, group = CPD)) 
 p7 <- ggplot(MSD_all.scene, aes(x = No.CPs, y = MSD, color = CPD, group = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "legend") +
-  labs(title = "Mean Sign Difference",
+  labs(title = "Mean Signed Difference",
        x = "No. Changepoints",
-       y = "Mean Sign Difference") +
+       y = "Mean Signed Difference") +
   theme_bw() +
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
