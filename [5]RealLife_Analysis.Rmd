@@ -416,7 +416,7 @@ ggplot(winpar_long, aes(x = window, y = parameter, color = effect)) +
 ```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
 inertia_cpd.plot <- 
   ggplot(winpar, aes(x = window, y = inertia)) +
-  geom_point(color = brewer.pal(n = 7, name = "Set1")[2]) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[2], size = 1.05) +
   labs(title = "Inertia",
        x = "Window", 
        y = "Parameter") +
@@ -438,20 +438,20 @@ inertia_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_PELT_ine - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_ine))), 
                  color = "PELT", linetype = "dotted"), 
-             #size = 1.2,
+             #size = 0.75,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_ine + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_ine))), 
                  color = "BS", linetype = "solid"), 
              #size = 1,
              show.legend = TRUE) +
-  scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
                      name = "CPD",
                      breaks = c("BOCPD", "PELT", "BS")) +
   scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
                         labels=c("BOCPD", "PELT", "BS"), 
-                        name="CPD")
+                        name="CPD") 
 
 inertia_cpd.plot
 ```
@@ -461,7 +461,7 @@ inertia_cpd.plot
 ```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
 outdegree_cpd.plot <- 
   ggplot(winpar, aes(x = window, y = outdegreeSender)) +
-  geom_point(color = brewer.pal(n = 7, name = "Set1")[3]) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[3], size = 1.05) +
   labs(title = "OutdegreeSender",
        x = "Window", 
        y = "Parameter") +
@@ -483,20 +483,20 @@ outdegree_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_PELT_out - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_out))), 
                  color = "PELT", linetype = "dotted"), 
-             #size = 1.2,
+             #size = 0.75,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_out + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_out))), 
                  color = "BS", linetype = "solid"), 
              #size = 1,
              show.legend = TRUE) +
-  scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
                      name = "CPD",
                      breaks = c("BOCPD", "PELT", "BS")) +
   scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
                         labels=c("BOCPD", "PELT", "BS"), 
-                        name="CPD")
+                        name="CPD") 
 
 outdegree_cpd.plot
 ```
@@ -506,7 +506,7 @@ outdegree_cpd.plot
 ```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
 indegreeReceiver_cpd.plot <- 
   ggplot(winpar, aes(x = window, y = indegreeReceiver)) +
-  geom_point(color = brewer.pal(n = 7, name = "Set1")[1]) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[1], size = 1.05) +
   labs(title = "IndegreeReceiver",
        x = "Window", 
        y = "Parameter") +
@@ -528,20 +528,20 @@ indegreeReceiver_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_PELT_indeg - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_indeg))), 
                  color = "PELT", linetype = "dotted"), 
-             #size = 1.2,
+             #size = 0.75,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_indeg + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_indeg))), 
                  color = "BS", linetype = "solid"), 
              #size = 1,
              show.legend = TRUE) +
-  scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
                      name = "CPD",
                      breaks = c("BOCPD", "PELT", "BS")) +
   scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
                         labels=c("BOCPD", "PELT", "BS"), 
-                        name="CPD")
+                        name="CPD") 
 
 indegreeReceiver_cpd.plot
 ```
@@ -551,7 +551,7 @@ indegreeReceiver_cpd.plot
 ```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
 totSender_cpd.plot <- 
   ggplot(winpar, aes(x = window, y = totaldegreeSender)) +
-  geom_point(color = brewer.pal(n = 7, name = "Set1")[7]) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[7], size = 1.05) +
   labs(title = "TotaldegreeSender",
        x = "Window", 
        y = "Parameter") +
@@ -573,20 +573,23 @@ totSender_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_PELT_totSend - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_totSend))), 
                  color = "PELT", linetype = "dotted"), 
-             #size = 1.2,
+             #size = 0.75,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_totSend + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_totSend))), 
                  color = "BS", linetype = "solid"), 
              #size = 1,
              show.legend = TRUE) +
-  scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
                      name = "CPD",
                      breaks = c("BOCPD", "PELT", "BS")) +
   scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
                         labels=c("BOCPD", "PELT", "BS"), 
-                        name="CPD")
+                        name="CPD") +
+  scale_size_manual(values=c(0.5, 0.75, 0.5), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD") 
 
 totSender_cpd.plot
 ```
@@ -596,7 +599,7 @@ totSender_cpd.plot
 ```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
 psABBA_cpd.plot <- 
   ggplot(winpar, aes(x = window, y = psABBA)) +
-  geom_point(color = brewer.pal(n = 7, name = "Set1")[4]) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[4], size = 1.05) +
   labs(title = "psABBA",
        x = "Window", 
        y = "Parameter") +
@@ -618,20 +621,20 @@ psABBA_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_PELT_psABBA - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_psABBA))), 
                  color = "PELT", linetype = "dotted"), 
-             #size = 1.2,
+             #size = 0.75,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_psABBA + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_psABBA))), 
                  color = "BS", linetype = "solid"), 
              #size = 1,
              show.legend = TRUE) +
-  scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
                      name = "CPD",
                      breaks = c("BOCPD", "PELT", "BS")) +
   scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
                         labels=c("BOCPD", "PELT", "BS"), 
-                        name="CPD")
+                        name="CPD") 
 
 psABBA_cpd.plot
 ```
@@ -641,7 +644,7 @@ psABBA_cpd.plot
 ```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
 psABXA_cpd.plot <- 
   ggplot(winpar, aes(x = window, y = psABXA)) +
-  geom_point(color = "#FFD301") +
+  geom_point(color = "#FFD301", size = 1.05) +
   labs(title = "psABXA",
        x = "Window", 
        y = "Parameter") +
@@ -663,20 +666,20 @@ psABXA_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_PELT_psABXA - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_psABXA))), 
                  color = "PELT", linetype = "dotted"), 
-             #size = 1.2,
+             #size = 0.75,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_psABXA + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_psABXA))), 
                  color = "BS", linetype = "solid"), 
              #size = 1,
              show.legend = TRUE) +
-  scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
                      name = "CPD",
                      breaks = c("BOCPD", "PELT", "BS")) +
   scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
                         labels=c("BOCPD", "PELT", "BS"), 
-                        name="CPD")
+                        name="CPD") 
 
 psABXA_cpd.plot
 ```
@@ -686,7 +689,7 @@ psABXA_cpd.plot
 ```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
 psABBY_cpd.plot <- 
   ggplot(winpar, aes(x = window, y = psABBY)) +
-  geom_point(color = brewer.pal(n = 7, name = "Set1")[5]) +
+  geom_point(color = brewer.pal(n = 7, name = "Set1")[5], size = 1.05) +
   labs(title = "psABBY",
        x = "Window", 
        y = "Parameter") +
@@ -708,14 +711,14 @@ psABBY_cpd.plot <-
   geom_vline(aes(xintercept = c(locat_PELT_psABBY - 0.1,
                                 rep(NA, length(winpar$window)-length(locat_PELT_psABBY))), 
                  color = "PELT", linetype = "dotted"), 
-             #size = 1.2,
+             #size = 0.75,
              show.legend = TRUE) +
   geom_vline(aes(xintercept = c(locat_BS_psABBY + 0.1,
                                 rep(NA, length(winpar$window)-length(locat_BS_psABBY))), 
                  color = "BS", linetype = "solid"), 
              #size = 1,
              show.legend = TRUE) +
-  scale_color_manual(values = c("#e41c1c", "#4daf4a", "#387ec1"),
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
                      labels = c("BOCPD", "PELT", "BS"),
                      name = "CPD",
                      breaks = c("BOCPD", "PELT", "BS")) +
@@ -740,39 +743,351 @@ indegreeReceiver_cpd.plot +
   theme(legend.position = "bottom",
         legend.box = "horizontal",
         # legend x and y position
-        legend.justification = c(4.5, 2),
+        legend.justification = c(6, 2.3),
         # legend height of the entire plot
         legend.margin = margin(t = -1.8, r = 0, b = 0, l = 0, unit = "cm"),
         legend.text = element_text(size = 12),
-        legend.title = element_text(size = 14))
+        legend.title = element_text(size = 14),
+        legend.key.size = unit(0.8, "cm"))
 ```
 
+# For BW plots
 
+## Inertia
 
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+inertia_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = inertia)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "Inertia",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_ine, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_ine))), 
+                 color = "BOCPD", linetype = "dashed"),
+             #size = 1,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_ine - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_ine))), 
+                 color = "PELT", linetype = "dotted"), 
+             #size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_ine + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_ine))), 
+                 color = "BS", linetype = "solid"), 
+             #size = 1,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD") 
+inertia_cpd.plot
+```
 
+## OutdegreeSender
 
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+outdegree_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = outdegreeSender)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "OutdegreeSender",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_out, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_out))), 
+                 color = "BOCPD", linetype = "dashed"),
+             #size = 1,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_out - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_out))), 
+                 color = "PELT", linetype = "dotted"), 
+             #size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_out + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_out))), 
+                 color = "BS", linetype = "solid"), 
+             #size = 1,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
 
+outdegree_cpd.plot
+```
 
+## indegreeReceiver
 
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+indegreeReceiver_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = indegreeReceiver)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "IndegreeReceiver",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_indeg, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_indeg))), 
+                 color = "BOCPD", linetype = "dashed"),
+             #size = 1,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_indeg - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_indeg))), 
+                 color = "PELT", linetype = "dotted"), 
+             #size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_indeg + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_indeg))), 
+                 color = "BS", linetype = "solid"), 
+             #size = 1,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD") 
 
+indegreeReceiver_cpd.plot
+```
 
+## TotaldegreeSender
 
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+totSender_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = totaldegreeSender)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "TotaldegreeSender",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_totSend, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_totSend))), 
+                 color = "BOCPD", linetype = "dashed"),
+             #size = 1,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_totSend - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_totSend))), 
+                 color = "PELT", linetype = "dotted"), 
+             #size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_totSend + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_totSend))), 
+                 color = "BS", linetype = "solid"), 
+             #size = 1,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD") +
+  scale_size_manual(values=c(0.5, 0.75, 0.5), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD") 
 
+totSender_cpd.plot
+```
 
+## psABBA
 
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+psABBA_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = psABBA)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "psABBA",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_psABBA, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_psABBA))), 
+                 color = "BOCPD", linetype = "dashed"),
+             #size = 1,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_psABBA - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_psABBA))), 
+                 color = "PELT", linetype = "dotted"), 
+             #size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_psABBA + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_psABBA))), 
+                 color = "BS", linetype = "solid"), 
+             #size = 1,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
 
+psABBA_cpd.plot
+```
 
+## psABXA
 
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+psABXA_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = psABXA)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "psABXA",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_psABXA, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_psABXA))), 
+                 color = "BOCPD", linetype = "dashed"),
+             #size = 1,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_psABXA - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_psABXA))), 
+                 color = "PELT", linetype = "dotted"), 
+             #size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_psABXA + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_psABXA))), 
+                 color = "BS", linetype = "solid"), 
+             #size = 1,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
 
+psABXA_cpd.plot
+```
 
+## psABBY
 
+```{r fig.height=2.5, fig.width=5.5, warning=FALSE}
+psABBY_cpd.plot <- 
+  ggplot(winpar, aes(x = window, y = psABBY)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "psABBY",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_vline(aes(xintercept = c(locat_BOCD_psABBY, 
+                                rep(NA, length(winpar$window)-length(locat_BOCD_psABBY))), 
+                 color = "BOCPD", linetype = "dashed"),
+             #size = 1,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_PELT_psABBY - 0.1,
+                                rep(NA, length(winpar$window)-length(locat_PELT_psABBY))), 
+                 color = "PELT", linetype = "dotted"), 
+             #size = 0.75,
+             show.legend = TRUE) +
+  geom_vline(aes(xintercept = c(locat_BS_psABBY + 0.1,
+                                rep(NA, length(winpar$window)-length(locat_BS_psABBY))), 
+                 color = "BS", linetype = "solid"), 
+             #size = 1,
+             show.legend = TRUE) +
+  scale_color_manual(values = c("#e41c1c", "#024129", "#387ec1"),
+                     labels = c("BOCPD", "PELT", "BS"),
+                     name = "CPD",
+                     breaks = c("BOCPD", "PELT", "BS")) +
+  scale_linetype_manual(values=c("dashed", "dotted", "solid"), 
+                        labels=c("BOCPD", "PELT", "BS"), 
+                        name="CPD")
 
+psABBY_cpd.plot
+```
 
+## Combine all plots
 
-
-
-
-
-
-
-
+```{r fig.height=7.5, fig.width=9, warning=FALSE}
+indegreeReceiver_cpd.plot +
+  inertia_cpd.plot +
+  outdegree_cpd.plot + 
+  psABBA_cpd.plot +
+  psABBY_cpd.plot +
+  psABXA_cpd.plot +
+  totSender_cpd.plot +
+  plot_layout(ncol = 2, widths = c(1,1)) +
+  theme(legend.position = "bottom",
+        legend.box = "horizontal",
+        # legend x and y position
+        legend.justification = c(6, 2.3),
+        # legend height of the entire plot
+        legend.margin = margin(t = -1.8, r = 0, b = 0, l = 0, unit = "cm"),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14),
+        legend.key.size = unit(0.8, "cm"))
+```

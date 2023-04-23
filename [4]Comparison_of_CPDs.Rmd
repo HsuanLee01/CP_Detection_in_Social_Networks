@@ -127,7 +127,7 @@ MSE_CPD <- function(pred_CPs, # detected CPs, e.g. locat_BOCD_1cp_out_same.all
         # for column, i.e., number of true CPs
         for (cp_true in 1:length(true_CPs)) {
           
-          # store the sign difference of all the detected CPs with all the true CP into the matrix
+          # store the squared error of all the detected CPs with all the true CP into the matrix
           detected_SE[cp_det,cp_true] <- pred_CPs[[i]][cp_det] - true_CPs[cp_true]
         }
       }
