@@ -1134,7 +1134,7 @@ Conf_Mat_BS_out_1cp_diff.all_5win <- conf_matrix(pred_CPs = locat_BS_1cp_out_dif
 
 Assign the true CPs for one changepoint in `inertia`
 ```{r}
-# windowss contain the CPs time point "24, 25, 26", and "79, 80, 81" in inertia
+# windows contain the CPs time point "24, 25, 26", and "79, 80, 81" in inertia
 true_2cp_1win <- matrix(c(23:27, 
                           78:82),
                         nrow = 5, ncol = 2)
@@ -2820,15 +2820,15 @@ We combined all of the confusion matrices of REH that does not contain changepoi
 ### BOCPD
 
 ```{r}
-BOCD_conf_mat_ncp <- rbind(Conf_Mat_BOCD_diff_1cp$total_confusionmatrix,
-                           Conf_Mat_BOCD_diff_2cp$total_confusionmatrix,
+BOCD_conf_mat_ncp <- rbind(#Conf_Mat_BOCD_diff_1cp$total_confusionmatrix,
+                           #Conf_Mat_BOCD_diff_2cp$total_confusionmatrix,
                            Conf_Mat_BOCD_diff_ncp$total_confusionmatrix,
                            Conf_Mat_BOCD_ine_ncp$total_confusionmatrix,
-                           Conf_Mat_BOCD_out_1cp$total_confusionmatrix,
-                           Conf_Mat_BOCD_out_2cp$total_confusionmatrix,
+                           #Conf_Mat_BOCD_out_1cp$total_confusionmatrix,
+                           #Conf_Mat_BOCD_out_2cp$total_confusionmatrix,
                            Conf_Mat_BOCD_out_ncp$total_confusionmatrix,
-                           Conf_Mat_BOCD_send_1cp$total_confusionmatrix,
-                           Conf_Mat_BOCD_send_2cp$total_confusionmatrix,
+                           #Conf_Mat_BOCD_send_1cp$total_confusionmatrix,
+                           #Conf_Mat_BOCD_send_2cp$total_confusionmatrix,
                            Conf_Mat_BOCD_send_ncp$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -2838,15 +2838,15 @@ BOCD_conf_mat_ncp <- rbind(Conf_Mat_BOCD_diff_1cp$total_confusionmatrix,
 ### PELT
 
 ```{r}
-PELT_conf_mat_ncp <- rbind(Conf_Mat_PELT_diff_1cp$total_confusionmatrix,
-                           Conf_Mat_PELT_diff_2cp$total_confusionmatrix,
+PELT_conf_mat_ncp <- rbind(#Conf_Mat_PELT_diff_1cp$total_confusionmatrix,
+                           #Conf_Mat_PELT_diff_2cp$total_confusionmatrix,
                            Conf_Mat_PELT_diff_ncp$total_confusionmatrix,
                            Conf_Mat_PELT_ine_ncp$total_confusionmatrix,
-                           Conf_Mat_PELT_out_1cp$total_confusionmatrix,
-                           Conf_Mat_PELT_out_2cp$total_confusionmatrix,
+                           #Conf_Mat_PELT_out_1cp$total_confusionmatrix,
+                           #Conf_Mat_PELT_out_2cp$total_confusionmatrix,
                            Conf_Mat_PELT_out_ncp$total_confusionmatrix,
-                           Conf_Mat_PELT_send_1cp$total_confusionmatrix,
-                           Conf_Mat_PELT_send_2cp$total_confusionmatrix,
+                           #Conf_Mat_PELT_send_1cp$total_confusionmatrix,
+                           #Conf_Mat_PELT_send_2cp$total_confusionmatrix,
                            Conf_Mat_PELT_send_ncp$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -2856,15 +2856,15 @@ PELT_conf_mat_ncp <- rbind(Conf_Mat_PELT_diff_1cp$total_confusionmatrix,
 ### BS
 
 ```{r}
-BS_conf_mat_ncp <- rbind(Conf_Mat_BS_diff_1cp$total_confusionmatrix,
-                         Conf_Mat_BS_diff_2cp$total_confusionmatrix,
+BS_conf_mat_ncp <- rbind(#Conf_Mat_BS_diff_1cp$total_confusionmatrix,
+                         #Conf_Mat_BS_diff_2cp$total_confusionmatrix,
                          Conf_Mat_BS_diff_ncp$total_confusionmatrix,
                          Conf_Mat_BS_ine_ncp$total_confusionmatrix,
-                         Conf_Mat_BS_out_1cp$total_confusionmatrix,
-                         Conf_Mat_BS_out_2cp$total_confusionmatrix,
+                         #Conf_Mat_BS_out_1cp$total_confusionmatrix,
+                         #Conf_Mat_BS_out_2cp$total_confusionmatrix,
                          Conf_Mat_BS_out_ncp$total_confusionmatrix,
-                         Conf_Mat_BS_send_1cp$total_confusionmatrix,
-                         Conf_Mat_BS_send_2cp$total_confusionmatrix,
+                         #Conf_Mat_BS_send_1cp$total_confusionmatrix,
+                         #Conf_Mat_BS_send_2cp$total_confusionmatrix,
                          Conf_Mat_BS_send_ncp$total_confusionmatrix)
 
 # the combined Confusion Matrix
@@ -4867,7 +4867,7 @@ p3 <- ggplot(con_mat_FP_all.scene, aes(x = No.CPs, y = FP, color = CPD, group = 
   scale_color_brewer(palette = "Set1", guide = "none") +
   labs(title = "No. False Positive",
        x = "No. Changepoints",
-       y = "No. False Posituve") +
+       y = "No. False Positive") +
   theme_bw() +
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
@@ -4883,9 +4883,9 @@ p3 <- ggplot(con_mat_FP_all.scene, aes(x = No.CPs, y = FP, color = CPD, group = 
 p4 <- ggplot(con_mat_TPR_all.scene, aes(x = No.CPs, y = TPR, color = CPD, group = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "none") +
-  labs(title = "True Posistive Rate",
+  labs(title = "Recall",
        x = "No. Changepoints",
-       y = "True Posistive Rate") +
+       y = "Recall") +
   theme_bw() +
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
@@ -4902,9 +4902,9 @@ p4 <- ggplot(con_mat_TPR_all.scene, aes(x = No.CPs, y = TPR, color = CPD, group 
 p5 <- ggplot(con_mat_PPV_all.scene, aes(x = No.CPs, y = PPV, color = CPD, group = CPD)) +
   geom_line(size = 1) +
   scale_color_brewer(palette = "Set1", guide = "legend") +
-  labs(title = "Positive Predictive Value",
+  labs(title = "Precision",
        x = "No. Changepoints",
-       y = "Positive Predictive Value") +
+       y = "Precision") +
   theme_bw() +
   theme(plot.title = element_text(face = "italic", family = "serif"),
         axis.text = element_text(family = "serif"),
