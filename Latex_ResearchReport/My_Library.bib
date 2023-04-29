@@ -1,17 +1,15 @@
-@misc{adamsBayesianOnlineChangepoint2007,
+@online{adamsBayesianOnlineChangepoint2007,
   title = {Bayesian {{Online Changepoint Detection}}},
   author = {Adams, Ryan Prescott and MacKay, David J. C.},
   date = {2007-10-19},
-  number = {arXiv:0710.3742},
   eprint = {0710.3742},
   eprinttype = {arxiv},
-  primaryclass = {stat},
-  publisher = {{arXiv}},
+  eprintclass = {stat},
   url = {http://arxiv.org/abs/0710.3742},
   urldate = {2022-10-10},
   abstract = {Changepoints are abrupt variations in the generative parameters of a data sequence. Online detection of changepoints is useful in modelling and prediction of time series in application areas such as finance, biometrics, and robotics. While frequentist methods have yielded online filtering and prediction techniques, most Bayesian papers have focused on the retrospective segmentation problem. Here we examine the case where the model parameters before and after the changepoint are independent and we derive an online algorithm for exact inference of the most recent changepoint. We compute the probability distribution of the length of the current “run,” or time since the last changepoint, using a simple message-passing algorithm. Our implementation is highly modular so that the algorithm may be applied to a variety of types of data. We illustrate this modularity by demonstrating the algorithm on three different real-world data sets.},
-  archiveprefix = {arXiv},
   langid = {english},
+  pubstate = {preprint},
   keywords = {Statistics - Machine Learning},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\DH54F352\\Adams and MacKay - 2007 - Bayesian Online Changepoint Detection.pdf}
 }
@@ -107,36 +105,32 @@
   langid = {english}
 }
 
-@misc{burgEvaluationChangePoint2022,
+@online{burgEvaluationChangePoint2022,
   title = {An {{Evaluation}} of {{Change Point Detection Algorithms}}},
-  author = {van den Burg, Gerrit J. J. and Williams, Christopher K. I.},
+  author = {family=Burg, given=Gerrit J. J., prefix=van den, useprefix=false and Williams, Christopher K. I.},
   date = {2022-02-12},
-  number = {arXiv:2003.06222},
   eprint = {2003.06222},
   eprinttype = {arxiv},
-  primaryclass = {cs, stat},
-  publisher = {{arXiv}},
+  eprintclass = {cs, stat},
   url = {http://arxiv.org/abs/2003.06222},
   urldate = {2022-12-23},
   abstract = {Change point detection is an important part of time series analysis, as the presence of a change point indicates an abrupt and significant change in the data generating process. While many algorithms for change point detection have been proposed, comparatively little attention has been paid to evaluating their performance on real-world time series. Algorithms are typically evaluated on simulated data and a small number of commonly-used series with unreliable ground truth. Clearly this does not provide sufficient insight into the comparative performance of these algorithms. Therefore, instead of developing yet another change point detection method, we consider it vastly more important to properly evaluate existing algorithms on real-world data. To achieve this, we present a data set specifically designed for the evaluation of change point detection algorithms that consists of 37 time series from various application domains. Each series was annotated by five human annotators to provide ground truth on the presence and location of change points. We analyze the consistency of the human annotators, and describe evaluation metrics that can be used to measure algorithm performance in the presence of multiple ground truth annotations. Next, we present a benchmark study where 14 algorithms are evaluated on each of the time series in the data set. Our aim is that this data set will serve as a proving ground in the development of novel change point detection algorithms.},
-  archiveprefix = {arXiv},
+  pubstate = {preprint},
   keywords = {62M10,Computer Science - Machine Learning,G.3,Statistics - Machine Learning,Statistics - Methodology},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\ILPBXP7V\\Burg and Williams - 2022 - An Evaluation of Change Point Detection Algorithms.pdf;C\:\\Users\\HsuanLee\\Zotero\\storage\\CRP3SBV3\\2003.html}
 }
 
-@misc{burgEvaluationChangePoint2022a,
+@online{burgEvaluationChangePoint2022a,
   title = {An {{Evaluation}} of {{Change Point Detection Algorithms}}},
-  author = {van den Burg, Gerrit J. J. and Williams, Christopher K. I.},
+  author = {family=Burg, given=Gerrit J. J., prefix=van den, useprefix=false and Williams, Christopher K. I.},
   date = {2022-02-12},
-  number = {arXiv:2003.06222},
   eprint = {2003.06222},
   eprinttype = {arxiv},
-  primaryclass = {cs, stat},
-  publisher = {{arXiv}},
+  eprintclass = {cs, stat},
   url = {http://arxiv.org/abs/2003.06222},
   urldate = {2023-02-20},
   abstract = {Change point detection is an important part of time series analysis, as the presence of a change point indicates an abrupt and significant change in the data generating process. While many algorithms for change point detection have been proposed, comparatively little attention has been paid to evaluating their performance on real-world time series. Algorithms are typically evaluated on simulated data and a small number of commonly-used series with unreliable ground truth. Clearly this does not provide sufficient insight into the comparative performance of these algorithms. Therefore, instead of developing yet another change point detection method, we consider it vastly more important to properly evaluate existing algorithms on real-world data. To achieve this, we present a data set specifically designed for the evaluation of change point detection algorithms that consists of 37 time series from various application domains. Each series was annotated by five human annotators to provide ground truth on the presence and location of change points. We analyze the consistency of the human annotators, and describe evaluation metrics that can be used to measure algorithm performance in the presence of multiple ground truth annotations. Next, we present a benchmark study where 14 algorithms are evaluated on each of the time series in the data set. Our aim is that this data set will serve as a proving ground in the development of novel change point detection algorithms.},
-  archiveprefix = {arXiv},
+  pubstate = {preprint},
   keywords = {62M10,Computer Science - Machine Learning,G.3,Statistics - Machine Learning,Statistics - Methodology},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\YVLRXEI7\\Burg and Williams - 2022 - An Evaluation of Change Point Detection Algorithms.pdf;C\:\\Users\\HsuanLee\\Zotero\\storage\\L8RESMB5\\2003.html}
 }
@@ -147,7 +141,6 @@
   author = {Butts, Carter T. and Marcum, Christopher Steven},
   editor = {Pilny, Andrew and Poole, Marshall Scott},
   date = {2017},
-  series = {Computational {{Social Sciences}}},
   pages = {51--92},
   publisher = {{Springer International Publishing}},
   location = {{Cham}},
@@ -199,8 +192,24 @@
   abstract = {Time series segmentation, which is also known as multiple-change-point detection, is a well-established problem. However, few solutions have been designed specifically for high dimensional situations. Our interest is in segmenting the second-order structure of a high dimensional time series. In a generic step of a binary segmentation algorithm for multivariate time series, one natural solution is to combine cumulative sum statistics obtained from local periodograms and cross-periodograms of the components of the input time series. However, the standard ‘maximum’ and ‘average’ methods for doing so often fail in high dimensions when, for example, the change points are sparse across the panel or the cumulative sum statistics are spuriously large. We propose the sparsified binary segmentation algorithm which aggregates the cumulative sum statistics by adding only those that pass a certain threshold. This ‘sparsifying’ step reduces the influence of irrelevant noisy contributions, which is particularly beneficial in high dimensions. To show the consistency of sparsified binary segmentation, we introduce the multivariate locally stationary wavelet model for time series, which is a separate contribution of this work.},
   langid = {english},
   keywords = {Binary segmentation,Cumulative sum statistic,High dimensional time series,Locally stationary wavelet model,Multiple-change-point detection,Thresholding},
-  annotation = {\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/rssb.12079},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\5ISVC9MF\\Cho and Fryzlewicz - 2015 - Multiple-change-point detection for high dimension.pdf}
+}
+
+@article{dehlingRobustMethodShift2020,
+  title = {A Robust Method for Shift Detection in Time Series},
+  author = {Dehling, H and Fried, R and Wendler, M},
+  date = {2020-09-01},
+  journaltitle = {Biometrika},
+  shortjournal = {Biometrika},
+  volume = {107},
+  number = {3},
+  pages = {647--660},
+  issn = {0006-3444},
+  doi = {10.1093/biomet/asaa004},
+  url = {https://doi.org/10.1093/biomet/asaa004},
+  urldate = {2023-04-28},
+  abstract = {We present a robust and nonparametric test for the presence of a changepoint in a time series, based on the two-sample Hodges–Lehmann estimator. We develop new limit theory for a class of statistics based on two-sample U-quantile processes in the case of short-range dependent observations. Using this theory, we derive the asymptotic distribution of our test statistic under the null hypothesis of a constant level. The proposed test shows better overall performance under normal, heavy-tailed and skewed distributions than several other modifications of the popular cumulative sums test based on U-statistics, one-sample U-quantiles or M-estimation. The new theory does not involve moment conditions, so any transform of the observed process can be used to test the stability of higher-order characteristics such as variability, skewness and kurtosis.},
+  file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\53KM99FT\\Dehling et al. - 2020 - A robust method for shift detection in time series.pdf;C\:\\Users\\HsuanLee\\Zotero\\storage\\GR6S4KNC\\5805447.html}
 }
 
 @article{fearnheadChangepointDetectionPresence2019,
@@ -231,13 +240,12 @@
   number = {6},
   eprint = {1411.0858},
   eprinttype = {arxiv},
-  primaryclass = {math, stat},
+  eprintclass = {math, stat},
   issn = {0090-5364},
   doi = {10.1214/14-AOS1245},
   url = {http://arxiv.org/abs/1411.0858},
   urldate = {2022-10-10},
   abstract = {We propose a new technique, called wild binary segmentation (WBS), for consistent estimation of the number and locations of multiple change-points in data. We assume that the number of change-points can increase to infinity with the sample size. Due to a certain random localisation mechanism, WBS works even for very short spacings between the change-points and/or very small jump magnitudes, unlike standard binary segmentation. On the other hand, despite its use of localisation, WBS does not require the choice of a window or span parameter, and does not lead to a significant increase in computational complexity. WBS is also easy to code. We propose two stopping criteria for WBS: one based on thresholding and the other based on what we term the `strengthened Schwarz information criterion'. We provide default recommended values of the parameters of the procedure and show that it offers very good practical performance in comparison with the state of the art. The WBS methodology is implemented in the R package wbs, available on CRAN. In addition, we provide a new proof of consistency of binary segmentation with improved rates of convergence, as well as a corresponding result for WBS.},
-  archiveprefix = {arXiv},
   langid = {english},
   keywords = {Mathematics - Statistics Theory},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\DLQSDPCY\\Fryzlewicz - 2014 - Wild binary segmentation for multiple change-point.pdf}
@@ -280,6 +288,25 @@
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\FI632BLW\\Hoijtink et al. - 2019 - Bayesian evaluation of informative hypotheses for .pdf}
 }
 
+@inproceedings{itohChangePOintDetection2010,
+  title = {Change-{{P}} Oint {{Detection}} of {{Climate Time Series}} by {{Nonparametric Method}}},
+  author = {Itoh, N.},
+  date = {2010},
+  url = {https://www.semanticscholar.org/paper/Change-P-oint-Detection-of-Climate-Time-Series-by-Itoh/34d1a8a7b36d38651e161fef6d8bd8a9a78b2912},
+  urldate = {2023-04-26},
+  abstract = {In one of the data mining techniques, change-point detection is of importance in evaluating time series measured in real world. For decades this technique has been developed as a nonlinear dynam- ics. We apply the method for detecting the change points, Singular Spectrum Transformation (SST), to the climate time series. To know where the struc- tures of climate data sets change can reveal a climate background. In this paper we discuss the structures of precipitation data in Kenya and Wrangel Island (Arctic land) by using the SST.},
+  file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\89MKMTQ9\\Itoh - 2010 - Change-P oint Detection of Climate Time Series by .pdf}
+}
+
+@article{itohChangePointDetectionClimate2010,
+  title = {Change-{{Point Detection}} of {{Climate Time Series}} by {{Nonparametric Method}}},
+  author = {Itoh, Naoki and Kurths, Jurgen},
+  date = {2010},
+  abstract = {In one of the data mining techniques, change-point detection is of importance in evaluating time series measured in real world. For decades this technique has been developed as a nonlinear dynamics. We apply the method for detecting the change points, Singular Spectrum Transformation (SST), to the climate time series. To know where the structures of climate data sets change can reveal a climate background. In this paper we discuss the structures of precipitation data in Kenya and Wrangel Island (Arctic land) by using the SST.},
+  langid = {english},
+  file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\MNWSW3VE\\Itoh and Kurths - 2010 - Change-Point Detection of Climate Time Series by N.pdf}
+}
+
 @article{jacksonAlgorithmOptimalPartitioning2005,
   title = {An Algorithm for Optimal Partitioning of Data on an Interval},
   author = {Jackson, B. and Scargle, J.D. and Barnes, D. and Arabhi, S. and Alt, A. and Gioumousis, P. and Gwin, E. and Sangtrakulcharoen, P. and Tan, L. and Tsai, Tun Tao},
@@ -294,6 +321,24 @@
   eventtitle = {{{IEEE Signal Processing Letters}}},
   keywords = {Algorithm design and analysis,Bayesian methods,Bayesian modeling,cluster analysis,Clustering algorithms,density estimation,histograms,Iterative algorithms,Mathematics,NASA,optimization,Partitioning algorithms,Signal analysis,signal detection,Signal detection,Signal processing algorithms},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\6AKDSRHT\\Jackson et al. - 2005 - An algorithm for optimal partitioning of data on a.pdf;C\:\\Users\\HsuanLee\\Zotero\\storage\\9E9UVHVZ\\1381461.html}
+}
+
+@article{jaruskovaProblemsApplicationChangePoint1997,
+  title = {Some {{Problems}} with {{Application}} of {{Change-Point Detection Methods}} to {{Environmental Data}}},
+  author = {Jarušková, Daniela},
+  date = {1997},
+  journaltitle = {Environmetrics},
+  volume = {8},
+  number = {5},
+  pages = {469--483},
+  issn = {1099-095X},
+  doi = {10.1002/(SICI)1099-095X(199709/10)8:5<469::AID-ENV265>3.0.CO;2-J},
+  url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/%28SICI%291099-095X%28199709/10%298%3A5%3C469%3A%3AAID-ENV265%3E3.0.CO%3B2-J},
+  urldate = {2023-04-26},
+  abstract = {This paper summarizes the author's experience in researching methods of discovering a change in the behaviour of meteorological and hydrological series. Basic statistical tests applying ‘maximum’ type statistics to detect a sudden or gradual change in location are given. The author stresses that the characteristic properties of the meteorological and hydrological data, especially the dependence between neighbouring observations, have to be considered by performing statistcal tests for change-point detection. © 1997 John Wiley \& Sons, Ltd.},
+  langid = {english},
+  keywords = {change-point problem,hydrological and meteorological data,non-stationarity,sudden and gradual type of change},
+  file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\U32JJJWC\\Jarušková - 1997 - Some Problems with Application of Change-Point Det.pdf;C\:\\Users\\HsuanLee\\Zotero\\storage\\V52RAS5N\\10)85469AID-ENV2653.0.html}
 }
 
 @article{kamalabadWhatPointChange,
@@ -337,7 +382,6 @@
   urldate = {2022-10-17},
   abstract = {In this article, we consider the problem of detecting multiple changepoints in large datasets. Our focus is on applications where the number of changepoints will increase as we collect more data: for example, in genetics as we analyze larger regions of the genome, or in finance as we observe time series over longer periods. We consider the common approach of detecting changepoints through minimizing a cost function over possible numbers and locations of changepoints. This includes several established procedures for detecting changing points, such as penalized likelihood and minimum description length. We introduce a new method for finding the minimum of such cost functions and hence the optimal number and location of changepoints that has a computational cost, which, under mild conditions, is linear in the number of observations. This compares favorably with existing methods for the same problem whose computational cost can be quadratic or even cubic. In simulation studies, we show that our new method can be orders of magnitude faster than these alternative exact methods. We also compare with the binary segmentation algorithm for identifying changepoints, showing that the exactness of our approach can lead to substantial improvements in the accuracy of the inferred segmentation of the data. This article has supplementary materials available online.},
   keywords = {Dynamic programming,PELT,Segmentation,Structural change},
-  annotation = {\_eprint: https://doi.org/10.1080/01621459.2012.737745},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\T7USMR2G\\Killick et al. - 2012 - Optimal Detection of Changepoints With a Linear Co.pdf}
 }
 
@@ -445,7 +489,6 @@
   abstract = {In systems biology, nonhomogeneous dynamic Bayesian networks (NH-DBNs) have become a popular modeling tool for reconstructing cellular regulatory networks from postgenomic data. In this paper, we focus our attention on NH-DBNs that are based on Bayesian piecewise linear regression models. The new NH-DBN model, proposed here, is a generalization of an earlier proposed model with sequentially coupled network interaction parameters. Unlike the original model, our novel model possesses segment-specific coupling parameters, so that the coupling strengths between parameters can vary over time. Thereby, to avoid model overflexibility and to allow for some information exchange among time segments, we globally couple the segment-specific coupling (strength) parameters by a hyperprior. Our empirical results on synthetic and on real biological network data show that the new model yields better network reconstruction accuracies than the original model.},
   langid = {english},
   keywords = {Bayesian modeling,dynamic Bayesian network,network reconstruction,parameter coupling,sequential coupling,systems biology},
-  annotation = {\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/stan.12136},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\ZJLUU5UX\\Shafiee Kamalabad and Grzegorczyk - 2018 - Improving nonhomogeneous dynamic Bayesian networks.pdf;C\:\\Users\\HsuanLee\\Zotero\\storage\\U2I5EWJG\\stan.html}
 }
 
@@ -482,6 +525,25 @@
   urldate = {2022-11-03},
   abstract = {Non-homogeneous dynamic Bayesian networks (NH-DBNs) are a popular tool for learning networks with time-varying interaction parameters. A multiple changepoint process is used to divide the data into disjoint segments and the network interaction parameters are assumed to be segment-specific. The objective is to infer the network structure along with the segmentation and the segment-specific parameters from the data. The conventional (uncoupled) NH-DBNs do not allow for information exchange among segments, and the interaction parameters have to be learned separately for each segment. More advanced coupled NH-DBN models allow the interaction parameters to vary but enforce them to stay similar over time. As the enforced similarity of the network parameters can have counter-productive effects, we propose a new consensus NH-DBN model that combines features of the uncoupled and the coupled NH-DBN. The new model infers for each individual edge whether its interaction parameter stays similar over time (and should be coupled) or if it changes from segment to segment (and should stay uncoupled).Our new model yields higher network reconstruction accuracies than state-of-the-art models for synthetic and yeast network data. For gene expression data from A.thaliana our new model infers a plausible network topology and yields hypotheses about the light-dependencies of the gene interactions.Data are available from earlier publications. Matlab code is available at Bioinformatics online.Supplementary data are available at Bioinformatics online.},
   file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\YCSP7YAV\\Shafiee Kamalabad and Grzegorczyk - 2020 - Non-homogeneous dynamic Bayesian networks with edg.pdf}
+}
+
+@article{shafieekamalabadWhatPointChange2023,
+  title = {What Is the {{Point}} of {{Change}}? {{Change Point Detection}} in {{Relational Event Models}}},
+  shorttitle = {What Is the {{Point}} of {{Change}}?},
+  author = {Shafiee Kamalabad, Mahdi and Leenders, Roger and Mulder, Joris},
+  date = {2023-07-01},
+  journaltitle = {Social Networks},
+  shortjournal = {Social Networks},
+  volume = {74},
+  pages = {166--181},
+  issn = {0378-8733},
+  doi = {10.1016/j.socnet.2023.03.004},
+  url = {https://www.sciencedirect.com/science/article/pii/S0378873323000254},
+  urldate = {2023-04-12},
+  abstract = {This paper presents an extension to the relational event model with change points (REM-CP) to study abrupt changes to social interaction behavior in temporal networks. A change point detection algorithm is proposed for exploring when and which network effects abruptly change, and a confirmatory approach to test the presence of a change point at a given moment. The effectiveness of the methodology was assessed with numerical simulations and NASA’s Apollo 13 mission data. The latter revealed dynamic communication behavior and identified time zones where most change points occurred, including around the time of the famous quote “Houston, we’ve had a problem.”},
+  langid = {english},
+  keywords = {Bayes factor,Change point detection,Communication,Critical incident analysis,Critical situation,Graceful extensibility,Relational event model,Resilience engineering,Social network analysis},
+  file = {C\:\\Users\\HsuanLee\\Zotero\\storage\\BANBLRAJ\\Shafiee Kamalabad et al. - 2023 - What is the Point of Change Change Point Detectio.pdf;C\:\\Users\\HsuanLee\\Zotero\\storage\\WX7J868W\\S0378873323000254.html}
 }
 
 @article{sharmaTrendAnalysisChange2016,
