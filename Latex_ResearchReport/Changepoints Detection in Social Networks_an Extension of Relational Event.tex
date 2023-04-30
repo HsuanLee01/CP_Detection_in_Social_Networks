@@ -114,7 +114,7 @@
 	\newpage
 
 
-	\section{\fontsize{14}{15}\selectfont Introduction}
+	\section{\fontsize{14}{15}\selectfont Introduction} \label{sec:intro}
 	
 	\hspace{0.2cm} The relational event model (REM) is a mature model for studying real-time social interactions and predicting future events in a social network. It uses factors (e.g., gender, age, interaction inertia, etc.) that shape social interactions, known as ``effects,''\cite{buttsRelationalEventFramework2008} to parameterize the interaction rates between actors. The REM assumes that these effects are constant over time. However, given the dynamic nature of social networks, the strengths of these effects can change over time. Identifying changepoints in the REM can help us understand when social network dynamics change qualitatively. For example, in a classroom setting, students may form social networks based on interests and hobbies that change over time. Identifying these changepoints can help teachers and administrators better support student engagement and social connections, ultimately leading to a more positive learning environment. \\
 	
@@ -124,9 +124,9 @@
 	
 	In this study, we specifically investigate (1) the effectiveness of our proposed changepoint detection approach under the REM structure, and (2) compare the performances of the three algorithms under our proposed method. To evaluate their feasibility and performance in the context of social network scenarios within MW-REM, we employ synthetic data to calculate metrics such as Confusion Matrix, Mean Squared Error (MSE), and Mean Signed Difference (MSD). We also apply these methods to real-life data to test their external validity. Our method is applicable to any social network scenario, including communication in surgical rooms, interactions between teachers and students, as well as cooperation and competition between companies. The detection of changepoints can facilitate a better understanding of social dynamics, identify potential challenges as they arise, and inform future strategies based on data. The blueprint of our study is depicted in \autoref{Figure 1}. \\
 	
-    The structure of the paper is as follows: In the next section, the methodology part, we first introduce REM and MW-REM. Next, we introduce the three changepoint detection algorithms we utilized in our study. Then, we discuss how our proposed approach works based on MW-REM and demonstrate how we simulate synthetic data and calculate metrics for comparing the algorithms. Finally, we introduce how we model real-life data, specifically the Apollo 13 voice loop data. In Section 3, the results and discussion part, we present the effectiveness of our method and comparison results between the three changepoint algorithms on synthetic data and real-life data. \\
+    The structure of the paper is as follows: In the next section, the methodology part, we first introduce REM and MW-REM. Next, we introduce the three changepoint detection algorithms we utilized in our study. Then, we discuss how our proposed approach works based on MW-REM in and demonstrate how we simulate synthetic data and calculate metrics for comparing the algorithms. Finally, we introduce how we model real-life data, specifically the Apollo 13 voice loop data. In \autoref{sec:results}, the results and discussion part, we present the effectiveness of our method and comparison results between the three changepoint algorithms on synthetic data and real-life data.
 
-    \begin{figure}[h]
+    \begin{figure}[H]
     	\captionsetup{justification=raggedright}
     	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
     	\renewcommand{\figurename}{Figure}
@@ -136,9 +136,9 @@
     	\label{Figure 1}
     \end{figure}
 	
-	\section{\fontsize{14}{15}\selectfont Methodology}
+	\section{\fontsize{14}{15}\selectfont Methodology} \label{sec:method}
 	
-	\subsection{Relational Event Model (REM)}
+	\subsection{Relational Event Model (REM)} \label{sec:REM}
 	
 	\hspace{0.28cm} The REM is a powerful tool for modeling Relational Event History Data (REH), which at minimum involves sender, receiver, and time information, as shown in \autoref{Table 1}. By analyzing the impact of various effects on the social network, the REM enables us to understand the social interaction dynamic and forecast the timing and participants of the future events in the network. This approach parameterizes both exogenous effects, which are actor characteristics that do not depend on past interactions in the network, such as age or gender, and endogenous effects, which depend on past interactions in the network, such as transitivity or inertia. \\
 	
@@ -179,11 +179,11 @@
 	
 	Despite the REM's outstanding capability in capturing social network dynamics and forecasting, its weakness lies in the assumption that the strength of all effects (i.e., $\beta_p$) remains constant throughout the entire event history. This assumption is unrealistic considering the dynamic property of social interactions. For instance, consider a social network where age is the exogenous effect, and transitivity (i.e., the tendency of friends to have common friends) is the endogenous effect. Initially, age may strongly influence the event rate, indicating that older individuals are more likely to interact. However, this effect may weaken or even reverse over time due to changes in the network's dynamics or cultural norms. Similarly, the strength of the transitivity effect may vary as new friendships form or old ones dissolve. Therefore, assuming that effect strengths remain constant throughout the event history can result in inaccurate predictions and an incomplete understanding of social network dynamics.
 	
-	\subsection{Moving Window-Relational Event Model (MW-REM)}
+	\subsection{Moving Window-Relational Event Model (MW-REM)} \label{sec:MW-REM}
 	
 	\hspace{0.23cm} The Moving Window approach (MW) \cite{mulderModelingEvolutionInteraction2019} addresses the limitations of the REM. The MW involves setting up a fixed-size window, i.e., a fixed length of time, that slides over the entire Relational Event History (REH) data. Each window overlaps with the previous window, and the REM is fitted to each window (see \autoref{Figure 2}). We refer to this approach as MW-REM in this study. The MW-REM allows us to reveal the dynamics of each effect on the social network over time through the effect parameters ($\beta_p$) given in each window. It enables us to investigate the dynamic changes of the effect strengths in social networks over time, a feature not available in the original REM. \\
 
-    \begin{figure}[h]
+    \begin{figure}[H]
     	\captionsetup{justification=raggedright}
     	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
     	\renewcommand{\figurename}{Figure}
@@ -201,13 +201,13 @@
 	%\put(100.8,99){\makebox(137,4){\upbracefill}}
 	%\end{picture}
 	
-	\subsection{Changepoint detection}
+	\subsection{Changepoint detection} \label{sec:CP detection}
 	
 	\hspace{0.2cm} In this study, we propose an approach for detecting changepoints in REH, building on the foundation of MW-REM. As MW-REM divides the event history into partially overlapping sub-portions to fit the REM, it provides us with effect parameters ($\beta_p$) for each window over time, indicating the strength of each effect during that period, as shown in \autoref{3}. By fitting MW-REM to the event history, we obtain as many REMs as the fitting windows, and therefore the same number of effect parameters ($\beta_p$) as the number of fitting windows. \\
 	
 	Our proposed approach utilizes three changepoint detection algorithms for detecting changepoints in social networks: Binary Segmentation (BS), Pruned Exact Linear Time (PELT), and Bayesian Online Changepoint Detection (BOCPD). According to van den Burg and Williams\cite{burgEvaluationChangePoint2022}, these three changepoint detection algorithms were identified as top performers in a comparison in a general application. The comparison was based on criteria such as $F1$ scores and Segmentation covering metric. We chose these changepoint detection algorithms for their respective advantages and suitability for detecting changepoints in social networks, which can have abrupt changes over time. It is worth noting that changepoint detection algorithms can be classified into two categories, online and offline methods. Online methods aim to detect changes immediately in a real-time context, while offline methods examine changes retrospectively upon collection of complete data \cite{kendrickChangePointDetection2018}. In our study, BS is an offline method, PELT and BOCPD are online methods. The fundamental mechanisms of the three changepoint detection algorithm are presented in the following sections.
 	
-	\subsubsection{Binary Segmentation (BS)}
+	\subsubsection{Binary Segmentation (BS)} \label{sec:BS}
 	
 	%\hspace{-0.55cm} \textbf{Binary Segmentation (BS)}\\
 	
@@ -225,7 +225,7 @@
 	\end{equation}
 	In other words, BS searches for possible changepoints until there is no $\tau$ that meets the criteria. At this point, BS stops. Finally, the set of changepoints detected in each segment are merged to obtain the final set of changepoints.
 	
-	\subsubsection{Pruned Exact Linear Time (PELT)}
+	\subsubsection{Pruned Exact Linear Time (PELT)} \label{sec:PELT}
 	
 	%\hspace{-0.55cm} \textbf{Pruned Exact Linear Time (PELT)}\\
 	
@@ -235,7 +235,7 @@
 	
 	The final set of changepoints detected by PELT is obtained by merging the remaining candidate changepoints with the ones detected in each smaller segment. The resulting set of changepoints provides an exact solution that minimizes the cost function in \autoref{4} with the fewest possible number of changepoints.
 	
-	\subsubsection{Bayesian Online Changepoint Detection (BOCPD)}
+	\subsubsection{Bayesian Online Changepoint Detection (BOCPD)} \label{sec:BOCPD}
 	
 	%\hspace{-0.55cm} \textbf{Bayesian Online Changepoint Detection (BOCPD)}\\
 	
@@ -247,7 +247,7 @@
 	
 	Overall, BOCPD starts by building the predictive distribution from the potential locations of changepoints, which reveals any prior knowledge regarding the data generation process. Based on the given predictive distribution, BOCPD computes the run length probability at a time point. As new data come in, the predictive distribution is continuously updated, and BOCPD iteratively runs the same procedure until no new data appear.
 	
-	\subsubsection{MW-REM Based Changepoint Detection}
+	\subsubsection{MW-REM Based Changepoint Detection} \label{sec:our method}
 	
 	\hspace{0.27cm} In this section, we describe the settings used for each of the three changepoint detection methods employed in our paper, as well as our proposed approach based on the MW-REM structure. \\
 	
@@ -268,26 +268,26 @@
 		\end{algorithmic}
 	\end{algorithm}
 
-	\subsection{Generation of synthetic REH data}
+	\subsection{REH data simulation} \label{sec:simulation}
 	
 	\hspace{0.2cm} To evaluate the effectiveness of our proposed changepoint detection approach for REH data, we generated synthetic datasets with various changepoint settings. For each setting, we created 15 datasets that were simulated based on the REH characteristics. These synthetic datasets were constructed using a social network consisting of 30 actors and 10,000 events.\\
 	
-	To construct these datasets, we randomly selected two exogenous effects and two endogenous effects. We then specified the parameter values ($\beta_p$) for each effect and its changes over time. The assignment of the effects' parameters in the synthetic data is based on Meijerink-Bosman's study\cite{meijerink-bosmanDiscoveringTrendsSocial2022} with slight adjustments. The exogenous effects include the "Sender effect," which represents the actor's exogenous attributes that impact their event sending rate, and the "Difference effect," which indicates the difference in personal attributes that influence the rate of sending events. The endogenous effects consist of the "Inertia effect," which describes the tendency of actors to repeatedly select the same receiver for their events, and the "Outdegree of the Sender effect," which indicates the inclination of actors to send events if they have previously sent more events. 
+	To construct these datasets, we randomly selected two exogenous effects and two endogenous effects. We then specified the parameter values ($\beta_p$) for each effect and its changes over time. The assignment of the effects' parameters in the synthetic data is based on Meijerink-Bosman's study\cite{meijerink-bosmanDiscoveringTrendsSocial2022} with slight adjustments. The exogenous effects include the ``Sender effect,'' which represents the actor's exogenous attributes that impact their event sending rate, and the ``Difference effect,'' which indicates the difference in personal attributes that influence the rate of sending events. The endogenous effects consist of the ``Inertia effect,'' which describes the tendency of actors to repeatedly select the same receiver for their events, and the ``Outdegree of the Sender effect,'' which indicates the inclination of actors to send events if they have previously sent more events. 
 	The complete parameter assignments can be found in \autoref{Table 2}. \\
 	
-	Using the assigned parameters of the effects, each sender-receiver pair $(s,r)$ in the risk set $R$ obtained the probability of occurrence at every event, as shown in \autoref{1}. We then built the REH by selecting the $(s,r)$ pair with the highest probability at each event. In this study, we designed five different changepoint settings with varying numbers of changepoints. For each setting, we simulated 15 REH datasets:
+	Using the assigned parameters of the effects, each sender-receiver pair $(s,r)$ in the risk set $R$ obtained the probability of occurrence at every event, as shown in \autoref{1}. We then built the REH by selecting the $(s,r)$ pair with the highest probability at each event. In this study, we designed five different changepoint settings with varying numbers of changepoints. For each setting, we simulated fifteen REH datasets. The settings were categorized into three groups based on the number of changepoints they contained:
 	
-    \begin{itemize}
-    	\item No changepoint:
+    \begin{itemize} \label{data cate}
+    	\item No changepoint category:
     	\begin{itemize}
     		\item All of the effects do not have any changepoints. \\
     	\end{itemize}
-    	\item One changepoint:
+    	\item One changepoint category:
     	\begin{itemize}
     		\item The inertia effect has 1 changepoint, but the rest do not.
     		\item All of the effects have 1 changepoint. \\
     	\end{itemize}
-    	\item Two changepoints:
+    	\item Two changepoints category:
     	\begin{itemize}
     		\item The inertia effect has 2 changepoints, but the rest do not.
     		\item All of the effects have 2 changepoints.
@@ -315,112 +315,92 @@
         \label{Table 2}
     \end{table}
 
-	\subsection{The evaluations of changepoint detection algorithms}
+	\subsection{Evaluation strategy} \label{sec:evaluation method}
 	
 	\hspace{0.28cm} Having generated synthetic REH data with different changepoint settings, we proceeded to evaluate the effectiveness of our proposed changepoint detection approach on these datasets. To this end, we fitted the MW-REM with a window length of 2000 seconds and $\frac{2}{3}$ overlap to each dataset and extracted the effects' parameters. In Meijerink-Bosman's 2022 study, a window length of 2000 seconds and $\frac{2}{3}$ overlap were found to be sufficient for capturing the effect dynamics with reasonable accuracy \cite{meijerink-bosmanDynamicRelationalEvent2022}. Although this setting may miss some of the finer network details, it is computationally efficient compared to using smaller window sizes, and the effects fluctuations over time are relatively less noisy. \\
 	
-	In the following section, we describe how we inspected the performance and compared three changepoint detection algorithms applied to these extracted parameters, utilizing three metrics: the confusion matrix, mean squared error (MSE), and mean signed difference (MSD). %For each metric, we summarize the performance of the changepoint detection algorithms for the following categories: no changepoint, one changepoint, and two changepoints.
+	In the following section, we describe how we inspected the performance and compared three changepoint detection algorithms applied to these extracted parameters, utilizing three metrics: (1) the confusion matrix, (2) mean squared error (MSE), and (3) mean signed difference (MSD). Our analysis focuses on evaluating the algorithms' performance across different categories of changepoint numbers, which include no changepoint, one changepoint, and two changepoints. The classification of the synthetic data is shown in section \ref{data cate}.
 	
-	\subsubsection{Confusion matrix}
+	\subsubsection{Confusion matrix} \label{sec:confusion matrix}
 	
 	\hspace{0.28cm} After feeding the changepoint detection algorithms with the effects' parameters, we used the confusion matrix to evaluate the performance of each algorithm for each effect. A true positive indicates that the algorithm correctly detected a window containing the changepoint of the effect. Notably, due to the overlapping property of the windows, a changepoint can be contained in three consecutive windows simultaneously. Therefore, if an algorithm detects the changepoint in any of the three windows, it is considered a true positive. However, since the synthetic datasets are produced based on selecting the $(s,r)$ pair with the highest rate probability in the risk set $R$ for every event, the locations of the changepoints may differ slightly from our assignment. As a result, if a changepoint detection algorithm detects a changepoint within the range of three windows of the windows containing the true changepoint, we consider it a true positive. \\
 	
-	A false positive indicates that the algorithm falsely detected a window as a changepoint, while a false negative indicates that the algorithm failed to detect a window containing the changepoint of the effect. However, our synthetic datasets are highly imbalanced, with many windows and few changepoints, so we did not take the true negative into account. \autoref{Table 2} presents the confusion matrix for changepoint detection, showing the actual and predicted changepoints and non-changepoints. \\
+	A false positive indicates that the algorithm falsely detected a window as a changepoint window (i.e., a window containing a changepoint), while a false negative indicates that the algorithm failed to detect a window containing the changepoint of the effect. Since our synthetic datasets are highly imbalanced, with many windows but few containing changepoints, we did not consider true negatives. \autoref{Table 3} presents the confusion matrix for changepoint detection, showing the actual and predicted changepoints and non-changepoints.
 	
-	\begin{table}[h]
+	\begin{table}[H]
 	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
 	\centering
 	\renewcommand{\arraystretch}{1.5} % increase cell height by 50%
 	\small
 	\begin{tabular}{l|c|c}
 		\hline
-		& \textit{Actually Changepoint} & \textit{Actually Not Changepoint}                   \\ \hline
+		& \textit{Actual Changepoint} & \textit{Actual None-changepoint}                   \\ \hline
 		\textit{Predicted Changepoint} & True Positive              & False Positive                               \\ \hline
-		\textit{Predicted Not Changepoint} & False Negative             & \multicolumn{1}{l}{\cellcolor[HTML]{C0C0C0}} \\ \hline
+		\textit{Predicted None-changepoint} & False Negative             & \multicolumn{1}{l}{\cellcolor[HTML]{C0C0C0}} \\ \hline
 	\end{tabular}
 	\caption{Confusion Matrix for changepoint detection}
 	\label{Table 3}
     \end{table}
 	
-	Given the information from the confusion matrix, we employ three indicators to assess the effectiveness of our proposed approach and the performance of the three changepoint detection algorithms in detecting changepoints in REH. The first indicator is the number of false positive cases. We separately sum the number of false positives of the effects with no changepoint, one changepoint, and two changepoints for each changepoint detection algorithm. For instance, if the REH has one changepoint in the inertia effect, but not for the other effects, the number of false positives of the inertia effect by a changepoint detection algorithm is summed in the one changepoint group, while the rest of the effects are summed in the no changepoint group. This is done to determine which of the three changepoint algorithms has the highest likelihood of falsely detecting a changepoint when there is none, considering the no changepoint, one changepoint, and two changepoints settings for each effect. \\
+	Given the information from the confusion matrix, we employ three indicators to assess the effectiveness of our proposed approach and the performance of the three changepoint detection algorithms in detecting changepoints in REH. The first indicator is the number of false positive cases. We separately sum the number of false positives of the effects in no changepoint, one changepoint, and two changepoints categories for each changepoint detection algorithm. For instance, for the setting of the REH with no changepoint for all effects, the number of false positives of each effect in this setting by a changepoint detection algorithm is summed in the no changepoint category. This is done to determine which of the three changepoint algorithms has the highest likelihood of falsely detecting a changepoint when there is none, considering the no changepoint, one changepoint, and two changepoints situations in the REH. \\
 	
-	The second indicator is the true positive rate (TPR). Similar to the false positives indicator, we separate the effects into groups based on their number of changepoints. However, since there are no true positives for the effects with no changepoint, we only consider the groups with one and two changepoints for each changepoint detection algorithm. The TPR is calculated as follows:
+	The second indicator is the recall. Similar to the false positives indicator, we determine the performance of the changepoint detection algorithms based on the changepoint categories. However, since there are no true positives for the effects with no changepoint, we only consider the categories with one and two changepoints for each changepoint detection algorithm. The recall is calculated as
 	
 	\begin{equation} \label{7}
-		TPR_g = \frac{TP_g}{TP_g + FN_g}
+		Recall_g = \frac{TP_g}{TP_g + FN_g},
 	\end{equation}
-    , where $TP$ indicates the number of true positive cases, $FN$ indicates the number of false negative cases, and $g$ indicates the changepoint group. Through the TPR, we obtain information about the probability that each changepoint detection algorithm correctly predicts the true positive for the effects with one or two changepoints, respectively, among all positive observations. \\
+    where $TP$ indicates the number of true positive cases, $FN$ indicates the number of false negative cases, and $g$ indicates the changepoint category. Through the recall, we obtain information about the probability that each changepoint detection algorithm correctly predicts the true positive for the effects with one or two changepoints, respectively, among all positive observations. \\
 
-    The third indicator is the positive predictive value (PPV). Similar to the TPR and false positives indicators, we also group the effects into one changepoint and two changepoint groups based on their number of changepoints. The PPV is calculated as:
+    The third indicator is the precision. Similar to recall, we assess the performance of the changepoint detection algorithms on precision in the one changepoint and two changepoint categories. The precision is calculated as
  
     \begin{equation} \label{8}
-    	PPV_g = \frac{TP_g}{TP_g + FP_g}
+    	Precision_g = \frac{TP_g}{TP_g + FP_g},
     \end{equation}
-	, where $TP$ represents the number of true positive cases, $FP$ represents the number of false positive cases, and $g$ represents the changepoint group. The PPV indicates the probability that a predicted changepoint is indeed a changepoint, providing insight into the precision of the changepoint detection algorithms.
+	where $TP$ represents the number of true positive cases, $FP$ represents the number of false positive cases, and $g$ represents the changepoint category. The precision indicates the probability that a predicted changepoint is indeed a changepoint, providing insight into the accuracy of the changepoint detection algorithms.
 	
-	\subsubsection{Mean Squared Error (MSE) \& Mean Signed Difference (MSD)}
+	\subsubsection{Mean Squared Error (MSE) \& Mean Signed Difference (MSD)} \label{sec:MSE MSD}
 	
-	\hspace{0.28cm} To evaluate the performance of each changepoint detection algorithm, we use mean squared error (MSE) and mean signed difference (MSD) as measures to examine the accuracy of the predicted changepoint window and the tendency of the algorithm to detect changepoints early or late. \\
+	\hspace{0.28cm} We use mean squared error (MSE) and mean signed difference (MSD) as measures to examine the accuracy of the predicted changepoint window and the tendency of the algorithm to detect changepoints early or late. \\
 	
-	The MSE measures the average squared distance between the predicted and actual changepoint windows for each changepoint detection algorithm. We compute the MSE only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSE as follows \cite{aminikhanghahiSurveyMethodsTime2017}:
+	The MSE measures the average squared distance between the predicted and actual changepoint windows for each changepoint detection algorithm. We compute the MSE only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSE as\cite{aminikhanghahiSurveyMethodsTime2017}
 	
 	\begin{equation} \label{9}
-		MSE = \frac{\sum_{i = 1}^{\#CP} (Predicted(CP) - Actual(CP))^2}{\#CP}
+		MSE = \frac{\sum_{i = 1}^{\#CP} (Predicted(CP) - Actual(CP))^2}{\#CP},
 	\end{equation}
-	,where $CP$ denotes the windows containing a changepoint, and $\#CP$ represents the number of changepoints in the REH. The lower the MSE, the higher the precision of the algorithm. To evaluate the performances of the changepoint detection algorithms across different changepoint scenarios, we group the effects into one-changepoint and two-changepoint groups and report the average MSE of each group for each algorithm using the following formula:
+	where $CP$ denotes the windows containing a changepoint, and $\#CP$ represents the number of changepoints in the REH. A lower MSE indicates that the algorithm's predicted changepoint window is closer to the true one in general. For the MSE evaluation, we assess the performance of the changepoint detection algorithms in the one-changepoint and two-changepoint categories. We report the average MSE of each category for each algorithm using the formula
 	
 	\begin{equation} \label{10}
-		Avg.MSE_g = \frac{\sum_{i=1}^{N_g} MSE_i}{N_g}
+		Avg.MSE_g = \frac{\sum_{i=1}^{N_g} MSE_i}{N_g},
 	\end{equation}
-	, where $Avg.MSE_g$ represents the average MSE for group $g$, $MSE_i$ is the MSE value for the $i$th effect in group $g$, and $N_g$ is the number of effects in group $g$. \\
+	where $Avg.MSE_g$ represents the average MSE for changepoint category $g$, $MSE_i$ is the MSE value for the $i$th effect in changepoint category $g$, and $N_g$ is the number of effects in changepoint category $g$. \\
 	
-	The MSD, on the other hand, is used to examine the tendency of the changepoint detection algorithm to detect changepoints early or late. We compute the MSD only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSD as follows:
+	The MSD, on the other hand, is used to examine the tendency of the changepoint detection algorithm to detect changepoints early or late. We compute the MSD only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSD as
 	
 	\begin{equation} \label{11}
-		MSD = \frac{\sum_{i = 1}^{\#CP} (Predicted(CP) - Actual(CP))}{\#CP}
+		MSD = \frac{\sum_{i = 1}^{\#CP} (Predicted(CP) - Actual(CP))}{\#CP},
 	\end{equation}
-	, here, a negative MSD indicates that the changepoint detection algorithm tends to predict the changepoint window earlier than the true changepoint window, while a positive MSD indicates that the algorithm tends to predict the changepoint window later than the true changepoint window. \\
-	
-	To evaluate the changepoint detection algorithms' detection tendencies under different changepoint scenarios, we group the effects into one-changepoint and two-changepoint groups. The average MSD of each group for each algorithm is reported using the following formula:
+	here, a negative MSD indicates that the changepoint detection algorithm tends to predict the changepoint window earlier than the true changepoint window, while a positive MSD indicates that the algorithm tends to predict the changepoint window later than the true changepoint window. To calculate the MSD of each changepoint detection algorithm on different changepoint categories, we compute the average MSD, which is given by
 	
 	\begin{equation} \label{12}
-		Avg.MSD_g = \frac{\sum_{i=1}^{N_g} MSD_i}{N_g}
+		Avg.MSD_g = \frac{\sum_{i=1}^{N_g} MSD_i}{N_g},
 	\end{equation}
-	, where $Avg.MSD_g$ represents the average MSD for group $g$, $MSD_i$ is the MSD value for the $i$th effect in group $g$, and $N_g$ is the number of effects in group $g$. This allows us to assess each changepoint detection algorithm's tendency to detect changepoints early or late in both univariate and multivariate changepoints scenarios of effects.
+	where $Avg.MSD_g$ represents the average MSD for changepoint category $g$, $MSD_i$ is the MSD value for the $i$th effect in changepoint category $g$, and $N_g$ is the number of effects in changepoint category $g$. This allows us to assess each changepoint detection algorithm's tendency to detect changepoints early or late in both univariate and multivariate changepoints scenarios of effects.
 	
-	\subsection{Manipulation of real-life Apollo 13 voice-loop data}
+	\subsection{Real-life data utilization} \label{sec:Apollo 13 intro}
 	
-	\hspace{0.2cm} The study utilized real-life data from the publicly available Apollo 13 voice loop data, which captured the communication between the astronauts and Mission Control during the failed Apollo 13 mission. This mission aimed to land on the Moon, but a routine agitation of one of the oxygen tanks caused an explosion that damaged the wire insulation inside, resulting in the discharge of the contents of both oxygen tanks. This left the astronauts without systems to generate electricity and oxygen, prompting them to contact Mission Control for assistance, and ultimately leading to the cancellation of the mission. The analyzed data covers the period from one hour before the emergency until Apollo 13 was safely back on a trajectory towards Earth, specifically from 54:46:28 to 62:06:53 (hh:mm:ss) of the mission timeline. \\
+	\hspace{0.2cm} To validate the effectiveness of our proposed changepoint detection method in practical use, as well as to verify the properties we concluded for each changepoint detection algorithm from synthetic data, we utilized all three changepoint detection algorithms on the real-life data. Specifically, we analyzed the publicly available Apollo 13 voice loop data, which recorded the communication between the astronauts and Mission Control during the failed Apollo 13 mission. The mission was intended to land on the Moon, but an agitation of one of the oxygen tanks caused an explosion that damaged the wire insulation inside, leading to the discharge of both oxygen tanks. This left the astronauts without systems to generate electricity and oxygen, forcing them to contact Mission Control for assistance and ultimately leading to the mission's cancellation. For our analysis, we selected a subset of the voice loop data covering the period from one hour before the emergency until Apollo 13 was safely back on a trajectory towards Earth. Our focus was on the relevant communication data from the mission timeline between 54:46:28 and 62:06:53 (hh:mm:ss). \\
 	
-	In the Apollo 13 voice loop data, a pivotal moment occurred when an astronaut stated, "I believe we've had a problem here," at 55:55:21. This moment marks the start of the emergency, and we have selected it as the location of the changepoint in our study. We hypothesize that the old interaction patterns were disrupted after this point, making it an ideal location to test the effectiveness of our proposed changepoint detection approach on a real social network. \\
+	In the Apollo 13 voice loop data, a pivotal moment occurred when an astronaut stated, ``I believe we've had a problem here,'' at 55:55:21. This moment marks the start of the emergency, and we have selected it as the potential location of the changepoint in our study. We hypothesize that the old interaction patterns were disrupted after this point, making it an ideal location to test the effectiveness of our proposed changepoint detection approach on a real social network. \\
 	
-	To apply our proposed changepoint detection approach (see Algorithm \autoref{Algorithm 1}), we selected several effects that have a relationship with the network. These effects include the "Inertia effect," which refers to the tendency for actors to repeatedly interact with each other, the "Outdegree of the sender effect," which refers to the tendency for actors to send events if they have sent more past events, the "Indegree of the receiver effect," which refers to the tendency for actors to receive events if they have received more past events, and the "Total degree of the sender effect," which refers to the tendency for actors to send events if they have sent and received more past events. We also selected three other effects that capture specific patterns of interaction: the "AB-BA pshift," which refers to the tendency for immediate reciprocation, where the next sender is the current receiver and the next receiver is the current sender, the "AB-XA pshift," which refers to a tendency for turn usurping, where the next sender is not in the current event and the next receiver is the current sender, and the "AB-BY pshift," which refers to a tendency for turn receiving, where the next sender is the current receiver and the next receiver is not in the current event. \\
+	To apply our proposed changepoint detection approach (see Algorithm \autoref{Algorithm1}), we selected several effects that shape the network. These effects include the ``Inertia effect,'' which refers to the tendency for actors to repeatedly interact with each other, the ``Outdegree of the sender effect,'' which refers to the tendency for actors to send events if they have sent more past events, the ``Indegree of the receiver effect,'' which refers to the tendency for actors to receive events if they have received more past events, and the ``Total degree of the sender effect,'' which refers to the tendency for actors to send events if they have sent and received more past events. We also selected three other effects that capture specific patterns of interaction: the ``AB-BA pshift,'' which refers to the tendency for immediate reciprocation, where the next sender is the current receiver and the next receiver is the current sender, the ``AB-XA pshift,'' which refers to a tendency for turn usurping, where the next sender is not in the current event and the next receiver is the current sender, and the ``AB-BY pshift,'' which refers to a tendency for turn receiving, where the next sender is the current receiver and the next receiver is not in the current event. \\ % need to add reasons
 	
-	Considering the findings of Meijerink-Bosman's research \cite{meijerink-bosmanDynamicRelationalEvent2022}, we decide to fit the MW-REM with a 1000-second window length and $\frac{2}{3}$ overlap, as it provided a good insight into the dynamic of the social network. We then apply this window setting to the Apollo 13 voice loop data, extract the parameters of each effect along the windows, and feed them to the three changepoint detection algorithms employed in our study. \\
+	Considering the findings of Meijerink-Bosman's 2022 research \cite{meijerink-bosmanDynamicRelationalEvent2022}, we decide to fit the MW-REM with a 1000-second window length and $\frac{2}{3}$ overlap, as it provided a good insight into the dynamic of the social network. We then apply this window setting to the Apollo 13 voice loop data, extract the parameters of each effect along the windows, and feed them to the three changepoint detection algorithms employed in our study.
 	
-	In an ideal situation, by feeding the parameters of the effects to the changepoint detection algorithms, they could successfully detect the presence of changepoints for each effect in the MW-REM, around or precisely at the windows that contain the message reporting the issue.
+	\section{\fontsize{14}{15}\selectfont Results \& Discussion} \label{sec:results}
 	
-	\section{\fontsize{14}{15}\selectfont Results}
+	\subsection{Synthetic REH datasets analysis} \label{res:simulation}
 	
-	\subsection{Synthetic REH datasets analysis}
-	
-	\hspace{0.28cm} In this section, we present the results of the changepoint detection analysis conducted on the synthetic REH data. As previously described in the methodology section, we summarize the performance of three changepoint detection algorithms applied to the effects' parameters for zero, one, and two changepoints, respectively. We evaluated the algorithms' performance using (1) the number of false positives, (2) true positive rate, (3) positive predictive value, (4) average MSE, and (5) average MSD.
-	
-	\subsubsection{The number of false positives}
-	
-	\hspace{0.28cm} As mentioned in the methodology section, a detected changepoint window is considered a true positive if it is within three windows of the true changepoint window. A detected changepoint window is considered a false positive if it is not within the three-window range of the true changepoint window. \\
-	
-	The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 5 false positives, while BS and PELT produce 13 and 19 false positives, respectively. For effects with two changepoints, BOCPD results in 2 false positives, while BS and PELT produce 6 and 20 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows.
-	
-	\subsubsection{True positive rate (TPR)}
-	
-	\hspace{0.28cm} Regarding TPR, \autoref{Figure 3} shows that all three changepoint detection algorithms have similar TPR values when there is a univariate changepoint in the effect, with BOCPD having 0.52, PELT having 0.49, and BS having 0.53. However, in the case of multivariate changepoints, the TPR values significantly improve, with BOCPD having 0.75, PELT having 0.79, and BS having 0.73. It is noteworthy that the improvement in TPR values for all three algorithms is substantial when moving from the univariate to multivariate changepoint situation. This indicates that if an effect has only one changepoint throughout the entire REH, the probability of correctly detecting the window within a range of three windows from the true changepoint window using any of the three algorithms is only around 50\%. On the other hand, if an effect has two changepoints throughout the entire REH, the probability of correctly detecting the window within a range of three windows from the true changepoint window using any of the three algorithms is above 70\%, with PELT almost reaching 80\% in the case of multivariate changepoints. However, PELT's high TPR may be a trade-off with its high false positive cases, as it detects more changepoints, which increases the likelihood of covering more true positives in its prediction.
-
-    \subsubsection{Positive predictive value (PPV)}
-    
-    \hspace{0.28cm} Moving on to PPV, it measures the proportion of detected changepoints that are true positive changepoints (i.e., within a range of three windows from the true changepoint) out of all detected changepoints. In other words, it evaluates the precision of the changepoint detection algorithms. For effects with one changepoint, BOCPD has the highest PPV, followed by BS and PELT, with BOCPD's positive predictive value being 0.89, while BS and PELT have 0.75 and 0.66, respectively. For effects with two changepoints, BOCPD still has the highest positive predictive value of 0.98, followed by BS with 0.95 and PELT with 0.86. \\
-    
-    Overall, as shown in \autoref{Figure 3}, there is an improvement in PPV for all three changepoint detection algorithms when moving from the univariate to the multivariate changepoint situation, with all three algorithms having a PPV above 0.85 in the multivariate changepoint situation. This indicates that the probability of a predicted changepoint being within three windows range of the true changepoint is higher than 85\% in the multivariate changepoint situation. Furthermore, BOCPD consistently performs at a high level in terms of PPV, whether in the univariate or multivariate changepoint situation, indicating that the changepoints identified by BOCPD have a high probability of being within three windows range of the true changepoints. Conversely, PELT exhibits the worst performance in terms of PPV, which is influenced by its high false positive rate.
+	\hspace{0.28cm} In this section, we present the results of the changepoint detection analysis conducted on the synthetic REH data. We summarize the performance of three changepoint detection algorithms under zero, one, and two changepoint conditions based on the following metrics: (1) the number of false positives, (2) recall, (3) precision, (4) average MSE, and (5) average MSD.
 	
 	\begin{figure}[h]
 		\captionsetup{justification=raggedright}
@@ -431,6 +411,85 @@
 		\caption{\fontsize{8}{10}\selectfont The plot shows the number of false positives, true positive rate, and positive predictive value of the three changepoint detection algorithms for effects without changepoint, effects with one changepoint, and effects with two changepoints.}
 		\label{Figure 3}
 	\end{figure}
+	
+	The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows. \\
+	
+	The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows.
+	
+	\begin{table}[H]
+		\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
+		\centering
+		\renewcommand{\arraystretch}{1.2} % increase cell height by 50%
+		\small
+		\begin{tabular}{lccc}
+			\hline
+			& \textit{BS} & \textit{PELT} & \textit{BOCPD} \\ \hline
+			\textbf{Number of false negatives} &             &               &                \\
+			\textit{No changepoint category}   & 24          & 44            & 10             \\
+			\textit{One changepoints category} & 26          & 52            & 18             \\
+			\textit{Two changepoints category} & 24          & 10            & 6              \\
+			\textbf{Recall}                    &             &               &                \\
+			\textit{One changepoints category} & 0.53        & 0.49          & 0.52           \\
+			\textit{Two changepoints category} & 0.73        & 0.79          & 0.75           \\
+			\textbf{Precision}                 &             &               &                \\
+			\textit{One changepoints category} & 0.75        & 0.66          & 0.89           \\
+			Two changepoints category          & 0.95        & 0.86          & 0.98           \\ \hline
+		\end{tabular}
+	\caption{Number of false negatives}
+	\label{a}
+	\end{table}
+
+    The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively.
+    
+    \begin{figure}[H]
+    	\captionsetup{justification=raggedright}
+    	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
+    	\renewcommand{\figurename}{Figure}
+    	\centering
+    	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{MSEMSD}
+    	\caption{\fontsize{8}{10}\selectfont The plot shows the average mean squared error, and average mean signed difference of the three changepoint detection algorithms for effects with one changepoint, and effects with two changepoints.}
+    	\label{Figure 4}
+    \end{figure}
+
+    The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows. \\
+    
+    The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows.
+
+    \begin{table}[H]
+    	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
+    	\centering
+    	\renewcommand{\arraystretch}{1.2} % increase cell height by 50%
+    	\small
+    	\begin{tabular}{lccc}
+    		\hline
+    		& \textit{BS} & \textit{PELT} & \textit{BOCPD} \\ \hline
+    		\textbf{Average MSE}               &             &               &                \\
+    		\textit{One changepoints category} & 1.18        & 1.49          & 1.59           \\
+    		\textit{Two changepoints category} & 0.76        & 0.94          & 1.12           \\
+    		\textbf{Average MSD}               &             &               &                \\
+    		\textit{One changepoints category} & -0.03       & 0.03          & 0.05           \\
+    		Two changepoints category          & -0.1        & 0.94          & -0.09          \\ \hline
+    	\end{tabular}
+    \caption{Avg MSE MSD}
+    \label{b}
+    \end{table}
+	
+	
+	\subsubsection{The number of false positives}
+	
+	\hspace{0.28cm} As mentioned in the methodology section, a detected changepoint window is considered a true positive if it is within three windows of the true changepoint window. A detected changepoint window is considered a false positive if it is not within the three-window range of the true changepoint window. \\
+	
+	The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows.
+	
+	\subsubsection{True positive rate (TPR)}
+	
+	\hspace{0.28cm} Regarding TPR, \autoref{Figure 3} shows that all three changepoint detection algorithms have similar TPR values when there is a univariate changepoint in the effect, with BOCPD having 0.52, PELT having 0.49, and BS having 0.53. However, in the case of multivariate changepoints, the TPR values significantly improve, with BOCPD having 0.75, PELT having 0.79, and BS having 0.73. It is noteworthy that the improvement in TPR values for all three algorithms is substantial when moving from the univariate to multivariate changepoint situation. This indicates that if an effect has only one changepoint throughout the entire REH, the probability of correctly detecting the window within a range of three windows from the true changepoint window using any of the three algorithms is only around 50\%. On the other hand, if an effect has two changepoints throughout the entire REH, the probability of correctly detecting the window within a range of three windows from the true changepoint window using any of the three algorithms is above 70\%, with PELT almost reaching 80\% in the case of multivariate changepoints. However, PELT's high TPR may be a trade-off with its high false positive cases, as it detects more changepoints, which increases the likelihood of covering more true positives in its prediction.
+
+    \subsubsection{Positive predictive value (PPV)}
+    
+    \hspace{0.28cm} Moving on to PPV, it measures the proportion of detected changepoints that are true positive changepoints (i.e., within a range of three windows from the true changepoint) out of all detected changepoints. In other words, it evaluates the precision of the changepoint detection algorithms. For effects with one changepoint, BOCPD has the highest PPV, followed by BS and PELT, with BOCPD's positive predictive value being 0.89, while BS and PELT have 0.75 and 0.66, respectively. For effects with two changepoints, BOCPD still has the highest positive predictive value of 0.98, followed by BS with 0.95 and PELT with 0.86. \\
+    
+    Overall, as shown in \autoref{Figure 3}, there is an improvement in PPV for all three changepoint detection algorithms when moving from the univariate to the multivariate changepoint situation, with all three algorithms having a PPV above 0.85 in the multivariate changepoint situation. This indicates that the probability of a predicted changepoint being within three windows range of the true changepoint is higher than 85\% in the multivariate changepoint situation. Furthermore, BOCPD consistently performs at a high level in terms of PPV, whether in the univariate or multivariate changepoint situation, indicating that the changepoints identified by BOCPD have a high probability of being within three windows range of the true changepoints. Conversely, PELT exhibits the worst performance in terms of PPV, which is influenced by its high false positive rate.
 
     \subsubsection{Average mean squared error (Average MSE)}
     
@@ -441,16 +500,6 @@
     \hspace{0.28cm} The average MSD provides information about how well a changepoint detection algorithm predicts the location of the changepoint window relative to the true changepoint, for different changepoint situations. A negative value indicates that the algorithm is more likely to predict the window before the true changepoint, while a positive value indicates that it is more likely to predict the window after the true changepoint. \\
     
     In the single changepoint scenario, the BOCPD has an average MSD of 0.05, the BS has -0.03, and PELT has 0.03. In the two changepoint scenario, the BOCPD has an average MSD of 0.12, the BS has -0.1, and PELT has -0.09. From \autoref{Figure 4}, it's clear that the BOCPD tends to detect the changepoint window after the true changepoint, whether in the univariate or multivariate changepoint context. In contrast, the BS tends to detect the window before the true changepoint, and PELT has mixed performance. Interestingly, the reason why BS and PELT tend to detect the changepoint window before the true changepoint is that they are bottom-up methods that merge small intervals based on a cost function balancing data likelihood and model complexity \cite{killickOptimalDetectionChangepoints2012}. This approach favors fewer, larger changepoints and may lead to detecting changepoints slightly before the true location. Additionally, it's possible that the true changepoint window is located in a region of the time series where the effect parameters are already changing but have not yet fully transitioned to the new regime.
-    
-    \begin{figure}[h]
-    	\captionsetup{justification=raggedright}
-    	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
-    	\renewcommand{\figurename}{Figure}
-    	\centering
-    	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{MSEMSD}
-    	\caption{\fontsize{8}{10}\selectfont The plot shows the average mean squared error, and average mean signed difference of the three changepoint detection algorithms for effects with one changepoint, and effects with two changepoints.}
-    	\label{Figure 4}
-    \end{figure}
 
     \subsubsection{Conclusion}
 
@@ -458,19 +507,9 @@
     
     Regarding the performance of the three changepoint detection algorithms on our method, we can conclude that the BOCPD performs well in terms of PPV, indicating that the changepoints identified by the BOCPD are highly likely to be the true changepoints or within a three-window range of the true changepoint. The PELT has good performance on TPR, indicating that the true changepoints are likely to be covered by all the predicted changepoints from PELT. However, this comes at a cost of high false positives. The BS performs well in terms of MSE, indicating that the location of the predicted changepoint window is close to the true changepoint window.
     
-	\subsection{Real-life Apollo 13 data analysis}
+	\subsection{Real-life data analysis} \label{res:Apollo 13}
 	
-	\hspace{0.28cm} The emergency report of Apollo 13 occurred at $t$ = 55:55:21 (hh:mm:ss). The MW-REM was applied with a 1000-second window length and $\frac{2}{3}$ overlap, resulting in a total of 76 windows. The actual changepoint window for our study corresponds to the window from 9 to 11, covering the time slot from 55:38:53 to 56:06:40. \autoref{Figure 5} depicts the fluctuations in each effect's parameters over the REH in a single figure. \\
-	
-    \begin{figure}[h]
-    	\captionsetup{justification=raggedright}
-    	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
-    	\renewcommand{\figurename}{Figure}
-    	\centering
-    	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Apollo_effects}
-    	\caption{\fontsize{8}{10}\selectfont The figure shows the wave of effect parameters crossing the 76 windows of each of the seven effects we included in the MW-REM.}
-    	\label{Figure 5}
-    \end{figure}
+	\hspace{0.28cm} The emergency report of Apollo 13 occurred at $t$ = 55:55:21 (hh:mm:ss). The MW-REM was applied with a 1000-second window length and $\frac{2}{3}$ overlap, resulting in a total of 76 windows. The actual changepoint window for our study corresponds to the window from 9 to 11, covering the time slot from 55:38:53 to 56:06:40. \\
 	
 	We inputted the effect parameters obtained from the MW-REM windows into three different changepoint detection algorithms: BOCPD, BS, and PELT. The resulting changepoint detections are displayed in \autoref{Figure 6}. It is worth noting that the emergency happened between windows 9 and 11, so we anticipated that the algorithms would detect the emergency during or around that timeframe. \\
 	
@@ -506,7 +545,7 @@
     	\label{Figure 6}
     \end{figure}
 	
-	\section{\fontsize{14}{15}\selectfont Discussion}
+	\section{\fontsize{14}{15}\selectfont Conclusion} \label{sec:conclusion}
 	
 	\hspace{0.28cm} This paper proposes an approach based on the MW-REM structure to detect changepoints in social networks. Additionally, we compare the performance of three widely used changepoint detection algorithms, BOCPD, BS, and PELT, under the MW-REM structure. The proposed approach first identifies the key effects that influence social interactions in the network, and then selects an appropriate window length and overlap to segment the event history of the network. The MW-REM is then fit to the event history, and effect parameters are extracted for each fitting window of each effect. Finally, the extracted effect parameters are inputted into the changepoint detection algorithms to detect the changepoints in the network of each effect. With this approach, we can identify significant changes in the network over time and gain insights into the underlying dynamics of the network. \\
 	
