@@ -408,15 +408,18 @@
 		\renewcommand{\figurename}{Figure}
 		\centering
 		\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{FPTPRPPV}
-		\caption{\fontsize{8}{10}\selectfont The plot shows the number of false positives, true positive rate, and positive predictive value of the three changepoint detection algorithms for effects without changepoint, effects with one changepoint, and effects with two changepoints.}
+		\caption{\fontsize{8}{10}\selectfont The plot displays the (a) number of false positives, (b) recall, and (c) precision of the three changepoint detection algorithms under no changepoint, one changepoint, and two changepoints conditions. The y-axes indicate the values of interest, the x-axes indicate the different changepoint categories. The red line represents BOCPD, the blue line represents BS, and the green line represents PELT.}
 		\label{Figure 3}
 	\end{figure}
 	
-	The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows. \\
+	The results of the simulation studies support the effectiveness of our proposed method, all three changepoint detection algorithms (BS, PELT, and BOCPD) demonstrated persuasive performance. In \autoref{Figure 3} (a), we observe the overall performance of the algorithms in terms of false positives. The BOCPD algorithm outperforms the other algorithms in all scenarios, including no changepoint, one changepoint, and two changepoint scenarios. This suggests that the BOCPD algorithm has a better ability to correctly identify windows that are not changepoint windows in any situation. Conversely, the PELT algorithm is the most prone to incorrectly identify non-changepoint windows as changepoint windows. \\
 	
-	The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows.
+	Regarding the recall in \autoref{Figure 3} (b), all three changepoint detection algorithms have similar recall values in the univariate changepoint condition, which are around 0.5. This indicates that if an effect has only one changepoint throughout the entire REH, the probability of detecting the window within a range of three windows from the true one is around 50\%, using any of the three algorithms. In the case of the multivariate changepoint condition, all three algorithms show significant improvement, especially PELT, which almost reaches 80\%. \\
+	
+	In \autoref{Figure 3} (c), we present the precision performance of the three algorithms. As with recall, all three algorithms show improved precision in the multivariate changepoint condition, with each achieving a precision of over 0.85. BOCPD consistently performs at a high level, regardless of the changepoint condition. This suggests that the changepoint windows it identified are highly likely to be the windows within three windows' range of the true changepoint window. The low precision and high recall of PELT, however, are a trade-off with its high false positives. PELT detects more changepoint windows, which increases the likelihood of covering more true positives in its predictions, but at the same time, the high false positives result in the lowest precision among the three algorithms. Details of the performance of each algorithm in terms of the three metrics are shown in \autoref{FN_TPR_PPV}.
 	
 	\begin{table}[H]
+		\captionsetup{justification=raggedright}
 		\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
 		\centering
 		\renewcommand{\arraystretch}{1.2} % increase cell height by 50%
@@ -427,35 +430,34 @@
 			\textbf{Number of false negatives} &             &               &                \\
 			\textit{No changepoint category}   & 24          & 44            & 10             \\
 			\textit{One changepoints category} & 26          & 52            & 18             \\
-			\textit{Two changepoints category} & 24          & 10            & 6              \\
+			\textit{Two changepoints category} & 10          & 24            & 6              \\
 			\textbf{Recall}                    &             &               &                \\
 			\textit{One changepoints category} & 0.53        & 0.49          & 0.52           \\
 			\textit{Two changepoints category} & 0.73        & 0.79          & 0.75           \\
 			\textbf{Precision}                 &             &               &                \\
 			\textit{One changepoints category} & 0.75        & 0.66          & 0.89           \\
-			Two changepoints category          & 0.95        & 0.86          & 0.98           \\ \hline
+			\textit{Two changepoints category} & 0.95        & 0.86          & 0.98           \\ \hline
 		\end{tabular}
-	\caption{Number of false negatives}
-	\label{a}
+	\caption{False negatives, recall, and precision for each changepoint detection algorithm in various changepoint conditions.}
+	\label{FN_TPR_PPV}
 	\end{table}
 
-    The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively.
-    
     \begin{figure}[H]
     	\captionsetup{justification=raggedright}
     	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
     	\renewcommand{\figurename}{Figure}
     	\centering
-    	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{MSEMSD}
-    	\caption{\fontsize{8}{10}\selectfont The plot shows the average mean squared error, and average mean signed difference of the three changepoint detection algorithms for effects with one changepoint, and effects with two changepoints.}
+    	\includegraphics[width=10cm]{MSEMSD}
+    	\caption{\fontsize{8}{10}\selectfont The plot shows the (a) average mean squared error, and (b) average mean signed difference under no changepoint, one changepoint, and two changepoints conditions. The y-axes indicate the values of interest, the x-axes indicate the different changepoint categories. The red line represents BOCPD, the blue line represents BS, and the green line represents PELT.}
     	\label{Figure 4}
     \end{figure}
 
-    The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows. \\
+    \autoref{Figure 4} (a), the average MSE performance of the three algorithms is shown. The average MSE measures the average squared distance between the predicted and actual changepoint windows for different changepoint situations. A lower MSE value indicates that the predicted true positive changepoint windows are closer to the true changepoint windows. Among the three algorithms, BS performs the best in both univariate and multivariate changepoint situations, with the lowest average differences between its predicted and actual changepoint windows. However, the differences between the three algorithms are small overall. \\
     
-    The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows.
+    \autoref{Figure 4} (b) reveals the average MSD of each algorithm. The average MSD provides information about the average relative location of the predicted changepoint window with the true changepoint window in different changepoint situations for each algorithm. The BOCPD tends to detect the changepoint window after the true changepoint, whether in the univariate or multivariate changepoint context. In contrast, the BS tends to detect the window before the true changepoint, and PELT has mixed performance. The reason why BS and PELT tend to detect the changepoint window before the true changepoint is that they merge small intervals based on a cost function balancing data likelihood and model complexity\cite{killickOptimalDetectionChangepoints2012}. This approach favors fewer, larger changepoints and may lead to detecting changepoints slightly before the true location\citealp{fearnheadChangepointDetectionPresence2019}. Additionally, it is possible that the true changepoint window is located in a region of the time series where the effect parameters are already changing but have not yet fully transitioned to the new regime. Details of the performance of each algorithm in terms of the average MSE and average MSD metrics are shown in \autoref{Avg_MSEMSD}.
 
     \begin{table}[H]
+    	\captionsetup{justification=raggedright}
     	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
     	\centering
     	\renewcommand{\arraystretch}{1.2} % increase cell height by 50%
@@ -468,50 +470,87 @@
     		\textit{Two changepoints category} & 0.76        & 0.94          & 1.12           \\
     		\textbf{Average MSD}               &             &               &                \\
     		\textit{One changepoints category} & -0.03       & 0.03          & 0.05           \\
-    		Two changepoints category          & -0.1        & 0.94          & -0.09          \\ \hline
+    		\textit{Two changepoints category} & -0.1        & -0.09          & 0.12          \\ \hline
     	\end{tabular}
-    \caption{Avg MSE MSD}
-    \label{b}
+    	\caption{Average MSE and average MSD for each changepoint detection algorithm in various changepoint conditions.}
+    	\label{Avg_MSEMSD}
     \end{table}
-	
-	
-	\subsubsection{The number of false positives}
-	
-	\hspace{0.28cm} As mentioned in the methodology section, a detected changepoint window is considered a true positive if it is within three windows of the true changepoint window. A detected changepoint window is considered a false positive if it is not within the three-window range of the true changepoint window. \\
-	
-	The synthetic data reveals that, for effects without a changepoint, BOCPD produces a total of 10 false positive cases, while BS and PELT produce 24 and 44 false positives, respectively. For effects with one changepoint, BOCPD generates 18 false positives, while BS and PELT produce 26 and 52 false positives, respectively. For effects with two changepoints, BOCPD results in 6 false positives, while BS and PELT produce 10 and 24 false positives, respectively. Overall, as \autoref{Figure 3} shows, BOCPD performs better than the other algorithms in correctly identifying the window that is not a changepoint window, while PELT is the most prone to incorrectly identifying non-changepoint windows as changepoint windows.
-	
-	\subsubsection{True positive rate (TPR)}
-	
-	\hspace{0.28cm} Regarding TPR, \autoref{Figure 3} shows that all three changepoint detection algorithms have similar TPR values when there is a univariate changepoint in the effect, with BOCPD having 0.52, PELT having 0.49, and BS having 0.53. However, in the case of multivariate changepoints, the TPR values significantly improve, with BOCPD having 0.75, PELT having 0.79, and BS having 0.73. It is noteworthy that the improvement in TPR values for all three algorithms is substantial when moving from the univariate to multivariate changepoint situation. This indicates that if an effect has only one changepoint throughout the entire REH, the probability of correctly detecting the window within a range of three windows from the true changepoint window using any of the three algorithms is only around 50\%. On the other hand, if an effect has two changepoints throughout the entire REH, the probability of correctly detecting the window within a range of three windows from the true changepoint window using any of the three algorithms is above 70\%, with PELT almost reaching 80\% in the case of multivariate changepoints. However, PELT's high TPR may be a trade-off with its high false positive cases, as it detects more changepoints, which increases the likelihood of covering more true positives in its prediction.
 
-    \subsubsection{Positive predictive value (PPV)}
+    Overall, the BOCPD performs well in terms of precision; the changepoint windows identified by the BOCPD are highly likely to be the true changepoints or within a three-window range of the true changepoints. However, in general, it cannot detect as many true changepoints as PELT. PELT has good performance on recall; the true changepoints are likely to be covered by all the predicted changepoints from PELT. However, this comes at the cost of high false positives and low precision. The BS performs well in terms of average MSE; the location of its predicted changepoint windows is usually close to the true changepoint window if the predicted changepoint windows are true positive cases (i.e., within the three-window range of the true changepoint windows). However, the weakness of the BS is that it has the lowest recall among the three algorithms, which can cause it to miss detecting certain changepoint windows. Moreover, in practice, it is challenging to determine whether a detected changepoint window is a true positive or not. Therefore, instead of relying solely on the BS, we suggest using it in conjunction with other algorithms. By comparing the nearby detected changepoint windows between the BS and other algorithms, we can identify the true positive changepoint windows and choose the window detected by the BS as it has good performance in terms of average MSE. Below shows the suitable application scenarios of each algorithm:
     
-    \hspace{0.28cm} Moving on to PPV, it measures the proportion of detected changepoints that are true positive changepoints (i.e., within a range of three windows from the true changepoint) out of all detected changepoints. In other words, it evaluates the precision of the changepoint detection algorithms. For effects with one changepoint, BOCPD has the highest PPV, followed by BS and PELT, with BOCPD's positive predictive value being 0.89, while BS and PELT have 0.75 and 0.66, respectively. For effects with two changepoints, BOCPD still has the highest positive predictive value of 0.98, followed by BS with 0.95 and PELT with 0.86. \\
+    \begin{itemize}
+    	\item BS: suitable when accurately identifying the location of the changepoint window is essential. Note that this algorithm needs to be used in conjunction with other algorithms as an auxiliary tool. \\
+    	
+    	\item PELT: appropriate when it is critical to identify all potential changepoint windows, even if it means a higher likelihood of false positives. \\
+    	
+    	\item BOCPD: recommended when proper identification of changepoint windows is crucial and minimizing the number of incorrect detections is a priority, even if it means potentially missing some true changepoint windows.
+    \end{itemize}
     
-    Overall, as shown in \autoref{Figure 3}, there is an improvement in PPV for all three changepoint detection algorithms when moving from the univariate to the multivariate changepoint situation, with all three algorithms having a PPV above 0.85 in the multivariate changepoint situation. This indicates that the probability of a predicted changepoint being within three windows range of the true changepoint is higher than 85\% in the multivariate changepoint situation. Furthermore, BOCPD consistently performs at a high level in terms of PPV, whether in the univariate or multivariate changepoint situation, indicating that the changepoints identified by BOCPD have a high probability of being within three windows range of the true changepoints. Conversely, PELT exhibits the worst performance in terms of PPV, which is influenced by its high false positive rate.
-
-    \subsubsection{Average mean squared error (Average MSE)}
-    
-    \hspace{0.28cm} The average MSE measures the average squared distance between the predicted and actual changepoint windows for different changepoint situations. A lower MSE value indicates greater precision. In the case of a single changepoint, BOCPD has an average MSE of 1.59, while BS and PELT have MSE values of 1.18 and 1.49, respectively. When there are two changepoints, BOCPD has an average MSE of 1.12, BS has an MSE of 0.76, and PELT has an MSE of 0.94. Overall, BS performs the best out of the three algorithms in both univariate and multivariate changepoint situations, indicating that it has the lowest differences between its predicted and actual changepoint windows (see \autoref{Figure 4}). All three algorithms also perform better in the two changepoint situation, suggesting that their predictions of changepoint window location are more reliable in the multivariate changepoint context compared to the univariate changepoint context.
-
-    \subsubsection{Average mean signed difference (Average MSD)}
-    
-    \hspace{0.28cm} The average MSD provides information about how well a changepoint detection algorithm predicts the location of the changepoint window relative to the true changepoint, for different changepoint situations. A negative value indicates that the algorithm is more likely to predict the window before the true changepoint, while a positive value indicates that it is more likely to predict the window after the true changepoint. \\
-    
-    In the single changepoint scenario, the BOCPD has an average MSD of 0.05, the BS has -0.03, and PELT has 0.03. In the two changepoint scenario, the BOCPD has an average MSD of 0.12, the BS has -0.1, and PELT has -0.09. From \autoref{Figure 4}, it's clear that the BOCPD tends to detect the changepoint window after the true changepoint, whether in the univariate or multivariate changepoint context. In contrast, the BS tends to detect the window before the true changepoint, and PELT has mixed performance. Interestingly, the reason why BS and PELT tend to detect the changepoint window before the true changepoint is that they are bottom-up methods that merge small intervals based on a cost function balancing data likelihood and model complexity \cite{killickOptimalDetectionChangepoints2012}. This approach favors fewer, larger changepoints and may lead to detecting changepoints slightly before the true location. Additionally, it's possible that the true changepoint window is located in a region of the time series where the effect parameters are already changing but have not yet fully transitioned to the new regime.
-
-    \subsubsection{Conclusion}
-
-    \hspace{0.28cm} The synthetic data analysis confirms the effectiveness of our proposed changepoint detection approach for the MW-REM structure. By feeding the changepoint detection algorithms with the effect parameters given by windows, we can identify the points at which each effect changes in the social network. \\
-    
-    Regarding the performance of the three changepoint detection algorithms on our method, we can conclude that the BOCPD performs well in terms of PPV, indicating that the changepoints identified by the BOCPD are highly likely to be the true changepoints or within a three-window range of the true changepoint. The PELT has good performance on TPR, indicating that the true changepoints are likely to be covered by all the predicted changepoints from PELT. However, this comes at a cost of high false positives. The BS performs well in terms of MSE, indicating that the location of the predicted changepoint window is close to the true changepoint window.
+    On the other hand, it is worth noting that all three algorithms perform better on multivariate changepoint conditions (i.e., scenarios with more than one changepoint) in all the metrics we employed. This is because detecting multiple changepoints can provide more information about the underlying structure of the data. Conversely, detecting one or fewer changepoints may not provide enough information to distinguish between random fluctuations and actual changes\cite{liReviewChangepointDetection2019}.
     
 	\subsection{Real-life data analysis} \label{res:Apollo 13}
 	
-	\hspace{0.28cm} The emergency report of Apollo 13 occurred at $t$ = 55:55:21 (hh:mm:ss). The MW-REM was applied with a 1000-second window length and $\frac{2}{3}$ overlap, resulting in a total of 76 windows. The actual changepoint window for our study corresponds to the window from 9 to 11, covering the time slot from 55:38:53 to 56:06:40. \\
+	\hspace{0.28cm} We validated the feasibility of our method and the findings of our simulation analyses in real life using the Apollo 13 voice loop data. The emergency report for Apollo 13 occurred at $t$ = 55:55:21 (hh:mm:ss). We applied the MW-REM with a window length of 1000 seconds and $\frac{2}{3}$ overlap, resulting in a total of 76 windows. The potential changepoint window for our study corresponds to the window from 9 to 11, covering the time slot from 55:38:53 to 56:06:40.
 	
-	We inputted the effect parameters obtained from the MW-REM windows into three different changepoint detection algorithms: BOCPD, BS, and PELT. The resulting changepoint detections are displayed in \autoref{Figure 6}. It is worth noting that the emergency happened between windows 9 and 11, so we anticipated that the algorithms would detect the emergency during or around that timeframe. \\
+	\begin{figure}[H]
+		\captionsetup{justification=raggedright}
+		\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
+		\renewcommand{\figurename}{Figure}
+		\centering
+		\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Apollo_CPD_bw}
+		\caption{\fontsize{8}{10}\selectfont The changepoint detection results of the three algorithms. The red dashed line represents BOCPD, the green dotted line represents PELT, the blue solid line represents BS. The scatter points represent the effect parameters obtained from each window. The y-axes indicate the effect parameter values, the x-axes represent the order of the windows along the event history.}
+		\label{Apollo_effects_cp_plot}
+	\end{figure}
+
+    \begin{table}[H]
+    	\captionsetup{justification=raggedright}
+    	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
+    	\centering
+    	\renewcommand{\arraystretch}{1.2} % increase cell height by 50%
+    	\small
+    	\begin{tabular}{lccc}
+    		\hline
+    		& \textit{BS}        & \textit{PELT}         & \textit{BOCPD}                   \\ \hline
+    		\textit{IndegreeReceiver}  & 6, 8, 12, 15, 36   & 6, 8, 14, 32, 35      & {\color[HTML]{000000} 9, 15, 37} \\
+    		\textit{Inertia}           & 5, 59, 73          & 5, 11, 26, 45, 59, 73 & 6, 12, 26, 46, 60                \\
+    		\textit{OutdegreeSender}   & 3, 8, 13           & 3, 8                  & 4, 9                             \\
+    		\textit{psABBA}            & 12, 34, 41, 59, 73 & 13, 34, 41, 59, 73    & 13, 42, 60                       \\
+    		\textit{psABBY}            & 3, 5, 8            & 3, 5, 8               & 6, 9                             \\
+    		\textit{psABXA}            & 4, 12              & 4, 13, 36, 48         & 5, 14, 37, 49                    \\
+    		\textit{TotaldegreeSender} & None               & 3, 13                 & 4, 14                            \\ \hline
+    	\end{tabular}
+    	\caption{The changepoint detection results of the three algorithms.}
+    	\label{Apollo_effects_cp}
+    \end{table}
+	
+	We inputted the effect parameters obtained from the MW-REM windows into three different changepoint detection algorithms: BOCPD, BS, and PELT. The resulting changepoint detections are displayed in \autoref{Apollo_effects_cp_plot} and \autoref{Apollo_effects_cp}. As the emergency occurred between windows 9 and 11, we anticipated that the algorithms would detect the emergency during or around that timeframe. \\
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	For the indegree of the receiver effect, BOCPD detected changepoints at windows 9, 15, and 37. BS detected them at windows 6, 8, 12, 15, and 36. PELT detected them at windows 6, 8, 14, 32, and 35. BOCPD successfully captured the changepoint window at 9 and also detected window 15, which occurred four windows later than the actual changepoint window, BS and PELT did not capture any exact window that contained the emergency. BS detected a window that occurred one window before it, and a window that occurred four windows later than it. PELT detected a window that occurred one window ahead of it, and another that was three windows later than it. As we mentioned in the previous section, BS and PELT tend to detect the changepoint window before the true changepoint due to their cost function \cite{killickOptimalDetectionChangepoints2012}, which favors fewer, larger changepoints and may lead to detecting changepoints slightly before the true location. Additionally, our study is a retrieval study that analyzed the complete data, not incomplete and updated data over time, which may have caused the algorithms to detect the changepoint window slightly earlier. \\
 	
@@ -522,6 +561,9 @@
 	For the inertia effect, BOCPD detected changepoints at windows 6, 12, 26, 46, and 60. BS detected changepoints at windows 5, 59, and 73, while PELT detected changepoints at windows 5, 11, 26, 45, 59, and 73. BOCPD detected the changepoint one window after the window containing the emergency report, which is very close to the window where the emergency occurred. However, BS did not detect any relevant windows near the changepoint window. On the other hand, PELT recognized the changepoint at window 11, which is exactly the window where the emergency happened. \\
 	 
 	The inertia effect in \autoref{Figure 6} also shows an increase in the inertia parameter after the emergency, which was successfully captured by BOCPD and PELT. The rise in the inertia effect could be because the emergency caused certain astronauts and staff at Mission Control to exchange more reports and responses to tackle the issue during that time period, resulting in a higher inertia effect. However, the effect later decreased slightly. \\ 
+	
+    
+	
 	 
 	Regarding the outdegree of the sender effect, BOCPD detected changepoints at windows 4 and 9, BS detected them at windows 3, 8, and 13. PELT detected the changepoint at windows 3 and 8. Once again, BOCPD captured the window in which the emergency occurred, while BS and PELT detected the changepoint one window before it actually happened. The panel of the outdegree of the sender effect in \autoref{Figure 6} reveals that the parameter of the outdegree of the sender effect had a significant reduction at window 9, the window of the emergency report, and then had a slight increase. This reflects that after the emergency occurred, the phenomenon of the actors who sent more past events would send more in the future was broken. To fix the issue, the astronauts and the staff at Mission Control who were not active senders before had to join the communications more. Therefore, the parameter dropped at window 9, and then they became more active actors than before, leading to a slight rise in the parameter of the outdegree of the sender effect after window 9. \\
 	  
@@ -534,16 +576,6 @@
 	Overall, we validated our proposed approach for using the MW-REM structure to detect changepoints in social networks with real-life data from the Apollo 13 mission. Specifically, we analyzed the voice-loop data for the emergency report that occurred at $t$ = 55:55:21 (hh:mm:ss). Using a 1000-second and $\frac{2}{3}$ overlap MW-REM, we found that windows 9 to 11 out of a total of 76 windows covered the emergency report. We hypothesized that by inputting each effect's parameters into the changepoint detection algorithm, we could identify the window containing the emergency report. Our analysis confirmed this hypothesis, as all three changepoint detection algorithms we used performed well. They identified the changepoints either at or near the window that contained the emergency report for almost all of the effects. \\ 
 	
 	The Apollo 13 analysis also confirmed the characteristic conclusions of each changepoint detection algorithm as observed in the synthetic data analysis. BOCPD had a high PPV and detected only a small number of changepoint windows, which were mostly the emergency report windows. PELT had the best TPR performance among the three algorithms, but detected a larger number of changepoint windows, including those around or at the emergency report windows for all effects. BS had the worst TPR performance and did not detect any changepoint windows around the emergency for the inertia effect and total degree of the sender effect, while BOCPD and PELT did. On the other hand, both BS and PELT identified the window one step before the emergency report window as a changepoint window for the indegree of the receiver effect, the outdegree of the sender effect, and the AB-BY pshift effect. This is consistent with their performance from the synthetic data analysis, where they possess the negative values of the MSD.
-	
-    \begin{figure}[h]
-    	\captionsetup{justification=raggedright}
-    	\captionsetup{labelfont={bf}, labelsep=space, font={footnotesize}}
-    	\renewcommand{\figurename}{Figure}
-    	\centering
-    	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{Apollo_CPD_bw}
-    	\caption{\fontsize{8}{10}\selectfont The plot shows the number of false positives, true positive rate, and positive predictive value of the three changepoint detection algorithms for effects without changepoint, effects with one changepoint, and effects with two changepoints.}
-    	\label{Figure 6}
-    \end{figure}
 	
 	\section{\fontsize{14}{15}\selectfont Conclusion} \label{sec:conclusion}
 	
