@@ -2170,6 +2170,133 @@ for (i in 1:length(BS_fixmw_out_2cp_param_diff.all)) {
 
 
 
+--------------------------------------------------------------------------------
+
+# Visualization
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(RColorBrewer)
+library(ggforce) # add bracket under the window line
+library(patchwork) # combine many plots into one
+```
+
+
+```{r fig.height= 3.75, fig.width=9}
+example_plot <- data.frame("window" = 1:length(fixmw_send_1cp_param_same.all[[1]]),
+                           "sender" = fixmw_send_1cp_param_same.all[[1]],
+                           "difference" = fixmw_diff_1cp_param_same.all[[1]],
+                           "inertia" = fixmw_ine_1cp_param_same.all[[1]],
+                           "outdegreesender" = fixmw_out_1cp_param_same.all[[1]])
+
+sender_plot <- 
+  ggplot(example_plot, aes(x = window, y = sender)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "Sender",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_rect(aes(xmin = 56, xmax = 58,
+                ymin = -Inf, ymax = Inf),
+            fill = "#D6C1DE", alpha = 0.03) +
+  geom_vline(xintercept = 56, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 58, linetype = "dashed", color = "black")
+
+sender_plot
+
+difference_plot <- 
+  ggplot(example_plot, aes(x = window, y = difference)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "Difference",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_rect(aes(xmin = 56, xmax = 58,
+                ymin = -Inf, ymax = Inf),
+            fill = "#D6C1DE", alpha = 0.03) +
+  geom_vline(xintercept = 56, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 58, linetype = "dashed", color = "black")
+
+difference_plot
+
+inertia_plot <- 
+  ggplot(example_plot, aes(x = window, y = inertia)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "Inertia",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_rect(aes(xmin = 56, xmax = 58,
+                ymin = -Inf, ymax = Inf),
+            fill = "#D6C1DE", alpha = 0.03) +
+  geom_vline(xintercept = 56, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 58, linetype = "dashed", color = "black")
+
+inertia_plot
+
+outdegreesender_plot <- 
+  ggplot(example_plot, aes(x = window, y = outdegreesender)) +
+  geom_point(color = "#4d495a", size = 1.05) +
+  labs(title = "OutdegreeSender",
+       x = "Window", 
+       y = "Parameter") +
+  theme_bw() +
+  theme(plot.title = element_text(face = "italic", family = "serif"),
+        axis.text = element_text(family = "serif"),
+        axis.title = element_text(family = "serif"),
+        legend.position = "none",
+        legend.text = element_text(family = "serif"),
+        legend.title = element_text(face = "italic", family = "serif"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.background = element_blank()) +
+  geom_rect(aes(xmin = 56, xmax = 58,
+                ymin = -Inf, ymax = Inf),
+            fill = "#D6C1DE", alpha = 0.03) +
+  geom_vline(xintercept = 56, linetype = "dashed", color = "black") +
+  geom_vline(xintercept = 58, linetype = "dashed", color = "black")
+
+outdegreesender_plot
+
+
+
+sender_plot +
+  difference_plot + 
+  inertia_plot +
+  outdegreesender_plot +
+  plot_layout(ncol = 2, widths = c(1,1))
+```
+
+
+
 
 -----------------------------------------
 
