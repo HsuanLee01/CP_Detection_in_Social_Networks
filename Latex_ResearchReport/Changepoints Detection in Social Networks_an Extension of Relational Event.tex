@@ -54,62 +54,114 @@
 
 \begin{document}
 	
-	\begin{titlepage}
-		\begin{center}
-			\vspace*{1.1cm}
+    %\begin{titlepage}
+	%	\begin{center}
+	%		\vspace*{1.1cm}
+	%		
+	%		\Huge
+	%		\textbf{Changepoint Detection in Social Networks: an Extension of the Relational Event Model}
 			
-			\Huge
-			\textbf{Changepoint Detection in Social Networks: an Extension of the Relational Event Model}
+	%		\vspace{1.8cm}
+	%		\LARGE
+	%		RESEARCH REPORT
 			
-			\vspace{1.8cm}
-			\LARGE
-			RESEARCH REPORT
+	%		\vspace{1.8cm}
 			
-			\vspace{1.8cm}
+	%		\textbf{Hsuan Lee (9252568)}
 			
-			\textbf{Hsuan Lee (9252568)}
+	%		\vspace{1cm}
+	%		Supervisors: 
 			
-			\vspace{1cm}
-			Supervisors: 
+	%		\vspace{0.5cm}
 			
-			\vspace{0.5cm}
+	%		Dr. Mahdi Shafiee Kamalabad 
 			
-			Dr. Mahdi Shafiee Kamalabad 
+	%		\& 
 			
-			\& 
+	%		Dr. Javier Garcia Bernardo
 			
-			Dr. Javier Garcia Bernardo
+	%		\vspace{2cm}
+	%		\Large
 			
-			\vspace{2cm}
-			\Large
+	%		\ Programme: MSBBSS
 			
-			\ Programme: MSBBSS
+	%		\vspace{0.3cm}
 			
-			\vspace{0.3cm}
+	%		\emph{Department of Methodology \& Statistics}\\
 			
-			\emph{Department of Methodology \& Statistics}\\
+	%		\vspace{0.3cm}
+	%		Utrecht University\\
+	%		the Netherlands\\
 			
-			\vspace{0.3cm}
-			Utrecht University\\
-			the Netherlands\\
+	%		\vspace{1.5cm}    
+	%		\Large
+	%		Date: 08.05.2023
 			
-			\vspace{1.5cm}    
-			\Large
-			Date: 08.05.2023
+	%		Candidate Journal: Social Networks
 			
-			Candidate Journal: Social Networks
-			
-			FETC Case Number: 22-1870; 22-1871
+	%		FETC Case Number: 22-1870; 22-1871
 		
-		\end{center}
-	\end{titlepage}
+	%	\end{center}
+	%\end{titlepage}
+
+
+
+    \begin{titlepage}
+	
+	    \raggedright % Add this line to left-align the content
+	
+	    \vspace*{-0.9cm}
+	
+	    \begin{figure}[H]
+		    \includegraphics[width=4.2cm]{UU_logo}
+	    \end{figure}
+	
+	    \vspace*{1.4cm}
+	
+	    \rule{\linewidth}{0.1pt} % Add a solid bottom line
+	
+	    \vspace{0.3cm}
+	    \large
+	    \textbf{Research Master, Methodology \& Statistics} \\
+	    \vspace{0.2cm}
+	    \textbf{Utrecht University, the Netherlands}
+	
+	    \vspace{3cm}
+    	\textbf{MSc Thesis, Hsuan Lee (9252568)} \\
+	    \vspace{0.2cm}
+	    \textbf{TITLE: Changepoint Detection in Social Networks: an Extension of the Relational Event Model} \\
+	
+	    \vspace{3cm}
+	    \textbf{Supervisors:} \\
+	    \vspace{0.2cm}
+	    \textbf{Dr.\emph{Mahdi Shafiee Kamalabad}} \\
+	    \vspace{0.2cm}
+	    \textbf{Dr.\emph{Javier Garcia Bernardo}} \\
+	
+	    \vspace{1.75cm}
+	    \textbf{Second grader:} \\
+	    \vspace{0.2cm}
+	    \textbf{Dr.\emph{Gerko Vink}} \\
+	
+	    \vspace{1.75cm}
+	    \textbf{Preferred journal of publication: Social Networks} \\
+	    \vspace{0.2cm}
+	    \textbf{Word count: 6500}
+	
+	    %\vspace{-0.2cm}
+	    \rule{\linewidth}{0.1pt} % Add a solid bottom line
+	
+    \end{titlepage}
+
+
+
 	
 	\articletype{THESIS PROPOSAL}
 	
 	\vspace*{1cm}
 	\hspace{-0.45cm}{\Large \textbf{Abstract}} \\
 	
-	\small{Time-stamped relationships dominate our lives. From scheduled meetings to social media interactions, the ebb and flow of our daily routines are dictated by time and the people around us. The Relational Event Model (REM) is a well-established model used to analyze time-stamped social interaction in a social network. The conventional REM assumes that the endogenous and exogenous effects of the model are constant over the entire event history. This assumption can be unrealistic in real-world situations where social interaction can vary significantly between periods of time. For example, critical situations can fundamentally alter the communication between people, which is of key interest to social network researchers. The conventional REM, however, cannot identify the number and locations of the time periods where the effects strengths change abruptly. To fill this gap, we introduced three state-of-the-art changepoint detection algorithms (Bayesian Online Changepoint Detection (BOCPD), Pruned Exact Linear Time (PELT), and Binary Segmentation (BS)) into the REM structure to test and compare their effectiveness and performance. We first employed the moving window approach to segment the event history , which we called windows, and fit the REM on each window. By doing this, we could observe the dynamics of effects over time. We then utilized changepoint detection algorithms to detect changepoints across windows. Our analysis of synthetic data indicated that BOCPD performs well in terms of precision, most of the changepoint windows it indicated were highly convincing as true changepoint windows. PELT is capable of revealing most of the changepoint windows in the network, but this came at a trade-off with its high number of false positives. BS is the least effective algorithm, it cannot reveal as many true changepoint windows as PELT and also lacks the high precision of BOCPD. We validated our findings using Apollo 13 voice loop data, which provided similar results, the BOCPD and PELT captured all the potential changepoint windows that we hypothesize, while BS missed a few.} \\
+	\small{Time-stamped relationships dominate our lives. From scheduled meetings to social media interactions, the ebb and flow of our daily routines are dictated by time and the people around us. The Relational Event Model (REM) is a well-established model used to analyze time-stamped social interaction in a social network. The conventional REM assumes that the strength of endogenous and exogenous effects in the model is constant over the entire event history. This assumption can be unrealistic in real-world situations where social interaction can vary significantly between periods of time. For example, critical situations can fundamentally alter the communication between people, which is of key interest to social network researchers. However, the conventional REM cannot identify the number and locations of the time periods where the effects' strength changes abruptly. To fill this gap, we introduced three state-of-the-art changepoint detection algorithms (Bayesian Online Changepoint Detection (BOCPD), Pruned Exact Linear Time (PELT), and Binary Segmentation (BS)) into the REM structure to test and compare their effectiveness and performance. We first employed the moving window approach to segment the event history , which we called windows, and fit the REM on each window. By doing this, we could observe the dynamics of effects over time. We then utilized changepoint detection algorithms to detect changepoints across windows. Our analysis of synthetic data showed that BOCPD performed well in terms of precision, most of the windows it identified as containing changepoints were highly convincing. PELT was capable of revealing most of the windows containing changepoints in the network, but this came at a trade-off with its high number of false positives. BS was the least effective algorithm, it could not reveal as many windows containing changepoints as PELT, also lacked the high precision of BOCPD. We validated our findings using the Apollo 13 voice loop data, which provided similar results. Both BOCPD and PELT captured all the potential windows we hypothesized that included changepoints, while BS missed a few.} \\
 	
 	\hspace{-0.45cm}{\textbf{Keywords: }} \\
 	\small{Social network, Relational Event Model, Moving Window approach, Changepoints detection, Binary Segmentation, Pruned Exact Linear Time, Bayesian Online Changepoint Detection Method} \\
@@ -150,7 +202,7 @@
     		\textit{\textbf{\begin{tabular}[c]{@{}l@{}}Abbreviations/\\ mathematical symbols\end{tabular}}} & \textit{\textbf{Decription}}                                  \\ \hline
     		\textit{REM}                                                                                    & Relational Event Model                                        \\
     		\textit{MW-REM}                                                                                 & Moving Window approach / Moving Window Relational Event Model \\
-    		\textit{Changepoint window}                                                                     & Windows that contain changepoints                             \\
+    		\textit{Changepoint window}                                                                     & a window that contains changepoint                            \\
     		\textit{REH}                                                                                    & Relational Event History data                                 \\
     		\textit{BS}                                                                                     & Binary Segmentation Changepoint Detection Algorithm           \\
     		\textit{PELT}                                                                                   & Pruned Exact Linear Time Changepoint Detection Algorithm      \\
@@ -240,12 +292,12 @@
     \end{figure}
     
 	% add curly bracket for the plot
-	%\begin{picture}(0,0)
-	%	\put(36,70.5){\makebox(137.5,4){\upbracefill}}
-	%	\put(128.2,104.3){\makebox(137,4){\upbracefill}}
-	%	\put(220.3,138){\makebox(137,4){\upbracefill}}
+	\begin{picture}(0,0)
+		\put(36,70.5){\makebox(137.5,4){\upbracefill}}
+		\put(128.2,104.3){\makebox(137,4){\upbracefill}}
+		\put(220.3,138){\makebox(137,4){\upbracefill}}
 	%\put(100.8,99){\makebox(137,4){\upbracefill}}
-	%\end{picture}
+	\end{picture}
 	
 	\subsection{Changepoint detection} \label{sec:CP detection}
 	
@@ -295,9 +347,9 @@
 	
 	Overall, BOCPD starts by building the predictive distribution from the potential locations of changepoints, which reveals any prior knowledge regarding the data generation process. Based on the given predictive distribution, BOCPD computes the run length probability at a time point. As new data come in, the predictive distribution is continuously updated, and BOCPD iteratively runs the same procedure until no new data appear.
 	
-	\subsubsection{Changepoint Detection of MW-REM} \label{sec:our method}
+	\subsubsection{Changepoint detection processes} \label{sec:our method}
 	
-	\hspace{0.27cm} In this section, we will discuss the settings used for each of the three changepoint detection methods we employed in our thesis, as well as the steps we took for changepoint detection based on the MW-REM structure. \\
+	\hspace{0.27cm} In this section, we will discuss the settings used for each of the three changepoint detection algorithms we employed in our thesis, as well as the steps we took for changepoint detection based on the MW-REM structure. \\
 	
 	When using BS and PELT, selecting an appropriate statistical criterion to detect changepoints is crucial. For example, one statistical criterion for detecting changepoints is to look for significant changes in the mean or variance of the time series. However, the mean criterion is not robust to outlying observations, as noted by Dehling et al.\cite{dehlingRobustMethodShift2020}. The mean difference only detects changes in the mean value, assuming a constant variance. Similarly, variance difference only detects changes in the variance, assuming a constant mean. To improve changepoint identification, we consider changes in both the mean and variance when using BS and PELT. \\
 	
@@ -399,7 +451,7 @@
 	
 	\hspace{0.28cm} After feeding the changepoint detection algorithms with the effects' parameters, we used the confusion matrix to evaluate the performance of each algorithm for each effect. A true positive indicates that the algorithm correctly detected a window containing the changepoint of the effect. Notably, due to the overlapping property of the windows, a changepoint can be contained in three consecutive windows simultaneously. These windows are referred to as ``changepoint windows". Therefore, if an algorithm detects the changepoint in any of these windows, it is considered a true positive. However, since the synthetic datasets are produced based on selecting the $(s,r)$ pair with the highest rate probability in the risk set $R$ for every event, the locations of the changepoints may differ slightly from our assignment. As a result, if a changepoint detection algorithm detects a changepoint within the range of three windows of the windows containing the true changepoint, we consider it a true positive. \\
 	
-	A false positive indicates that the algorithm falsely detected a window as a changepoint window (i.e., a window containing a changepoint), while a false negative indicates that the algorithm failed to detect a window containing the changepoint of the effect. Since our synthetic datasets are highly imbalanced, with many windows but few containing changepoints, we did not consider true negatives. \autoref{Table 3} presents the confusion matrix for changepoint detection, showing the actual and predicted changepoints and non-changepoints.
+	A false positive indicates that the algorithm falsely detected a window as a changepoint window (i.e., a window containing a changepoint), while a false negative indicates that the algorithm failed to detect a window containing the changepoint of the effect. Since our synthetic datasets are highly imbalanced, with many windows but few containing changepoints, we did not consider true negatives. \autoref{Table 3} presents the confusion matrix for changepoint detection, showing the actual and detected changepoints and non-changepoints.
 	
 	\begin{table}[H]
 	\captionsetup{justification=raggedright, singlelinecheck=true, labelfont={bf}, labelsep=space, font={footnotesize}, width=0.85\linewidth}
@@ -410,8 +462,8 @@
 	\begin{tabular}{l|c|c}
 		\hline
 		& \textit{Actual Changepoint} & \textit{Actual Non-changepoint}                   \\ \hline
-		\textit{Predicted Changepoint} & True Positive              & False Positive                               \\ \hline
-		\textit{Predicted Non-changepoint} & False Negative             & \multicolumn{1}{l}{\cellcolor[HTML]{C0C0C0}} \\ \hline
+		\textit{Detected Changepoint} & True Positive              & False Positive                               \\ \hline
+		\textit{Detected Non-changepoint} & False Negative             & \multicolumn{1}{l}{\cellcolor[HTML]{C0C0C0}} \\ \hline
 	\end{tabular}
 	\label{Table 3}
     \end{table}
@@ -423,42 +475,42 @@
 	\begin{equation} \label{7}
 		Recall_g = \frac{TP_g}{TP_g + FN_g},
 	\end{equation}
-    where $TP$ indicates the number of true positive cases, $FN$ indicates the number of false negative cases, and $g$ indicates the changepoint condition. Through the recall, we obtain information about the probability that each changepoint detection algorithm correctly predicts the true positive for the effects with one or two changepoints, respectively, among all positive observations. \\
+    where $TP$ indicates the number of true positive cases, $FN$ indicates the number of false negative cases, and $g$ indicates the changepoint condition. Through the recall, we obtain information about the probability that each changepoint detection algorithm correctly detects the true positive for the effects with one or two changepoints, respectively, among all positive observations. \\
 
     The third indicator is the precision. Similar to recall, we assess the performance of the changepoint detection algorithms on precision in the one changepoint and two changepoint conditions. The precision is calculated as
  
     \begin{equation} \label{8}
     	Precision_g = \frac{TP_g}{TP_g + FP_g},
     \end{equation}
-	where $TP$ represents the number of true positive cases, $FP$ represents the number of false positive cases, and $g$ represents the changepoint condition. The precision indicates the probability that a predicted changepoint is indeed a changepoint, providing insight into the accuracy of the changepoint detection algorithms.
+	where $TP$ represents the number of true positive cases, $FP$ represents the number of false positive cases, and $g$ represents the changepoint condition. The precision indicates the probability that a detected changepoint is indeed a changepoint, providing insight into the accuracy of the changepoint detection algorithms.
 	
 	\subsubsection{Mean Squared Error (MSE) \& Mean Signed Difference (MSD)} \label{sec:MSE MSD}
 	
-	\hspace{0.28cm} We use mean squared error (MSE) and mean signed difference (MSD) as measures to examine the accuracy of the predicted changepoint window and the tendency of the algorithm to detect changepoints early or late. \\
+	\hspace{0.28cm} We use mean squared error (MSE) and mean signed difference (MSD) as measures to examine the accuracy of the detected changepoint window and the tendency of the algorithm to detect changepoints early or late. \\
 	
-	The MSE measures the average squared distance between the predicted and actual changepoint windows for each changepoint detection algorithm. We compute the MSE only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSE as\cite{aminikhanghahiSurveyMethodsTime2017}
+	The MSE measures the average squared distance between the detected and actual changepoint windows for each changepoint detection algorithm. We compute the MSE only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSE as\cite{aminikhanghahiSurveyMethodsTime2017}
 	
 	\begin{equation} \label{9}
-		MSE = \frac{\sum_{i = 1}^{\#CP} (Predicted(CP) - Actual(CP))^2}{\#CP},
+		MSE = \frac{\sum_{i = 1}^{\#CP} (Detected(CP) - Actual(CP))^2}{\#CP},
 	\end{equation}
-	where $CP$ denotes the windows containing a changepoint, and $\#CP$ represents the number of changepoints in the REH. A lower MSE indicates that the algorithm's predicted changepoint window is closer to the true one in general. For the MSE evaluation, we assess the performance of the changepoint detection algorithms in the one-changepoint and two-changepoint conditions. We report the average MSE of each condition for each algorithm using the formula
+	where $CP$ denotes the changepoint window, and $\#CP$ represents the number of changepoints in the REH. A lower MSE indicates that the algorithm's detected changepoint window is closer to the true one in general. For the MSE evaluation, we assess the performance of the changepoint detection algorithms in the one-changepoint and two-changepoint conditions. We report the average MSE of each condition for each algorithm using the formula
 	
 	\begin{equation} \label{10}
 		Avg.MSE_g = \frac{\sum_{i=1}^{N_g} MSE_i}{N_g},
 	\end{equation}
 	where $Avg.MSE_g$ represents the average MSE for changepoint condition $g$, $MSE_i$ is the MSE value for the $i$th effect in changepoint condition $g$, and $N_g$ is the number of effects in changepoint condition $g$. \\
 	
-	The MSD, on the other hand, is used to examine the tendency of the changepoint detection algorithm to detect changepoints early or late. We compute the MSD only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSD as
+	The MSD, on the other hand, is used to examine the tendency of the changepoint detection algorithm to detect changepoint windows early or late. We compute the MSD only for true positive cases from the confusion matrix of each effect. Specifically, we calculate the MSD as
 	
 	\begin{equation} \label{11}
-		MSD = \frac{\sum_{i = 1}^{\#CP} (Predicted(CP) - Actual(CP))}{\#CP},
+		MSD = \frac{\sum_{i = 1}^{\#CP} (Detected(CP) - Actual(CP))}{\#CP},
 	\end{equation}
-	here, a negative MSD indicates that the changepoint detection algorithm tends to predict the changepoint window earlier than the true changepoint window, while a positive MSD indicates that the algorithm tends to predict the changepoint window later than the true changepoint window. To calculate the MSD of each changepoint detection algorithm on different changepoint conditions, we compute the average MSD, which is given by
+	here, a negative MSD indicates that the changepoint detection algorithm tends to detect the changepoint window earlier than the true changepoint window, while a positive MSD indicates that the algorithm tends to detect the changepoint window later than the true changepoint window. To calculate the MSD of each changepoint detection algorithm on different changepoint conditions, we compute the average MSD, which is given by
 	
 	\begin{equation} \label{12}
 		Avg.MSD_g = \frac{\sum_{i=1}^{N_g} MSD_i}{N_g},
 	\end{equation}
-	where $Avg.MSD_g$ represents the average MSD for changepoint condition $g$, $MSD_i$ is the MSD value for the $i$th effect in changepoint condition $g$, and $N_g$ is the number of effects in changepoint condition $g$. This allows us to assess each changepoint detection algorithm's tendency to detect changepoints early or late in both univariate and multivariate changepoints scenarios of effects.
+	where $Avg.MSD_g$ represents the average MSD for changepoint condition $g$, $MSD_i$ is the MSD value for the $i$th effect in changepoint condition $g$, and $N_g$ is the number of effects in changepoint condition $g$. This allows us to assess each changepoint detection algorithm's tendency to detect changepoint windows early or late in both univariate and multivariate changepoints scenarios of effects.
 	
 	\section{\fontsize{14}{15}\selectfont Results \& Discussion} \label{sec:results}
 	
@@ -480,7 +532,7 @@
 	
 	Regarding the recall in \autoref{Figure 3} (b), all three changepoint detection algorithms have similar recall values in the univariate changepoint condition, which are around 0.5. This indicates that if an effect has only one changepoint throughout the entire REH, the probability of detecting the window within a range of three windows from the true one is around 50\%, using any of the three algorithms. In the case of the multivariate changepoint condition, all three algorithms show significant improvement, especially PELT, which almost reaches 80\%. \\
 	
-	In \autoref{Figure 3} (c), we present the precision performance of the three algorithms. As with recall, all three algorithms show improved precision in the multivariate changepoint condition, with each achieving a precision of over 0.85. BOCPD consistently performs at a high level, regardless of the changepoint condition. This suggests that the changepoint windows it identified are highly likely to be the windows within three windows' range of the true changepoint window. The low precision and high recall of PELT, however, are a trade-off with its high false positives. PELT detects more changepoint windows, which increases the likelihood of covering more true positives in its predictions, but at the same time, the high false positives result in the lowest precision among the three algorithms. Details of the performance of each algorithm in terms of the three metrics are shown in \autoref{FN_TPR_PPV}.
+	In \autoref{Figure 3} (c), we present the precision performance of the three algorithms. As with recall, all three algorithms show improved precision in the multivariate changepoint condition, with each achieving a precision of over 0.85. BOCPD consistently performs at a high level, regardless of the changepoint condition. This suggests that the changepoint windows it identified are highly likely to be the windows within three windows' range of the true changepoint window. The low precision and high recall of PELT, however, are a trade-off with its high false positives. PELT detects more changepoint windows, which increases the likelihood of covering more true positives in its detections, but at the same time, the high false positives result in the lowest precision among the three algorithms. Details of the performance of each algorithm in terms of the three metrics are shown in \autoref{FN_TPR_PPV}.
 	
 	\begin{table}[H]
 		\captionsetup{justification=raggedright, singlelinecheck=true, labelfont={bf}, labelsep=space, font={footnotesize}, width=0.65\linewidth}
@@ -516,9 +568,9 @@
     	\label{Figure 4}
     \end{figure}
 
-    Regarding the quality of the true positive windows for each algorithm, we used average MSE as a criterion. In \autoref{Figure 4}(a), we present the average MSE performance of the three algorithms. The average MSE measures the average squared distance between the predicted and actual changepoint windows for different changepoint situations. A lower MSE value indicates that the predicted true positive changepoint windows are closer to the true changepoint windows. Among the three algorithms, BS performs the best in both univariate and multivariate changepoint situations, with the lowest average differences between its predicted and actual changepoint windows. However, the differences between the three algorithms are small overall. \\
+    Regarding the quality of the true positive windows for each algorithm, we used average MSE as a criterion. In \autoref{Figure 4}(a), we present the average MSE performance of the three algorithms. The average MSE measures the average squared distance between the detected and actual changepoint windows for different changepoint situations. A lower MSE value indicates that the detected true positive changepoint windows are closer to the true changepoint windows. Among the three algorithms, BS performs the best in both univariate and multivariate changepoint situations, with the lowest average differences between its detected and actual changepoint windows. However, the differences between the three algorithms are small overall. \\
     
-    \autoref{Figure 4} (b) reveals the average MSD of each algorithm. The average MSD provides information about the average relative location of the predicted changepoint window with the true changepoint window in different changepoint situations for each algorithm. The BOCPD tends to detect the changepoint window after the true changepoint, whether in the univariate or multivariate changepoint context. In contrast, the BS tends to detect the window before the true changepoint, and PELT has mixed performance. The reason why BS and PELT tend to detect the changepoint window before the true changepoint is that they merge small intervals based on a cost function balancing data likelihood and model complexity\cite{killickOptimalDetectionChangepoints2012}. This approach favors fewer, larger changepoints and may lead to detecting changepoints slightly before the true location\citealp{fearnheadChangepointDetectionPresence2019}. Additionally, it is possible that the true changepoint window is located in a region of the time series where the effect parameters are already changing but have not yet fully transitioned to the new regime. Details of the performance of each algorithm in terms of the average MSE and average MSD metrics are shown in \autoref{Avg_MSEMSD}.
+    \autoref{Figure 4} (b) reveals the average MSD of each algorithm. The average MSD provides information about the average relative location of the detected changepoint window with the true changepoint window in different changepoint situations for each algorithm. The BOCPD tends to detect the changepoint window after the true changepoint, whether in the univariate or multivariate changepoint context. In contrast, the BS tends to detect the window before the true changepoint, and PELT has mixed performance. The reason why BS and PELT tend to detect the changepoint window before the true changepoint is that they merge small intervals based on a cost function balancing data likelihood and model complexity\cite{killickOptimalDetectionChangepoints2012}. This approach favors fewer, larger changepoints and may lead to detecting changepoints slightly before the true location\citealp{fearnheadChangepointDetectionPresence2019}. Additionally, it is possible that the true changepoint window is located in a region of the time series where the effect parameters are already changing but have not yet fully transitioned to the new regime. Details of the performance of each algorithm in terms of the average MSE and average MSD metrics are shown in \autoref{Avg_MSEMSD}.
 
     \begin{table}[H]
     	\captionsetup{justification=raggedright, singlelinecheck=false, labelfont={bf}, labelsep=space, font={footnotesize}, width=0.63\linewidth}
@@ -540,7 +592,7 @@
     	\label{Avg_MSEMSD}
     \end{table}
 
-    Overall, the BOCPD performs well in terms of precision; the changepoint windows identified by the BOCPD are highly likely to be the true changepoints or within a three-window range of the true changepoints. However, in general, it cannot detect as many true changepoints as PELT. PELT has good performance on recall; the true changepoints are likely to be covered by all the predicted changepoints from PELT. However, this comes at the cost of high false positives and low precision. The BS performs well in terms of average MSE; the location of its predicted changepoint windows is usually close to the true changepoint window if the predicted changepoint windows are true positive cases (i.e., within the three-window range of the true changepoint windows). However, the weakness of the BS is that it has the lowest recall among the three algorithms, which can cause it to miss detecting certain changepoint windows. Moreover, in practice, it is challenging to determine whether a detected changepoint window is a true positive or not. Therefore, instead of relying solely on the BS, we suggest using it in conjunction with other algorithms. By comparing the nearby detected changepoint windows between the BS and other algorithms, we can identify the true positive changepoint windows and choose the window detected by the BS as it has good performance in terms of average MSE. Below shows the suitable application scenarios of each algorithm:
+    Overall, the BOCPD performs well in terms of precision; the changepoint windows identified by the BOCPD are highly likely to be the true changepoints or within a three-window range of the true changepoints. However, in general, it cannot detect as many true changepoints as PELT. PELT has good performance on recall; the true changepoints are likely to be covered by all the detected changepoints from PELT. However, this comes at the cost of high false positives and low precision. The BS performs well in terms of average MSE; the location of its detected changepoint windows is usually close to the true changepoint window if the detected changepoint windows are true positive cases (i.e., within the three-window range of the true changepoint windows). However, the weakness of the BS is that it has the lowest recall among the three algorithms, which can cause it to miss detecting certain changepoint windows. Moreover, in practice, it is challenging to determine whether a detected changepoint window is a true positive or not. Therefore, instead of relying solely on the BS, we suggest using it in conjunction with other algorithms. By comparing the nearby detected changepoint windows between the BS and other algorithms, we can identify the true positive changepoint windows and choose the window detected by the BS as it has good performance in terms of average MSE. Below shows the suitable application scenarios of each algorithm:
     
     \begin{itemize}
     	\item BS: suitable when accurately identifying the location of the changepoint window is essential. Note that this algorithm needs to be used in conjunction with other algorithms as an auxiliary tool. \\
