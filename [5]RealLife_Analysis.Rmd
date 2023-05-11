@@ -54,31 +54,6 @@ stat <- out[["statistics"]] # extract the statistics from the list
 
 ## Step 3: Fit the windows on the REH
 
-Compute the optimal lengths of the windows (data-driven MW) -> *Problemtic*
-```{r}
-# obtain data-driven window widths
-#ddwin <- ddwindows(edgelist = Apollo.13, tie_effects = formula, mintime = 1000, 
-#                   covar = covar)
-```
-
-Save the DDMW, as it takes long time to run (15 hours) -> *Problemtic*
-```{r}
-#saveRDS(object = ddwin, file = "Apollo.13_ddwin.RDS")
-```
-
-Read the DDMW file -> *Problemtic*
-```{r}
-#ddmw <- readRDS("Apollo.13_ddwin.RDS")
-```
-
-Fit the REM by windows -> *Problemtic*
-```{r}
-# fits a moving window relational event model
-#model_ddwin <- MWrem(windows = ddmw$windows, edgelist = Apollo.13, 
-#		                 stats = stat, actors = covar$id, directed = TRUE)
-```
-
------------------
 Fit the fix MWREM
 ```{r}
 # changepoint 201321 second

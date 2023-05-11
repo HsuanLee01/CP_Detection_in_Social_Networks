@@ -71,6 +71,10 @@ for (i in 1:length(BOCD_fixmw_send_ncp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_ncp_send, file = "CP_Detection/locat_BOCD_ncp_send.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_diff_ncp_param <- list()
 start_time <- Sys.time()
@@ -96,6 +100,10 @@ for (i in 1:length(BOCD_fixmw_diff_ncp_param)) {
 for (i in 1:length(BOCD_fixmw_diff_ncp_param)) {
   plot(BOCD_fixmw_diff_ncp_param[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_ncp_diff, file = "CP_Detection/locat_BOCD_ncp_diff.RDS")
 ```
 
 ```{r}
@@ -127,6 +135,10 @@ for (i in 1:length(BOCD_fixmw_ine_ncp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_ncp_ine, file = "CP_Detection/locat_BOCD_ncp_ine.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_out_ncp_param <- list()
 start_time <- Sys.time()
@@ -152,6 +164,10 @@ for (i in 1:length(BOCD_fixmw_out_ncp_param)) {
 for (i in 1:length(BOCD_fixmw_out_ncp_param)) {
   plot(BOCD_fixmw_out_ncp_param[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_ncp_out, file = "CP_Detection/locat_BOCD_ncp_out.RDS")
 ```
 
 2. PELT: Exact CPs Detection Method
@@ -182,6 +198,10 @@ for (i in 1:length(PELT_fixmw_send_ncp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_ncp_send, file = "CP_Detection/locat_PELT_ncp_send.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_diff_ncp_param <- list()
 start_time <- Sys.time()
@@ -205,6 +225,10 @@ for (i in 1:length(PELT_fixmw_diff_ncp_param)) {
   plot(PELT_fixmw_diff_ncp_param[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_diff_ncp_param[[i]]@cpts[-length(PELT_fixmw_diff_ncp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_ncp_diff, file = "CP_Detection/locat_PELT_ncp_diff.RDS")
 ```
 
 ```{r}
@@ -234,6 +258,10 @@ for (i in 1:length(PELT_fixmw_ine_ncp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_ncp_ine, file = "CP_Detection/locat_PELT_ncp_ine.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_out_ncp_param <- list()
 start_time <- Sys.time()
@@ -256,6 +284,10 @@ for (i in 1:length(PELT_fixmw_out_ncp_param)) {
   plot(PELT_fixmw_out_ncp_param[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_out_ncp_param[[i]]@cpts[-length(PELT_fixmw_out_ncp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_ncp_out, file = "CP_Detection/locat_PELT_ncp_out.RDS")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -286,6 +318,10 @@ for (i in 1:length(BS_fixmw_send_ncp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_ncp_send, file = "CP_Detection/locat_BS_ncp_send.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_diff_ncp_param <- list()
 start_time <- Sys.time()
@@ -309,6 +345,10 @@ for (i in 1:length(BS_fixmw_diff_ncp_param)) {
   plot(BS_fixmw_diff_ncp_param[[i]], type="point", col = "black")
   abline(v=BS_fixmw_diff_ncp_param[[i]]@cpts[-length(BS_fixmw_diff_ncp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_ncp_diff, file = "CP_Detection/locat_BS_ncp_diff.RDS")
 ```
 
 ```{r}
@@ -338,6 +378,10 @@ for (i in 1:length(BS_fixmw_ine_ncp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_ncp_ine, file = "CP_Detection/locat_BS_ncp_ine.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_out_ncp_param <- list()
 start_time <- Sys.time()
@@ -361,6 +405,10 @@ for (i in 1:length(BS_fixmw_out_ncp_param)) {
   plot(BS_fixmw_out_ncp_param[[i]], type="point", col = "black")
   abline(v=BS_fixmw_out_ncp_param[[i]]@cpts[-length(BS_fixmw_out_ncp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_ncp_out, file = "CP_Detection/locat_BS_ncp_out.RDS")
 ```
 
 # 1 Changepoint REH Data (inertia only)
@@ -415,6 +463,10 @@ for (i in 1:length(BOCD_fixmw_send_1cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_1cp_send, file = "CP_Detection/locat_BOCD_1cp_send.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_diff_1cp_param <- list()
 for (i in 1:length(fixmw_diff_1cp_param)) {
@@ -436,6 +488,10 @@ for (i in 1:length(BOCD_fixmw_diff_1cp_param)) {
 for (i in 1:length(BOCD_fixmw_diff_1cp_param)) {
   plot(BOCD_fixmw_diff_1cp_param[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_1cp_diff, file = "CP_Detection/locat_BOCD_1cp_diff.RDS")
 ```
 
 ```{r}
@@ -463,6 +519,10 @@ for (i in 1:length(BOCD_fixmw_ine_1cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_1cp_ine, file = "CP_Detection/locat_BOCD_1cp_ine.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_out_1cp_param <- list()
 for (i in 1:length(fixmw_out_1cp_param)) {
@@ -484,6 +544,10 @@ for (i in 1:length(BOCD_fixmw_out_1cp_param)) {
 for (i in 1:length(BOCD_fixmw_out_1cp_param)) {
   plot(BOCD_fixmw_out_1cp_param[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_1cp_out, file = "CP_Detection/locat_BOCD_1cp_out.RDS")
 ```
 
 2. PELT: Exact CPs Detection Method
@@ -510,6 +574,10 @@ for (i in 1:length(PELT_fixmw_send_1cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_1cp_send, file = "CP_Detection/locat_PELT_1cp_send.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_diff_1cp_param <- list()
 for (i in 1:length(fixmw_out_1cp_param)) {
@@ -529,6 +597,10 @@ for (i in 1:length(PELT_fixmw_diff_1cp_param)) {
   plot(PELT_fixmw_diff_1cp_param[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_diff_1cp_param[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_1cp_diff, file = "CP_Detection/locat_PELT_1cp_diff.RDS")
 ```
 
 ```{r}
@@ -554,6 +626,10 @@ for (i in 1:length(PELT_fixmw_ine_1cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_1cp_ine, file = "CP_Detection/locat_PELT_1cp_ine.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_out_1cp_param <- list()
 for (i in 1:length(fixmw_out_1cp_param)) {
@@ -573,6 +649,10 @@ for (i in 1:length(PELT_fixmw_out_1cp_param)) {
   plot(PELT_fixmw_out_1cp_param[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_out_1cp_param[[i]]@cpts[-length(PELT_fixmw_out_1cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_1cp_out, file = "CP_Detection/locat_PELT_1cp_out.RDS")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -599,6 +679,10 @@ for (i in 1:length(BS_fixmw_send_1cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_1cp_send, file = "CP_Detection/locat_BS_1cp_send.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_diff_1cp_param <- list()
 for (i in 1:length(fixmw_out_1cp_param)) {
@@ -618,6 +702,10 @@ for (i in 1:length(BS_fixmw_diff_1cp_param)) {
   plot(BS_fixmw_diff_1cp_param[[i]], type="point", col = "black")
   abline(v=BS_fixmw_diff_1cp_param[[i]]@cpts[-length(BS_fixmw_diff_1cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_1cp_diff, file = "CP_Detection/locat_BS_1cp_diff.RDS")
 ```
 
 ```{r}
@@ -643,6 +731,10 @@ for (i in 1:length(BS_fixmw_ine_1cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_1cp_ine, file = "CP_Detection/locat_BS_1cp_ine.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_out_1cp_param <- list()
 for (i in 1:length(fixmw_out_1cp_param)) {
@@ -662,6 +754,10 @@ for (i in 1:length(BS_fixmw_out_1cp_param)) {
   plot(BS_fixmw_out_1cp_param[[i]], type="point", col = "black")
   abline(v=BS_fixmw_out_1cp_param[[i]]@cpts[-length(BS_fixmw_out_1cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_1cp_out, file = "CP_Detection/locat_BS_1cp_out.RDS")
 ```
 
 # 1 Changepoint REH Data (all social interaction drivers at same locations)
@@ -716,6 +812,10 @@ for (i in 1:length(BOCD_fixmw_send_1cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_1cp_send_same.all, file = "CP_Detection/locat_BOCD_1cp_send_same.all.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_diff_1cp_param_same.all <- list()
 for (i in 1:length(fixmw_diff_1cp_param_same.all)) {
@@ -737,6 +837,10 @@ for (i in 1:length(BOCD_fixmw_diff_1cp_param_same.all)) {
 for (i in 1:length(BOCD_fixmw_diff_1cp_param_same.all)) {
   plot(BOCD_fixmw_diff_1cp_param_same.all[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_1cp_diff_same.all, file = "CP_Detection/locat_BOCD_1cp_diff_same.all.RDS")
 ```
 
 ```{r}
@@ -764,6 +868,10 @@ for (i in 1:length(BOCD_fixmw_ine_1cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_1cp_ine_same.all, file = "CP_Detection/locat_BOCD_1cp_ine_same.all.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_out_1cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_1cp_param_same.all)) {
@@ -785,6 +893,10 @@ for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
 for (i in 1:length(BOCD_fixmw_out_1cp_param_same.all)) {
   plot(BOCD_fixmw_out_1cp_param_same.all[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_1cp_out_same.all, file = "CP_Detection/locat_BOCD_1cp_out_same.all.RDS")
 ```
 
 2. PELT: Exact CPs Detection Method
@@ -811,6 +923,10 @@ for (i in 1:length(PELT_fixmw_send_1cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_1cp_send_same.all, file = "CP_Detection/locat_PELT_1cp_send_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_diff_1cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_1cp_param_same.all)) {
@@ -830,6 +946,10 @@ for (i in 1:length(PELT_fixmw_diff_1cp_param_same.all)) {
   plot(PELT_fixmw_diff_1cp_param_same.all[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_diff_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_diff_1cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_1cp_diff_same.all, file = "CP_Detection/locat_PELT_1cp_diff_same.all.RDS")
 ```
 
 ```{r}
@@ -855,6 +975,10 @@ for (i in 1:length(PELT_fixmw_ine_1cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_1cp_ine_same.all, file = "CP_Detection/locat_PELT_1cp_ine_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_out_1cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_1cp_param_same.all)) {
@@ -874,6 +998,10 @@ for (i in 1:length(PELT_fixmw_out_1cp_param_same.all)) {
   plot(PELT_fixmw_out_1cp_param_same.all[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_out_1cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_out_1cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_1cp_out_same.all, file = "CP_Detection/locat_PELT_1cp_out_same.all.RDS")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -900,6 +1028,10 @@ for (i in 1:length(BS_fixmw_send_1cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_1cp_send_same.all, file = "CP_Detection/locat_BS_1cp_send_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_diff_1cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_1cp_param_same.all)) {
@@ -919,6 +1051,10 @@ for (i in 1:length(BS_fixmw_diff_1cp_param_same.all)) {
   plot(BS_fixmw_diff_1cp_param_same.all[[i]], type="point", col = "black")
   abline(v=BS_fixmw_diff_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_diff_1cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_1cp_diff_same.all, file = "CP_Detection/locat_BS_1cp_diff_same.all.RDS")
 ```
 
 ```{r}
@@ -944,6 +1080,10 @@ for (i in 1:length(BS_fixmw_ine_1cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_1cp_ine_same.all, file = "CP_Detection/locat_BS_1cp_ine_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_out_1cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_1cp_param_same.all)) {
@@ -963,6 +1103,10 @@ for (i in 1:length(BS_fixmw_out_1cp_param_same.all)) {
   plot(BS_fixmw_out_1cp_param_same.all[[i]], type="point", col = "black")
   abline(v=BS_fixmw_out_1cp_param_same.all[[i]]@cpts[-length(BS_fixmw_out_1cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_1cp_out_same.all, file = "CP_Detection/locat_BS_1cp_out_same.all.RDS")
 ```
 
 # 2 Changepoints REH Data (inertia only)
@@ -1017,6 +1161,10 @@ for (i in 1:length(BOCD_fixmw_send_2cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_2cp_send, file = "CP_Detection/locat_BOCD_2cp_send.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_diff_2cp_param <- list()
 for (i in 1:length(fixmw_diff_2cp_param)) {
@@ -1038,6 +1186,10 @@ for (i in 1:length(BOCD_fixmw_diff_2cp_param)) {
 for (i in 1:length(BOCD_fixmw_diff_2cp_param)) {
   plot(BOCD_fixmw_diff_2cp_param[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_2cp_diff, file = "CP_Detection/locat_BOCD_2cp_diff.RDS")
 ```
 
 ```{r}
@@ -1065,6 +1217,10 @@ for (i in 1:length(BOCD_fixmw_ine_2cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_2cp_ine, file = "CP_Detection/locat_BOCD_2cp_ine.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_out_2cp_param <- list()
 for (i in 1:length(fixmw_out_2cp_param)) {
@@ -1086,6 +1242,10 @@ for (i in 1:length(BOCD_fixmw_out_2cp_param)) {
 for (i in 1:length(BOCD_fixmw_out_2cp_param)) {
   plot(BOCD_fixmw_out_2cp_param[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_2cp_out, file = "CP_Detection/locat_BOCD_2cp_out.RDS")
 ```
 
 2. PELT: Exact CPs Detection Method
@@ -1112,6 +1272,10 @@ for (i in 1:length(PELT_fixmw_send_2cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_2cp_send, file = "CP_Detection/locat_PELT_2cp_send.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_diff_2cp_param <- list()
 for (i in 1:length(fixmw_out_2cp_param)) {
@@ -1131,6 +1295,10 @@ for (i in 1:length(PELT_fixmw_diff_2cp_param)) {
   plot(PELT_fixmw_diff_2cp_param[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_diff_2cp_param[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_2cp_diff, file = "CP_Detection/locat_PELT_2cp_diff.RDS")
 ```
 
 ```{r}
@@ -1156,6 +1324,10 @@ for (i in 1:length(PELT_fixmw_ine_2cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_2cp_ine, file = "CP_Detection/locat_PELT_2cp_ine.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_out_2cp_param <- list()
 for (i in 1:length(fixmw_out_2cp_param)) {
@@ -1175,6 +1347,10 @@ for (i in 1:length(PELT_fixmw_out_2cp_param)) {
   plot(PELT_fixmw_out_2cp_param[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_out_2cp_param[[i]]@cpts[-length(PELT_fixmw_out_2cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_2cp_out, file = "CP_Detection/locat_PELT_2cp_out.RDS")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -1201,6 +1377,10 @@ for (i in 1:length(BS_fixmw_send_2cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_2cp_send, file = "CP_Detection/locat_BS_2cp_send.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_diff_2cp_param <- list()
 for (i in 1:length(fixmw_out_2cp_param)) {
@@ -1220,6 +1400,10 @@ for (i in 1:length(BS_fixmw_diff_2cp_param)) {
   plot(BS_fixmw_diff_2cp_param[[i]], type="point", col = "black")
   abline(v=BS_fixmw_diff_2cp_param[[i]]@cpts[-length(BS_fixmw_diff_2cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_2cp_diff, file = "CP_Detection/locat_BS_2cp_diff.RDS")
 ```
 
 ```{r}
@@ -1245,6 +1429,10 @@ for (i in 1:length(BS_fixmw_ine_2cp_param)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_2cp_ine, file = "CP_Detection/locat_BS_2cp_ine.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_out_2cp_param <- list()
 for (i in 1:length(fixmw_out_2cp_param)) {
@@ -1264,6 +1452,10 @@ for (i in 1:length(BS_fixmw_out_2cp_param)) {
   plot(BS_fixmw_out_2cp_param[[i]], type="point", col = "black")
   abline(v=BS_fixmw_out_2cp_param[[i]]@cpts[-length(BS_fixmw_out_2cp_param[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_2cp_out, file = "CP_Detection/locat_BS_2cp_out.RDS")
 ```
 
 # 2 Changepoints REH Data (all social interaction drivers at same locations)
@@ -1316,6 +1508,10 @@ for (i in 1:length(BOCD_fixmw_send_2cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_2cp_send_same.all, file = "CP_Detection/locat_BOCD_2cp_send_same.all.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_diff_2cp_param_same.all <- list()
 for (i in 1:length(fixmw_diff_2cp_param_same.all)) {
@@ -1337,6 +1533,10 @@ for (i in 1:length(BOCD_fixmw_diff_2cp_param_same.all)) {
 for (i in 1:length(BOCD_fixmw_diff_2cp_param_same.all)) {
   plot(BOCD_fixmw_diff_2cp_param_same.all[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_2cp_diff_same.all, file = "CP_Detection/locat_BOCD_2cp_diff_same.all.RDS")
 ```
 
 ```{r}
@@ -1364,6 +1564,10 @@ for (i in 1:length(BOCD_fixmw_ine_2cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BOCD_2cp_ine_same.all, file = "CP_Detection/locat_BOCD_2cp_ine_same.all.RDS")
+```
+
+```{r}
 # Detect the CPs
 BOCD_fixmw_out_2cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_2cp_param_same.all)) {
@@ -1385,6 +1589,10 @@ for (i in 1:length(BOCD_fixmw_out_2cp_param_same.all)) {
 for (i in 1:length(BOCD_fixmw_out_2cp_param_same.all)) {
   plot(BOCD_fixmw_out_2cp_param_same.all[[i]])
 }
+```
+
+```{r}
+saveRDS(object = locat_BOCD_2cp_out_same.all, file = "CP_Detection/locat_BOCD_2cp_out_same.all.RDS")
 ```
 
 2. PELT: Exact CPs Detection Method
@@ -1411,6 +1619,10 @@ for (i in 1:length(PELT_fixmw_send_2cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_2cp_send_same.all, file = "CP_Detection/locat_PELT_2cp_send_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_diff_2cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_2cp_param_same.all)) {
@@ -1430,6 +1642,10 @@ for (i in 1:length(PELT_fixmw_diff_2cp_param_same.all)) {
   plot(PELT_fixmw_diff_2cp_param_same.all[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_diff_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_diff_2cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_2cp_diff_same.all, file = "CP_Detection/locat_PELT_2cp_diff_same.all.RDS")
 ```
 
 ```{r}
@@ -1455,6 +1671,10 @@ for (i in 1:length(PELT_fixmw_ine_2cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_PELT_2cp_ine_same.all, file = "CP_Detection/locat_PELT_2cp_ine_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 PELT_fixmw_out_2cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_2cp_param_same.all)) {
@@ -1474,6 +1694,10 @@ for (i in 1:length(PELT_fixmw_out_2cp_param_same.all)) {
   plot(PELT_fixmw_out_2cp_param_same.all[[i]], type="point", col = "black")
   abline(v=PELT_fixmw_out_2cp_param_same.all[[i]]@cpts[-length(PELT_fixmw_out_2cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_PELT_2cp_out_same.all, file = "CP_Detection/locat_PELT_2cp_out_same.all.RDS")
 ```
 
 3. BS: approximate CPs Detection Method
@@ -1500,6 +1724,10 @@ for (i in 1:length(BS_fixmw_send_2cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_2cp_send_same.all, file = "CP_Detection/locat_BS_2cp_send_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_diff_2cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_2cp_param_same.all)) {
@@ -1519,6 +1747,10 @@ for (i in 1:length(BS_fixmw_diff_2cp_param_same.all)) {
   plot(BS_fixmw_diff_2cp_param_same.all[[i]], type="point", col = "black")
   abline(v=BS_fixmw_diff_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_diff_2cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_2cp_diff_same.all, file = "CP_Detection/locat_BS_2cp_diff_same.all.RDS")
 ```
 
 ```{r}
@@ -1544,6 +1776,10 @@ for (i in 1:length(BS_fixmw_ine_2cp_param_same.all)) {
 ```
 
 ```{r}
+saveRDS(object = locat_BS_2cp_ine_same.all, file = "CP_Detection/locat_BS_2cp_ine_same.all.RDS")
+```
+
+```{r}
 # detect the changepoints
 BS_fixmw_out_2cp_param_same.all <- list()
 for (i in 1:length(fixmw_out_2cp_param_same.all)) {
@@ -1563,6 +1799,10 @@ for (i in 1:length(BS_fixmw_out_2cp_param_same.all)) {
   plot(BS_fixmw_out_2cp_param_same.all[[i]], type="point", col = "black")
   abline(v=BS_fixmw_out_2cp_param_same.all[[i]]@cpts[-length(BS_fixmw_out_2cp_param_same.all[[i]]@cpts)], col="black")
 }
+```
+
+```{r}
+saveRDS(object = locat_BS_2cp_out_same.all, file = "CP_Detection/locat_BS_2cp_out_same.all.RDS")
 ```
 
 

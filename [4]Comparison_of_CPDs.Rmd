@@ -257,12 +257,56 @@ Now, suppose we also want to know the index of the smallest value in the vector.
 
 **The REH without CPs**
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_ncp_param <- readRDS("Window_Parameters/fixmw_send_ncp_param.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_ncp_param <- readRDS("Window_Parameters/fixmw_diff_ncp_param.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_ncp_param <- readRDS("Window_Parameters/fixmw_ine_ncp_param.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_ncp_param <- readRDS("Window_Parameters/fixmw_out_ncp_param.RDS")
+```
+
 Assign the true CP for no changepoint
 ```{r}
 true_ncp <- matrix(, nrow = 1, ncol = 0)
 ```
 
 ### BOCPD
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BOCD_ncp_send <- readRDS("CP_Detection/locat_BOCD_ncp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BOCD_ncp_diff <- readRDS("CP_Detection/locat_BOCD_ncp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_BOCD_ncp_ine <- readRDS("CP_Detection/locat_BOCD_ncp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BOCD_ncp_out <- readRDS("CP_Detection/locat_BOCD_ncp_out.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -290,6 +334,28 @@ Conf_Mat_BOCD_out_ncp <- conf_matrix(pred_CPs = locat_BOCD_ncp_out, true_CPs = t
 
 ### PELT
 
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_PELT_ncp_send <- readRDS("CP_Detection/locat_PELT_ncp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_PELT_ncp_diff <- readRDS("CP_Detection/locat_PELT_ncp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_PELT_ncp_ine <- readRDS("CP_Detection/locat_PELT_ncp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_PELT_ncp_out <- readRDS("CP_Detection/locat_PELT_ncp_out.RDS")
+```
+
 - Sender Effect
 ```{r}
 Conf_Mat_PELT_send_ncp <- conf_matrix(pred_CPs = locat_PELT_ncp_send, true_CPs = true_ncp, 
@@ -315,6 +381,28 @@ Conf_Mat_PELT_out_ncp <- conf_matrix(pred_CPs = locat_PELT_ncp_out, true_CPs = t
 ```
 
 ### BS
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BS_ncp_send <- readRDS("CP_Detection/locat_BS_ncp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BS_ncp_diff <- readRDS("CP_Detection/locat_BS_ncp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_BS_ncp_ine <- readRDS("CP_Detection/locat_BS_ncp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BS_ncp_out <- readRDS("CP_Detection/locat_BS_ncp_out.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -342,6 +430,28 @@ Conf_Mat_BS_out_ncp <- conf_matrix(pred_CPs = locat_BS_ncp_out, true_CPs = true_
 
 **The REH with 1 CPs in inertia**
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_1cp_param <- readRDS("Window_Parameters/fixmw_send_1cp_param.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_1cp_param <- readRDS("Window_Parameters/fixmw_diff_1cp_param.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_1cp_param <- readRDS("Window_Parameters/fixmw_ine_1cp_param.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_1cp_param <- readRDS("Window_Parameters/fixmw_out_1cp_param.RDS")
+```
+
 Assign the true CP for one changepoint in `inertia`
 ```{r}
 # windowss contain the CPs time point 56, 57, 58 in inertia
@@ -350,6 +460,28 @@ true_1cp_3win <- matrix(53:61, nrow = 9, ncol = 1)
 ```
 
 ### BOCPD
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BOCD_1cp_send <- readRDS("CP_Detection/locat_BOCD_1cp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BOCD_1cp_diff <- readRDS("CP_Detection/locat_BOCD_1cp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_BOCD_1cp_ine <- readRDS("CP_Detection/locat_BOCD_1cp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BOCD_1cp_out <- readRDS("CP_Detection/locat_BOCD_1cp_out.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -377,6 +509,28 @@ Conf_Mat_BOCD_out_1cp <- conf_matrix(pred_CPs = locat_BOCD_1cp_out, true_CPs = t
 
 ### PELT
 
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_PELT_1cp_send <- readRDS("CP_Detection/locat_PELT_1cp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_PELT_1cp_diff <- readRDS("CP_Detection/locat_PELT_1cp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_PELT_1cp_ine <- readRDS("CP_Detection/locat_PELT_1cp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_PELT_1cp_out <- readRDS("CP_Detection/locat_PELT_1cp_out.RDS")
+```
+
 - Sender Effect
 ```{r}
 Conf_Mat_PELT_send_1cp <- conf_matrix(pred_CPs = locat_PELT_1cp_send, true_CPs = true_ncp, 
@@ -402,6 +556,28 @@ Conf_Mat_PELT_out_1cp <- conf_matrix(pred_CPs = locat_PELT_1cp_out, true_CPs = t
 ```
 
 ### BS
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BS_1cp_send <- readRDS("CP_Detection/locat_BS_1cp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BS_1cp_diff <- readRDS("CP_Detection/locat_BS_1cp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_BS_1cp_ine <- readRDS("CP_Detection/locat_BS_1cp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BS_1cp_out <- readRDS("CP_Detection/locat_BS_1cp_out.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -429,6 +605,28 @@ Conf_Mat_BS_out_1cp <- conf_matrix(pred_CPs = locat_BS_1cp_out, true_CPs = true_
 
 **The REH with 1 CPs in all effects at same location**
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_send_1cp_param_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_diff_1cp_param_same.all.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_ine_1cp_param_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_1cp_param_same.all <- readRDS("Window_Parameters/fixmw_out_1cp_param_same.all.RDS")
+```
+
 Assign the true CP for one changepoint in effects at same window
 ```{r}
 # windowss contain the CPs time point 56, 57, 58 in inertia
@@ -436,6 +634,28 @@ true_1cp_same.all_3win <- matrix(53:61, nrow = 9, ncol = 1)
 ```
 
 ### BOCPD
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BOCD_1cp_send_same.all <- readRDS("CP_Detection/locat_BOCD_1cp_send_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BOCD_1cp_diff_same.all <- readRDS("CP_Detection/locat_BOCD_1cp_diff_same.all.RDS")
+```
+
+Inertia:
+```{r}
+locat_BOCD_1cp_ine_same.all <- readRDS("CP_Detection/locat_BOCD_1cp_ine_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BOCD_1cp_out_same.all <- readRDS("CP_Detection/locat_BOCD_1cp_out_same.all.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -467,6 +687,28 @@ Conf_Mat_BOCD_out_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_1cp_out
 
 ### PELT
 
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_PELT_1cp_send_same.all <- readRDS("CP_Detection/locat_PELT_1cp_send_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_PELT_1cp_diff_same.all <- readRDS("CP_Detection/locat_PELT_1cp_diff_same.all.RDS")
+```
+
+Inertia:
+```{r}
+locat_PELT_1cp_ine_same.all <- readRDS("CP_Detection/locat_PELT_1cp_ine_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_PELT_1cp_out_same.all <- readRDS("CP_Detection/locat_PELT_1cp_out_same.all.RDS")
+```
+
 - Sender Effect
 ```{r}
 Conf_Mat_PELT_send_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_send_same.all, 
@@ -496,6 +738,28 @@ Conf_Mat_PELT_out_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_1cp_out
 ```
 
 ### BS
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BS_1cp_send_same.all <- readRDS("CP_Detection/locat_BS_1cp_send_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BS_1cp_diff_same.all <- readRDS("CP_Detection/locat_BS_1cp_diff_same.all.RDS")
+```
+
+Inertia:
+```{r}
+locat_BS_1cp_ine_same.all <- readRDS("CP_Detection/locat_BS_1cp_ine_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BS_1cp_out_same.all <- readRDS("CP_Detection/locat_BS_1cp_out_same.all.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -527,6 +791,28 @@ Conf_Mat_BS_out_1cp_same.all_3win <- conf_matrix(pred_CPs = locat_BS_1cp_out_sam
 
 **The REH with 2 CPs in inertia**
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_2cp_param <- readRDS("Window_Parameters/fixmw_send_2cp_param.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_2cp_param <- readRDS("Window_Parameters/fixmw_diff_2cp_param.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_2cp_param <- readRDS("Window_Parameters/fixmw_ine_2cp_param.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_2cp_param <- readRDS("Window_Parameters/fixmw_out_2cp_param.RDS")
+```
+
 Assign the true CPs for one changepoint in `inertia`
 ```{r}
 # windows contain the CPs time point "24, 25, 26", and "79, 80, 81" in inertia
@@ -536,6 +822,28 @@ true_2cp_3win <- matrix(c(21:29,
 ```
 
 ### BOCPD
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BOCD_2cp_send <- readRDS("CP_Detection/locat_BOCD_2cp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BOCD_2cp_diff <- readRDS("CP_Detection/locat_BOCD_2cp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_BOCD_2cp_ine <- readRDS("CP_Detection/locat_BOCD_2cp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BOCD_2cp_out <- readRDS("CP_Detection/locat_BOCD_2cp_out.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -563,6 +871,28 @@ Conf_Mat_BOCD_out_2cp <- conf_matrix(pred_CPs = locat_BOCD_2cp_out, true_CPs = t
 
 ### PELT
 
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_PELT_2cp_send <- readRDS("CP_Detection/locat_PELT_2cp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_PELT_2cp_diff <- readRDS("CP_Detection/locat_PELT_2cp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_PELT_2cp_ine <- readRDS("CP_Detection/locat_PELT_2cp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_PELT_2cp_out <- readRDS("CP_Detection/locat_PELT_2cp_out.RDS")
+```
+
 - Sender Effect
 ```{r}
 Conf_Mat_PELT_send_2cp <- conf_matrix(pred_CPs = locat_PELT_2cp_send, true_CPs = true_ncp, 
@@ -588,6 +918,28 @@ Conf_Mat_PELT_out_2cp <- conf_matrix(pred_CPs = locat_PELT_2cp_out, true_CPs = t
 ```
 
 ### BS
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BS_2cp_send <- readRDS("CP_Detection/locat_BS_2cp_send.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BS_2cp_diff <- readRDS("CP_Detection/locat_BS_2cp_diff.RDS")
+```
+
+Inertia:
+```{r}
+locat_BS_2cp_ine <- readRDS("CP_Detection/locat_BS_2cp_ine.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BS_2cp_out <- readRDS("CP_Detection/locat_BS_2cp_out.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -615,6 +967,28 @@ Conf_Mat_BS_out_2cp <- conf_matrix(pred_CPs = locat_BS_2cp_out, true_CPs = true_
 
 **The REH with 2 CPs in all effects at same location**
 
+**Read the Parameters given by windows**
+
+Sender Effect:
+```{r}
+fixmw_send_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_send_2cp_param_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+fixmw_diff_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_diff_2cp_param_same.all.RDS")
+```
+
+Inertia:
+```{r}
+fixmw_ine_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_ine_2cp_param_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+fixmw_out_2cp_param_same.all <- readRDS("Window_Parameters/fixmw_out_2cp_param_same.all.RDS")
+```
+
 Assign the true CP for two changepoints in effects at same window
 ```{r}
 # windows contain the CPs time point "24, 25, 26", "79, 80, 81" in inertia
@@ -624,6 +998,28 @@ true_2cp_same.all_3win <- matrix(c(21:29,
 ```
 
 ### BOCPD
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BOCD_2cp_send_same.all <- readRDS("CP_Detection/locat_BOCD_2cp_send_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BOCD_2cp_diff_same.all <- readRDS("CP_Detection/locat_BOCD_2cp_diff_same.all.RDS")
+```
+
+Inertia:
+```{r}
+locat_BOCD_2cp_ine_same.all <- readRDS("CP_Detection/locat_BOCD_2cp_ine_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BOCD_2cp_out_same.all <- readRDS("CP_Detection/locat_BOCD_2cp_out_same.all.RDS")
+```
 
 - Sender Effect
 ```{r}
@@ -655,6 +1051,28 @@ Conf_Mat_BOCD_out_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_BOCD_2cp_out
 
 ### PELT
 
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_PELT_2cp_send_same.all <- readRDS("CP_Detection/locat_PELT_2cp_send_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_PELT_2cp_diff_same.all <- readRDS("CP_Detection/locat_PELT_2cp_diff_same.all.RDS")
+```
+
+Inertia:
+```{r}
+locat_PELT_2cp_ine_same.all <- readRDS("CP_Detection/locat_PELT_2cp_ine_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_PELT_2cp_out_same.all <- readRDS("CP_Detection/locat_PELT_2cp_out_same.all.RDS")
+```
+
 - Sender Effect
 ```{r}
 Conf_Mat_PELT_send_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_send_same.all, 
@@ -684,6 +1102,28 @@ Conf_Mat_PELT_out_2cp_same.all_3win <- conf_matrix(pred_CPs = locat_PELT_2cp_out
 ```
 
 ### BS
+
+**Read the detected changepoint windows**
+
+Sender Effect:
+```{r}
+locat_BS_2cp_send_same.all <- readRDS("CP_Detection/locat_BS_2cp_send_same.all.RDS")
+```
+
+Difference Effect: 
+```{r}
+locat_BS_2cp_diff_same.all <- readRDS("CP_Detection/locat_BS_2cp_diff_same.all.RDS")
+```
+
+Inertia:
+```{r}
+locat_BS_2cp_ine_same.all <- readRDS("CP_Detection/locat_BS_2cp_ine_same.all.RDS")
+```
+
+Out Degree Sender Effect:
+```{r}
+locat_BS_2cp_out_same.all <- readRDS("CP_Detection/locat_BS_2cp_out_same.all.RDS")
+```
 
 - Sender Effect
 ```{r}
